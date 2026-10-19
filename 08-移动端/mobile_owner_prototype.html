@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>秦务员 · 业主端 · 陕西数字住建</title>
+<style>
+/* ================= 设计基线 (M-R-B + M-L-C + M-U-B + M-I-C) ================= */
+:root{
+  --primary:#534AB7;
+  --primary-light:#7B6FE0;
+  --primary-pale:#E8E7FA;
+  --accent:#E9353A;
+  --bg:#F4F5F7;
+  --card:#FFFFFF;
+  --txt:#1D2129;
+  --txt2:#4E5969;
+  --txt3:#86909C;
+  --line:#E5E6EB;
+  --ok:#00B42A;
+  --ok-bg:#E8FFEA;
+  --warn:#FF7D00;
+  --warn-bg:#FFF3E0;
+  --danger:#F53F3F;
+  --danger-bg:#FFECE8;
+  --info:#165DFF;
+  --info-bg:#E8F1FF;
+  --gray-bg:#F7F8FA;
+  --shadow-card:0 2px 8px rgba(0,0,0,.06);
+  --shadow-hover:0 4px 16px rgba(83,74,183,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#EEF0F5 0%,#E5E7ED 100%);min-height:100vh;color:var(--txt);font-size:15px;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+/* 模拟手机外框 414 居中 */
+.phone-frame{max-width:414px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;box-shadow:0 0 40px rgba(0,0,0,.08);padding-bottom:80px;}
+
+/* ================= 沉浸 Header ================= */
+.immersive-header{
+  background:linear-gradient(135deg,#534AB7 0%,#7B6FE0 100%);
+  color:#fff;
+  padding-top:20px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 16px rgba(83,74,183,.25);
+}
+.status-bar{height:20px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:11px;opacity:.95;}
+.status-bar .right{display:flex;gap:6px;align-items:center;}
+.header-main{padding:8px 20px 18px;}
+.hello-row{display:flex;justify-content:space-between;align-items:center;}
+.hello-left .hi{font-size:13px;opacity:.85;margin-bottom:2px;}
+.hello-left .name{font-size:20px;font-weight:600;letter-spacing:.5px;}
+.hello-right{display:flex;gap:10px;}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+.icon-btn .badge{position:absolute;top:6px;right:18px;background:var(--accent);color:#fff;font-size:9px;border-radius:8px;padding:1px 4px;font-weight:600;}
+.house-row{margin-top:14px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.14);border-radius:10px;padding:10px 14px;}
+.house-info{display:flex;align-items:center;gap:8px;font-size:13px;}
+.house-icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#FFD580,#FF9248);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.house-text small{display:block;font-size:11px;opacity:.7;margin-bottom:1px;}
+.house-text b{font-weight:500;font-size:13px;}
+.switch-btn{font-size:12px;background:rgba(255,255,255,.22);padding:5px 10px;border-radius:14px;display:flex;align-items:center;gap:4px;}
+.switch-end{font-size:11px;color:#fff;background:var(--accent);border-radius:10px;padding:5px 10px;}
+
+/* 端类型快速切换 */
+/* ================= Tab 切换 ================= */
+.tab-content{display:none;padding:14px 14px 0;animation:fadeIn .25s;}
+.tab-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ================= 通用页面内 Header ================= */
+.sub-header{padding:14px 4px 10px;display:flex;justify-content:space-between;align-items:center;}
+.sub-header .title{font-size:18px;font-weight:600;}
+.sub-header .title small{font-size:12px;color:var(--txt3);font-weight:400;display:block;margin-top:2px;}
+.sub-header .right{display:flex;gap:10px;align-items:center;}
+.back-btn{width:32px;height:32px;border-radius:50%;background:#fff;color:var(--txt2);box-shadow:var(--shadow-card);display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+/* ================= 卡片 (M-U-B 圆角) ================= */
+.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow-card);}
+.card.tight{padding:12px 14px;}
+.card-flat{background:var(--card);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-card);}
+.card-title{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;}
+.card-title h3{font-size:15px;font-weight:600;}
+.card-title .more{font-size:12px;color:var(--primary);}
+
+/* 渐变微立体卡 (M-I-C) */
+.gradient-card{
+  border-radius:16px;
+  padding:18px;
+  color:#fff;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(83,74,183,.32);
+}
+.gradient-card::before{content:"";position:absolute;top:-30%;right:-20%;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.18) 0%,transparent 60%);}
+.gradient-card.purple{background:linear-gradient(135deg,#534AB7 0%,#7B6FE0 100%);}
+.gradient-card.red{background:linear-gradient(135deg,#E9353A 0%,#FF5E5E 100%);box-shadow:0 6px 20px rgba(233,53,58,.32);}
+.gradient-card.blue{background:linear-gradient(135deg,#165DFF 0%,#4584FF 100%);box-shadow:0 6px 20px rgba(22,93,255,.32);}
+.gradient-card.orange{background:linear-gradient(135deg,#FF7D00 0%,#FFA033 100%);box-shadow:0 6px 20px rgba(255,125,0,.32);}
+.gradient-card.green{background:linear-gradient(135deg,#00B42A 0%,#4ECB4D 100%);box-shadow:0 6px 20px rgba(0,180,42,.32);}
+
+/* 大小卡 (M-1-HOME 主页) */
+.big-card{height:120px;display:flex;align-items:center;padding:20px;}
+.big-card .left{flex:1;}
+.big-card h3{font-size:17px;font-weight:600;margin-bottom:4px;}
+.big-card .desc{font-size:12px;opacity:.85;}
+.big-card .right{font-size:36px;opacity:.95;}
+.small-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.small-card{padding:14px;border-radius:12px;color:#fff;}
+.small-card.purple{background:linear-gradient(135deg,#534AB7,#7B6FE0);}
+.small-card.red{background:linear-gradient(135deg,#E9353A,#FF7676);}
+.small-card.blue{background:linear-gradient(135deg,#165DFF,#4584FF);}
+.small-card.orange{background:linear-gradient(135deg,#FF7D00,#FFA94D);}
+.small-card .num{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;}
+.small-card .lbl{font-size:12px;opacity:.9;margin-top:2px;}
+.small-card .ico{float:right;font-size:24px;opacity:.85;}
+
+/* 列表卡片 */
+.list-card{padding:0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card);}
+.list-row{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;cursor:pointer;}
+.list-row:last-child{border-bottom:none;}
+.list-row:active{background:#F7F7FB;}
+.list-row .icowrap{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.list-row .icowrap.purple{background:linear-gradient(135deg,#E8E7FA,#D5D2F5);color:#534AB7;}
+.list-row .icowrap.red{background:linear-gradient(135deg,#FFECE8,#FFD2CE);color:#E9353A;}
+.list-row .icowrap.blue{background:linear-gradient(135deg,#E8F1FF,#CDDFFF);color:#165DFF;}
+.list-row .icowrap.orange{background:linear-gradient(135deg,#FFF3E0,#FFE0BD);color:#FF7D00;}
+.list-row .icowrap.green{background:linear-gradient(135deg,#E8FFEA,#C2F5C8);color:#00B42A;}
+.list-row .icowrap.gray{background:linear-gradient(135deg,#F2F3F5,#E0E2E6);color:#4E5969;}
+.list-row .body{flex:1;min-width:0;}
+.list-row .body .t{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-row .body .m{font-size:12px;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-row .body .m .dot{margin:0 6px;color:var(--line);}
+.list-row .right{text-align:right;flex-shrink:0;}
+.list-row .right .time{font-size:11px;color:var(--txt3);margin-bottom:4px;}
+.list-row .right .arrow{color:var(--txt3);font-size:14px;}
+
+/* 状态 Tag */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;}
+.tag.purple{background:#E8E7FA;color:#534AB7;}
+.tag.red{background:var(--danger-bg);color:var(--danger);}
+.tag.green{background:var(--ok-bg);color:var(--ok);}
+.tag.orange{background:var(--warn-bg);color:var(--warn);}
+.tag.blue{background:var(--info-bg);color:var(--info);}
+.tag.gray{background:var(--gray-bg);color:var(--txt3);}
+
+/* ================= 表单 ================= */
+.form-group{background:#fff;border-radius:12px;padding:6px 16px;margin-bottom:12px;box-shadow:var(--shadow-card);}
+.form-item{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);}
+.form-item:last-child{border-bottom:none;}
+.form-item .lbl{font-size:13px;color:var(--txt2);width:84px;flex-shrink:0;}
+.form-item .ctrl{flex:1;font-size:14px;color:var(--txt);display:flex;justify-content:flex-end;align-items:center;gap:6px;text-align:right;}
+.form-item .ctrl input,.form-item .ctrl select,.form-item .ctrl textarea{flex:1;border:none;outline:none;background:none;text-align:right;font-family:inherit;font-size:14px;color:var(--txt);}
+.form-item .ctrl textarea{text-align:left;min-height:60px;padding:6px 0;}
+.form-item .ctrl .arrow{color:var(--txt3);}
+.switch{width:42px;height:24px;background:#E5E6EB;border-radius:12px;position:relative;transition:.2s;}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:.2s;}
+.switch.on{background:var(--primary);}
+.switch.on::after{left:20px;}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap;}
+.radio-pill{padding:6px 14px;border-radius:18px;background:#F2F3F5;color:var(--txt2);font-size:13px;border:1px solid transparent;}
+.radio-pill.on{background:#E8E7FA;color:var(--primary);border-color:var(--primary);font-weight:500;}
+
+/* ================= 详情页 ================= */
+.detail-hero{padding:18px 16px;background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;border-radius:14px;margin-bottom:14px;position:relative;overflow:hidden;}
+.detail-hero::after{content:"";position:absolute;bottom:-30%;right:-10%;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 60%);}
+.detail-hero h2{font-size:18px;font-weight:600;margin-bottom:8px;position:relative;}
+.detail-hero .meta{font-size:12px;opacity:.85;position:relative;}
+.detail-hero .meta span{margin-right:14px;}
+.detail-body{padding:16px;font-size:14px;color:var(--txt);line-height:1.75;}
+.detail-body p{margin-bottom:10px;}
+.detail-body img{max-width:100%;border-radius:8px;margin:8px 0;}
+.attach-list{padding:14px 16px;}
+.attach-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+.attach-item:last-child{border-bottom:none;}
+.attach-item .ai-ico{width:36px;height:36px;border-radius:8px;background:#E8E7FA;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:10px;}
+.attach-item .name{flex:1;font-size:13px;}
+.attach-item .size{color:var(--txt3);font-size:12px;margin-left:6px;}
+.attach-item .dl{color:var(--primary);font-size:12px;}
+
+/* 时间线 */
+.timeline{padding:6px 14px;}
+.tl-row{display:flex;gap:12px;padding:10px 0;}
+.tl-dot{width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px;}
+.tl-dot.done{background:var(--ok);}
+.tl-dot.cur{background:var(--warn);box-shadow:0 0 0 4px #FFF3E0;}
+.tl-dot.fail{background:var(--danger);}
+.tl-body{flex:1;font-size:13px;}
+.tl-body .when{color:var(--txt3);font-size:11px;margin-bottom:2px;}
+.tl-body .what{color:var(--txt);}
+.tl-body .who{color:var(--txt2);font-size:12px;margin-top:2px;}
+
+/* 进度条 */
+.progress{height:6px;background:#F0F0F4;border-radius:3px;overflow:hidden;margin:6px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#534AB7,#7B6FE0);border-radius:3px;}
+.progress-fill.warn{background:linear-gradient(90deg,#FF7D00,#FFA94D);}
+.progress-fill.green{background:linear-gradient(90deg,#00B42A,#4ECB4D);}
+
+/* 选项 (投票) */
+.vote-opt{display:flex;align-items:center;padding:14px 16px;border:2px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer;}
+.vote-opt.on{border-color:var(--primary);background:#F8F7FF;}
+.vote-opt .radio{width:18px;height:18px;border:2px solid var(--txt3);border-radius:50%;margin-right:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.vote-opt.on .radio{border-color:var(--primary);}
+.vote-opt.on .radio::after{content:"";width:8px;height:8px;background:var(--primary);border-radius:50%;}
+.vote-opt .body{flex:1;}
+.vote-opt .body .t{font-size:14px;font-weight:500;margin-bottom:2px;}
+.vote-opt .body .d{font-size:12px;color:var(--txt3);}
+.vote-opt .pct{font-size:14px;font-weight:600;color:var(--primary);font-variant-numeric:tabular-nums;}
+
+/* 倒计时 */
+.countdown{display:flex;gap:6px;justify-content:center;margin:14px 0;}
+.cd-box{background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;padding:8px 10px;border-radius:8px;text-align:center;min-width:46px;}
+.cd-box .n{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;}
+.cd-box .l{font-size:10px;opacity:.85;margin-top:2px;}
+.cd-sep{color:var(--primary);font-size:18px;font-weight:600;align-self:center;}
+
+/* 饼图(纯 CSS) */
+.pie{display:flex;gap:14px;align-items:center;}
+.pie-chart{width:130px;height:130px;border-radius:50%;background:conic-gradient(var(--primary) 0% 58%,var(--ok) 58% 78%,var(--warn) 78% 90%,var(--danger) 90% 100%);position:relative;flex-shrink:0;}
+.pie-chart::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;background:#fff;border-radius:50%;}
+.pie-legend{flex:1;font-size:12px;}
+.pie-legend li{display:flex;justify-content:space-between;padding:4px 0;}
+.pie-legend .lg{display:flex;align-items:center;gap:6px;}
+.pie-legend .d{width:8px;height:8px;border-radius:50%;}
+
+/* ================= KPI 数据卡 ================= */
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.kpi-box{padding:12px 14px;border-radius:10px;background:#fff;box-shadow:var(--shadow-card);}
+.kpi-box .num{font-size:20px;font-weight:600;color:var(--txt);font-variant-numeric:tabular-nums;}
+.kpi-box .lbl{font-size:11px;color:var(--txt3);margin-top:2px;}
+.kpi-box.purple .num{color:var(--primary);}
+.kpi-box.red .num{color:var(--danger);}
+.kpi-box.orange .num{color:var(--warn);}
+.kpi-box.green .num{color:var(--ok);}
+.kpi-box.blue .num{color:var(--info);}
+.kpi-row.cols4{grid-template-columns:repeat(4,1fr);}
+.kpi-row.cols4 .kpi-box{padding:10px 6px;text-align:center;}
+.kpi-row.cols4 .kpi-box .num{font-size:18px;}
+
+/* ================= 按钮 ================= */
+.btn{padding:12px 18px;border-radius:10px;font-size:15px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;}
+.btn:active{transform:scale(.97);}
+.btn.primary{background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;box-shadow:0 3px 10px rgba(83,74,183,.3);}
+.btn.danger{background:linear-gradient(135deg,#E9353A,#FF5E5E);color:#fff;box-shadow:0 3px 10px rgba(233,53,58,.3);}
+.btn.success{background:linear-gradient(135deg,#00B42A,#4ECB4D);color:#fff;}
+.btn.ghost{background:#fff;color:var(--primary);border:1.5px solid var(--primary);}
+.btn.text{color:var(--primary);}
+.btn-block{display:flex;width:100%;}
+.btn.small{padding:7px 14px;font-size:13px;border-radius:8px;}
+.btn-bar{padding:14px 16px;background:#fff;border-top:1px solid var(--line);display:flex;gap:10px;position:sticky;bottom:68px;z-index:9;}
+.btn-bar .btn{flex:1;}
+
+/* ================= TabBar 底部 ================= */
+.tabbar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:414px;
+  background:#fff;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:8px 0 16px;
+  box-shadow:0 -2px 16px rgba(0,0,0,.06);
+  z-index:50;
+  border-top:1px solid var(--line);
+}
+.tabbar-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--txt3);padding:4px 0;cursor:pointer;position:relative;}
+.tabbar-item.active{color:var(--primary);}
+.tabbar-item.active::before{content:"";position:absolute;top:0;width:18px;height:3px;background:var(--primary);border-radius:0 0 3px 3px;}
+.tabbar-item .ico{font-size:22px;line-height:1;}
+
+/* ================= Misc ================= */
+.divider{margin:14px 0;display:flex;align-items:center;gap:10px;color:var(--txt3);font-size:12px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+.empty{padding:40px 0;text-align:center;color:var(--txt3);font-size:13px;}
+.empty .em{font-size:48px;display:block;margin-bottom:10px;opacity:.5;}
+
+.section-title{display:flex;justify-content:space-between;align-items:center;padding:12px 4px 8px;}
+.section-title h3{font-size:15px;font-weight:600;}
+.section-title .more{color:var(--primary);font-size:12px;}
+
+.search-bar{padding:8px 0 4px;}
+.search-input{background:#fff;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--txt3);box-shadow:var(--shadow-card);}
+
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:4px;}
+
+.banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:4px 0 14px;}
+.bg-item{padding:12px 8px;border-radius:12px;text-align:center;color:#fff;}
+.bg-item.purple{background:linear-gradient(135deg,#534AB7,#7B6FE0);}
+.bg-item.orange{background:linear-gradient(135deg,#FF7D00,#FFA94D);}
+.bg-item.blue{background:linear-gradient(135deg,#165DFF,#4584FF);}
+.bg-item.red{background:linear-gradient(135deg,#E9353A,#FF5E5E);}
+.bg-item .ic{font-size:24px;display:block;margin-bottom:4px;}
+.bg-item .lb{font-size:11px;}
+
+.comment-box{padding:14px 16px;background:#fff;}
+.comment-row{padding:10px 0;border-bottom:1px solid var(--line);}
+.comment-row:last-child{border-bottom:none;}
+.comment-row .u{font-size:12px;color:var(--txt2);font-weight:600;margin-bottom:4px;}
+.comment-row .c{font-size:13px;color:var(--txt);margin-bottom:4px;}
+.comment-row .w{font-size:11px;color:var(--txt3);}
+
+/* 工具条 */
+.mini-bar{position:fixed;right:10px;bottom:130px;display:flex;flex-direction:column;gap:8px;z-index:30;}
+.mini-float{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(83,74,183,.4);}
+
+/* upload */
+.up-zone{padding:16px;border:2px dashed var(--line);border-radius:12px;text-align:center;background:#FAFAFE;margin-bottom:12px;color:var(--txt3);}
+.up-zone .up-ico{font-size:32px;display:block;margin-bottom:6px;color:var(--primary);}
+.up-zone .tip{font-size:11px;}
+.up-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.up-thumb{position:relative;aspect-ratio:1/1;border-radius:8px;background:#F0F0F4;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:24px;overflow:hidden;}
+.up-thumb .x{position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;}
+
+/* notify toast */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.78);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;display:none;}
+
+</style>
+</head>
+<body>
+<div class="phone-frame" id="app">
+
+  <!-- ============ 沉浸 Header (固定) ============ -->
+  <div class="immersive-header">
+    <div class="status-bar">
+      <span>14:38</span>
+      <span class="right"><span>5G</span><span>100%</span></span>
+    </div>
+    <div class="header-main">
+      <div class="hello-row">
+        <div class="hello-left">
+          <div class="hi">下午好,</div>
+          <div class="name">陈默 业主</div>
+        </div>
+        <div class="hello-right">
+          <div class="icon-btn" style="position:relative;" onclick="showToast('扫描二维码')">⌐
+            <span class="badge">2</span>
+          </div>
+          <div class="icon-btn" onclick="showToast('客服中心')">ⓘ</div>
+        </div>
+      </div>
+      <div class="house-row">
+        <div class="house-info">
+          <div class="house-icon">⌒</div>
+          <div class="house-text">
+            <small>当前房屋</small>
+            <b>西安·万科花园 7 号楼 2 单元 301</b>
+          </div>
+        </div>
+        <a href="#page-M-7-HOUSE" onclick="showPage('M-7-HOUSE');return false;" class="switch-btn">切换 ⇄</a>
+    <a href="#page-M-7-SET" onclick="showPage('M-7-SET');return false" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#fff;border-radius:12px;margin-top:10px;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:14px;color:#1D2129;text-decoration:none"><span>⚙ 通知与隐私设置</span><span style="color:#C9CDD4">›</span></a>
+      </div>
+    </div>
+  </div>
+
+<!-- ============ Tab 1: 公告 (M-1-HOME + M-2-LST + M-2-DTL) ============ -->
+  <div class="tab-content active" id="tab-M-2">
+
+    <!-- M-1-HOME: 业主首页 -->
+    <div class="page" id="page-M-1-HOME">
+      <!-- 欢迎横幅 -->
+      <div class="gradient-card purple" style="margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:26px;">⌒</div>
+          <div style="flex:1;">
+            <div style="font-size:17px;font-weight:600;margin-bottom:3px;">欢迎使用秦务员</div>
+            <div style="font-size:12px;opacity:.85;">投票 · 报修 · 投诉 · 一站搞定</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 大小卡 (我的投票 / 我的报修) -->
+      <div class="small-cards">
+        <a href="#page-M-5-VOTE-LST" onclick="switchTab('M-5');showPage('M-5-VOTE-LST');return false;" class="small-card purple">
+          <span class="ico">⌧</span>
+          <div class="num">2</div>
+          <div class="lbl">我的投票</div>
+        </a>
+        <a href="#page-M-4-REP-LST" onclick="switchTab('M-4');showPage('M-4-REP-LST');return false;" class="small-card red">
+          <span class="ico">⌫</span>
+          <div class="num">1</div>
+          <div class="lbl">我的报修</div>
+        </a>
+        <a href="#page-M-3-CMP-LST" onclick="switchTab('M-3');showPage('M-3-CMP-LST');return false;" class="small-card orange">
+          <span class="ico">⌨</span>
+          <div class="num">0</div>
+          <div class="lbl">我的投诉</div>
+        </a>
+        <a href="#page-M-6-MTG-LST" onclick="switchTab('M-7');showPage('M-6-MTG-LST');return false;" class="small-card blue">
+          <span class="ico">⌬</span>
+          <div class="num">1</div>
+          <div class="lbl">业主大会</div>
+        </a>
+      </div>
+
+      <!-- KPI 状态卡 -->
+      <div class="kpi-row">
+        <div class="kpi-box green"><div class="num">12</div><div class="lbl">已办公告 (本年)</div></div>
+        <div class="kpi-box purple"><div class="num">5</div><div class="lbl">进行中投票</div></div>
+      </div>
+
+      <!-- 通知公告大卡 (最新一条) -->
+      <div class="card" style="padding:0;">
+        <div style="background:linear-gradient(135deg,#FFE7C2,#FFD499);padding:14px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span class="tag" style="background:rgba(255,255,255,.65);color:var(--warn);">📌 最新通知</span>
+            <span style="font-size:11px;color:var(--warn);">2 小时前</span>
+          </div>
+          <h3 style="font-size:16px;color:#7A4F0D;margin-bottom:6px;font-weight:600;">关于召开 2025 年第二次业主大会的通知</h3>
+          <p style="font-size:12px;color:#7A4F0D;line-height:1.6;opacity:.85;">经业委会决议,兹定于 11 月 20 日上午 9 时在小区中心广场召开业主大会,审议维修资金使用、物业续聘等议案。</p>
+          <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="btn small ghost" style="border-color:#7A4F0D;color:#7A4F0D;margin-top:10px;">查看详情 →</a>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>📋 最近通知</h3><a href="#page-M-2-LST" onclick="showPage('M-2-LST');return false;" class="more">全部通知</a></div>
+      <div class="list-card">
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap orange">⌮</div>
+          <div class="body">
+            <div class="t">电梯维保计划(2025-11 月)</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 阅读 312 <span class="dot">·</span> 公示</div>
+          </div>
+          <div class="right">
+            <div class="time">昨天</div>
+            <span class="tag orange">重要</span>
+          </div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap blue">⌬</div>
+          <div class="body">
+            <div class="t">小区停车管理办法(征求意见稿)</div>
+            <div class="m">业委会 <span class="dot">·</span> 阅读 218</div>
+          </div>
+          <div class="right">
+            <div class="time">11-08</div>
+            <span class="tag purple">公告</span>
+          </div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap green">⌧</div>
+          <div class="body">
+            <div class="t">业委会换届选举结果备案</div>
+            <div class="m">街道办 <span class="dot">·</span> 公示 <span class="dot">·</span> 决议</div>
+          </div>
+          <div class="right">
+            <div class="time">11-05</div>
+            <span class="tag green">决议</span>
+          </div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap red">⚠</div>
+          <div class="body">
+            <div class="t">冬季供暖前设备检修公告</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 紧急</div>
+          </div>
+          <div class="right">
+            <div class="time">11-02</div>
+            <span class="tag red">紧急</span>
+          </div>
+        </a>
+      </div>
+
+      <div style="height:24px;"></div>
+    </div>
+
+    <!-- M-2-LST: 通知公示列表 -->
+    <div class="page" id="page-M-2-LST" style="display:none;">
+      <div class="sub-header">
+        <div class="title">📢 通知公示<small>共 18 条 · 已读 12</small></div>
+        <a href="#page-M-1-HOME" onclick="showPage('M-1-HOME');return false;" class="back-btn">‹</a>
+      </div>
+
+      <!-- 类型 tab -->
+      <div style="display:flex;gap:8px;padding:0 0 12px;overflow-x:auto;">
+        <div class="radio-pill on">全部 18</div>
+        <div class="radio-pill">通知 8</div>
+        <div class="radio-pill">公告 6</div>
+        <div class="radio-pill">决议 3</div>
+        <div class="radio-pill">紧急 1</div>
+      </div>
+
+      <div class="search-bar">
+        <div class="search-input">⌕ 搜索通知标题、发布人…</div>
+      </div>
+
+      <div class="list-card" style="margin-top:10px;">
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap orange">📌</div>
+          <div class="body">
+            <div class="t">关于召开 2025 年第二次业主大会的通知</div>
+            <div class="m">业委会 <span class="dot">·</span> 2 小时前 <span class="dot">·</span> 阅读 412</div>
+          </div>
+          <div class="right"><span class="tag red">未读</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap blue">⌮</div>
+          <div class="body">
+            <div class="t">电梯维保计划(2025-11 月)</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 昨天 <span class="dot">·</span> 阅读 312</div>
+          </div>
+          <div class="right"><span class="tag orange">重要</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap green">⌬</div>
+          <div class="body">
+            <div class="t">小区停车管理办法(征求意见稿)</div>
+            <div class="m">业委会 <span class="dot">·</span> 11-08 <span class="dot">·</span> 阅读 218</div>
+          </div>
+          <div class="right"><span class="tag purple">公告</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap purple">⌧</div>
+          <div class="body">
+            <div class="t">业委会换届选举结果备案</div>
+            <div class="m">街道办 <span class="dot">·</span> 11-05 <span class="dot">·</span> 阅读 632</div>
+          </div>
+          <div class="right"><span class="tag green">决议</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap red">⚠</div>
+          <div class="body">
+            <div class="t">冬季供暖前设备检修公告</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 11-02</div>
+          </div>
+          <div class="right"><span class="tag red">紧急</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap gray">⌕</div>
+          <div class="body">
+            <div class="t">10 月物业服务工作报告</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 10-31 <span class="dot">·</span> 阅读 528</div>
+          </div>
+          <div class="right"><span class="tag gray">月报</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap blue">⌹</div>
+          <div class="body">
+            <div class="t">消防演练通知(11 月 18 日)</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 10-28</div>
+          </div>
+          <div class="right"><span class="tag blue">活动</span></div>
+        </a>
+        <a href="#page-M-2-DTL" onclick="showPage('M-2-DTL');return false;" class="list-row">
+          <div class="icowrap orange">⌬</div>
+          <div class="body">
+            <div class="t">关于调整物业服务收费标准的公示</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 10-25 <span class="dot">·</span> 阅读 896</div>
+          </div>
+          <div class="right"><span class="tag purple">公告</span></div>
+        </a>
+      </div>
+
+      <div style="text-align:center;padding:18px 0;color:var(--txt3);font-size:12px;">- 已经到底 -</div>
+    </div>
+
+    <!-- M-2-DTL: 通知公示详情 -->
+    <div class="page" id="page-M-2-DTL" style="display:none;">
+      <div class="sub-header">
+        <div class="title">通知详情</div>
+        <a href="#page-M-2-LST" onclick="showPage('M-2-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="detail-hero">
+        <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;margin-bottom:6px;display:inline-block;">📌 重要通知</span>
+        <h2>关于召开 2025 年第二次业主大会的通知</h2>
+        <div class="meta">
+          <span>📅 2025-11-10 09:00</span>
+          <span>✍ 业委会</span>
+          <span>👁 阅读 412</span>
+        </div>
+      </div>
+
+      <div class="card detail-body">
+        <p>各位业主:</p>
+        <p>经万科花园小区第七届业主委员会第三次会议决议,并报请社区居委会备案,兹定于 <b>2025 年 11 月 20 日(星期六)上午 9:00</b> 在小区中心广场召开本年度第二次业主大会,审议以下议案:</p>
+        <p style="padding-left:14px;border-left:3px solid var(--primary);">
+          议案一:使用维修资金 23.6 万元,对 7 号楼电梯进行更新改造;<br>
+          议案二:续聘西安万科物业服务有限公司三年;<br>
+          议案三:小区停车管理办法修订;
+        </p>
+        <p>请各位业主准时出席,无法到场的业主可办理书面委托(<a href="../06-业主决策/web_c_decision_prototype.html#page-C-5-QR" class="link" style="color:var(--primary);">下载委托书模板</a>)或通过"秦务员"App/小程序进行电子投票。</p>
+        <p style="text-align:right;color:var(--txt3);font-size:13px;margin-top:18px;">万科花园第七届业主委员会<br>2025 年 11 月 10 日</p>
+
+        <div style="border-top:1px solid var(--line);padding-top:14px;margin-top:14px;">
+          <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 130'><rect fill='%23F2F3F5' width='380' height='130' rx='6'/><text x='190' y='60' text-anchor='middle' fill='%2386909C' font-size='12'>[公告印章:万科花园业主委员会]</text><text x='190' y='80' text-anchor='middle' fill='%2386909C' font-size='10'>陕物证字第 11092025 号</text></svg>">
+        </div>
+      </div>
+
+      <div class="card-flat">
+        <div class="card-title"><h3>📎 附件资料 (3)</h3></div>
+        <div class="attach-list">
+          <div class="attach-item"><div class="ai-ico">📄</div><div class="name">业主大会议程<br><span class="size" style="font-size:11px;">PDF · 256KB</span></div><span class="dl">查看</span></div>
+          <div class="attach-item"><div class="ai-ico">📊</div><div class="name">维修资金使用预算明细<br><span class="size" style="font-size:11px;">Excel · 128KB</span></div><span class="dl">查看</span></div>
+          <div class="attach-item"><div class="ai-ico">📷</div><div class="name">电梯现状照片<br><span class="size" style="font-size:11px;">JPG · 1.2MB · 8 张</span></div><span class="dl">查看</span></div>
+        </div>
+      </div>
+
+      <div class="card-flat">
+        <div class="card-title"><h3>💬 业主反馈 (12)</h3><span class="more">全部 →</span></div>
+        <div class="comment-box">
+          <div class="comment-row"><div class="u">张先生 7-1-502</div><div class="c">支持议案一,电梯早该换了。</div><div class="w">2 小时前</div></div>
+          <div class="comment-row"><div class="u">王女士 5-3-201</div><div class="c">议案三的收费标准能否再细化一下?</div><div class="w">3 小时前</div></div>
+          <div class="comment-row"><div class="u">李先生 9-2-803</div><div class="c">已通过秦务员 App 投票!</div><div class="w">5 小时前</div></div>
+        </div>
+      </div>
+
+      <div style="padding:14px 16px;">
+</div>
+
+      <div class="btn-bar">
+        <a href="#page-M-2-LST" onclick="showPage('M-2-LST');return false;" class="btn ghost">返回列表</a>
+        <a href="#page-M-5-VOTE-LST" onclick="switchTab('M-5');showPage('M-5-VOTE-LST');return false;" class="btn primary">去投票</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Tab 2: 投票 (M-5-VOTE-LST/DTL/CAST/PX/RES) ============ -->
+  <div class="tab-content" id="tab-M-5">
+
+    <!-- M-5-VOTE-LST: 我的投票列表 -->
+    <div class="page" id="page-M-5-VOTE-LST">
+      <div class="sub-header">
+        <div class="title">⌧ 我的投票<small>参与 7 次 · 进行中 2</small></div>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on">全部 7</div>
+        <div class="radio-pill">进行中 2</div>
+        <div class="radio-pill">已结束 5</div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box purple"><div class="num">7</div><div class="lbl">总参与</div></div>
+        <div class="kpi-box orange"><div class="num">2</div><div class="lbl">进行中</div></div>
+        <div class="kpi-box green"><div class="num">5</div><div class="lbl">已完成</div></div>
+        <div class="kpi-box blue"><div class="num">86%</div><div class="lbl">参与率</div></div>
+      </div>
+
+      <div class="section-title"><h3>进行中的投票</h3></div>
+      <div class="list-card">
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="list-row">
+          <div class="icowrap red">🔥</div>
+          <div class="body">
+            <div class="t">7 号楼电梯更新改造表决</div>
+            <div class="m">业委会发起 <span class="dot">·</span> 维修资金 <span class="dot">·</span> 812 业主</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+              <div class="progress" style="flex:1;"><div class="progress-fill warn" style="width:62%;"></div></div>
+              <span style="font-size:11px;color:var(--warn);">剩 3 天</span>
+            </div>
+          </div>
+          <div class="right">
+            <span class="tag red">紧急</span>
+            <div class="arrow" style="margin-top:4px;">›</div>
+          </div>
+        </a>
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="list-row">
+          <div class="icowrap orange">⌧</div>
+          <div class="body">
+            <div class="t">小区停车管理办法修订</div>
+            <div class="m">业委会 <span class="dot">·</span> 公共事项 <span class="dot">·</span> 812 业主</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+              <div class="progress" style="flex:1;"><div class="progress-fill" style="width:38%;"></div></div>
+              <span style="font-size:11px;color:var(--txt3);">剩 7 天</span>
+            </div>
+          </div>
+          <div class="right">
+            <span class="tag orange">进行中</span>
+            <div class="arrow" style="margin-top:4px;">›</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="section-title"><h3>已结束</h3></div>
+      <div class="list-card">
+        <a href="#page-M-5-VOTE-RES" onclick="showPage('M-5-VOTE-RES');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">业委会换届选举</div>
+            <div class="m">街道办 <span class="dot">·</span> 09-15 结束</div>
+          </div>
+          <div class="right">
+            <span class="tag green">通过</span>
+            <div class="time" style="margin-top:4px;">已投票</div>
+          </div>
+        </a>
+        <a href="#page-M-5-VOTE-RES" onclick="showPage('M-5-VOTE-RES');return false;" class="list-row">
+          <div class="icowrap gray">✓</div>
+          <div class="body">
+            <div class="t">物业费调整征求意见</div>
+            <div class="m">物业服务部 <span class="dot">·</span> 09-01 结束</div>
+          </div>
+          <div class="right">
+            <span class="tag gray">未通过</span>
+            <div class="time" style="margin-top:4px;">已投票</div>
+          </div>
+        </a>
+        <a href="#page-M-5-VOTE-RES" onclick="showPage('M-5-VOTE-RES');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">小区门禁改造方案表决</div>
+            <div class="m">业委会 <span class="dot">·</span> 08-20 结束</div>
+          </div>
+          <div class="right">
+            <span class="tag green">通过</span>
+            <div class="time" style="margin-top:4px;">已投票</div>
+          </div>
+        </a>
+      </div>
+
+      <div style="height:24px;"></div>
+    </div>
+
+    <!-- M-5-VOTE-DTL: 投票详情 -->
+    <div class="page" id="page-M-5-VOTE-DTL" style="display:none;">
+      <div class="sub-header">
+        <div class="title">投票详情</div>
+        <a href="#page-M-5-VOTE-LST" onclick="showPage('M-5-VOTE-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card red">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">🔥 紧急表决</span>
+          <span style="font-size:11px;opacity:.85;">第七届 03 号</span>
+        </div>
+        <h2 style="font-size:18px;margin-bottom:8px;">7 号楼电梯更新改造表决</h2>
+        <div style="font-size:12px;opacity:.85;">议事规则 <span style="margin:0 6px;">·</span> 维修资金 <span style="margin:0 6px;">·</span> 812 业主参与范围</div>
+      </div>
+
+      <!-- 倒计时 -->
+      <div class="card" style="text-align:center;">
+        <div style="font-size:12px;color:var(--txt3);margin-bottom:6px;">⌛ 距离投票截止</div>
+        <div class="countdown">
+          <div class="cd-box"><div class="n" id="cd-d">03</div><div class="l">天</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="n" id="cd-h">07</div><div class="l">时</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="n" id="cd-m">32</div><div class="l">分</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-box"><div class="n" id="cd-s">45</div><div class="l">秒</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--txt3);">截止时间:2025-11-13 23:59</div>
+      </div>
+
+      <!-- 选项 -->
+      <div class="section-title"><h3>📋 投票事项</h3><span style="color:var(--txt3);font-size:11px;">单选</span></div>
+      <div style="padding:0 4px;">
+        <div class="vote-opt" onclick="selectVote(this)">
+          <div class="radio"></div>
+          <div class="body"><div class="t">A. 同意使用维修资金 23.6 万进行电梯更换</div><div class="d">推荐方案 · 已评审</div></div>
+        </div>
+        <div class="vote-opt" onclick="selectVote(this)">
+          <div class="radio"></div>
+          <div class="body"><div class="t">B. 同意维修方案,延期至 2026 年</div><div class="d">附带条件</div></div>
+        </div>
+        <div class="vote-opt" onclick="selectVote(this)">
+          <div class="radio"></div>
+          <div class="body"><div class="t">C. 不同意本次方案</div><div class="d">反对意见</div></div>
+        </div>
+        <div class="vote-opt" onclick="selectVote(this)">
+          <div class="radio"></div>
+          <div class="body"><div class="t">D. 弃权</div><div class="d">不参与表决</div></div>
+        </div>
+      </div>
+
+      <!-- 进度 -->
+      <div class="section-title"><h3>📊 实时进度</h3><span style="color:var(--txt3);font-size:11px;">每 60s 刷新</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span>已投票</span><b style="color:var(--primary);">502 / 812</b></div>
+        <div class="progress"><div class="progress-fill" style="width:62%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);"><span>62% 已投</span><span>通过率 68%</span></div>
+      </div>
+
+      <!-- 议案说明 -->
+      <div class="card-flat">
+        <div class="card-title"><h3>📑 议案说明</h3></div>
+        <div style="padding:0 16px 14px;font-size:13px;line-height:1.7;color:var(--txt2);">
+          <p>7 号楼现有 2 台电梯运行已 12 年,故障频发,经专业评估机构出具报告(见附件),建议整体更换,预算 23.6 万元,从维修资金中列支。</p>
+          <p style="margin-top:6px;">本次表决通过后,流程将进入:招投标 → 施工 → 验收 → 归档。</p>
+          <div style="margin-top:8px;"><span class="tag purple">附件 3 份</span><span class="tag blue">专家评审</span></div>
+        </div>
+      </div>
+
+      <div style="height:14px;"></div>
+
+      <div class="btn-bar">
+        <a href="#page-M-5-VOTE-PX" onclick="showPage('M-5-VOTE-PX');return false;" class="btn ghost">委托他人</a>
+        <a href="#page-M-5-VOTE-CAST" onclick="showPage('M-5-VOTE-CAST');return false;" class="btn primary">立即投票</a>
+      </div>
+    </div>
+
+    <!-- M-5-VOTE-CAST: 投票表决(确认)+ 电子签章 + SMS -->
+    <div class="page" id="page-M-5-VOTE-CAST" style="display:none;">
+      <div class="sub-header">
+        <div class="title">投票确认</div>
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card purple" style="display:flex;align-items:center;">
+        <div>
+          <div style="font-size:11px;opacity:.85;">您选择的选项</div>
+          <h3 style="font-size:16px;margin:4px 0 2px;">A. 同意使用维修资金 23.6 万</h3>
+          <div style="font-size:11px;opacity:.85;">7 号楼电梯更新改造表决</div>
+        </div>
+      </div>
+
+      <!-- 业主身份二次确认 SMS -->
+      <div class="form-group">
+        <div class="form-item" style="display:block;text-align:center;padding:18px 0 14px;">
+          <div class="lbl" style="display:block;text-align:center;width:auto;margin-bottom:6px;">📱 业主身份二次确认</div>
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <input style="flex:none;width:180px;padding:10px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;text-align:center;letter-spacing:6px;" maxlength="6" placeholder="· · · · · ·" id="sms-code">
+            <button class="btn small primary" onclick="sendSms(this)">获取验证码</button>
+          </div>
+          <div style="font-size:11px;color:var(--txt3);margin-top:6px;">系统已向 138****1234 发送短信验证码</div>
+        </div>
+      </div>
+
+      <!-- 选项复核 -->
+      <div class="card">
+        <div style="font-size:13px;color:var(--txt2);margin-bottom:8px;">投票选项复核</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#F8F7FF;border-radius:10px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;">A</div>
+          <div style="flex:1;font-size:13px;">同意使用维修资金 23.6 万进行电梯更换</div>
+          <span style="color:var(--primary);font-size:18px;">✓</span>
+        </div>
+      </div>
+
+      <!-- 电子签章 -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span style="font-size:13px;color:var(--txt2);font-weight:500;">✍ 电子签章</span>
+          <span class="tag green">已实名</span>
+        </div>
+        <div style="border:2px dashed var(--line);border-radius:10px;padding:20px;text-align:center;background:#FAFAFE;">
+          <div style="font-size:42px;color:var(--primary);font-weight:600;">陈默</div>
+          <div style="font-size:11px;color:var(--txt3);margin-top:4px;">13800001234 · 已通过陕西省 CA 认证</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:var(--txt3);">
+          <span>签章时间:2025-11-10 14:38:25</span>
+          <span style="color:var(--ok);">✓ 有效</span>
+        </div>
+      </div>
+
+      <!-- 提示 -->
+      <div class="card" style="background:#FFF7E0;box-shadow:none;">
+        <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#7A5A00;line-height:1.5;">
+          <span style="font-size:18px;color:var(--warn);">⚠</span>
+          <div><b>请确认:</b>投票一经提交不可撤销,请慎重选择。本次投票将记入个人电子签章档案并触发后续流程。</div>
+        </div>
+      </div>
+
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="agree-tos" style="width:16px;height:16px;">
+        <label for="agree-tos" style="font-size:12px;color:var(--txt2);">我已阅读并同意《业主电子投票规则》</label>
+      </div>
+
+      <div class="btn-bar">
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="btn ghost">取消</a>
+        <a href="#page-M-5-VOTE-RES" onclick="showPage('M-5-VOTE-RES');return false;" class="btn primary">确认投票</a>
+      </div>
+    </div>
+
+    <!-- M-5-VOTE-PX: 投票委托 -->
+    <div class="page" id="page-M-5-VOTE-PX" style="display:none;">
+      <div class="sub-header">
+        <div class="title">📤 投票委托</div>
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card orange">
+        <h3 style="font-size:16px;">无法参与?委托他人投票</h3>
+        <div style="font-size:12px;opacity:.9;margin-top:4px;">填写被委托人信息,系统将短信通知对方确认</div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">被委托人姓名</div>
+          <div class="ctrl"><input placeholder="请输入被委托人姓名"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">身份证号</div>
+          <div class="ctrl"><input placeholder="18 位身份证号" maxlength="18"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">手机号</div>
+          <div class="ctrl"><input placeholder="11 位手机号" maxlength="11"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">与本人关系</div>
+          <div class="ctrl">
+            <select>
+              <option>配偶</option>
+              <option>父母</option>
+              <option>子女</option>
+              <option>其他业主</option>
+            </select>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">委托事项</div>
+          <div class="ctrl"><span style="color:var(--txt);">7 号楼电梯改造表决</span></div>
+        </div>
+      </div>
+
+      <!-- 现场登记上传 -->
+      <div class="section-title"><h3>📷 委托现场登记照片</h3></div>
+      <div style="padding:0 4px;">
+        <div class="up-zone">
+          <span class="up-ico">📷</span>
+          <div style="font-size:13px;">点击上传本人手持委托书的现场照片</div>
+          <div class="tip">JPG/PNG · ≤ 5MB</div>
+        </div>
+        <div class="up-thumbs">
+          <div class="up-thumb">🪪<div class="x">×</div></div>
+          <div class="up-thumb">🖋<div class="x">×</div></div>
+          <div class="up-thumb" style="border:2px dashed var(--line);background:#FAFAFE;">+</div>
+        </div>
+      </div>
+
+      <!-- SMS 验证 -->
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">短信验证码</div>
+          <div class="ctrl">
+            <input placeholder="6 位验证码" style="max-width:120px;">
+            <button class="btn small primary" style="margin-left:6px;" onclick="sendSms(this)">获取</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#E8E7FA;box-shadow:none;">
+        <div style="font-size:12px;color:var(--primary);line-height:1.6;">
+          📌 委托规则:每次投票最多委托一次,被委托人需在本小区有投票权;委托关系经双方签字生效,系统将记录至档案。
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <a href="#page-M-5-VOTE-DTL" onclick="showPage('M-5-VOTE-DTL');return false;" class="btn ghost">取消</a>
+        <a href="#page-M-5-VOTE-LST" onclick="showPage('M-5-VOTE-LST');return false;" class="btn primary">提交委托</a>
+      </div>
+    </div>
+
+    <!-- M-5-VOTE-RES: 投票结果 -->
+    <div class="page" id="page-M-5-VOTE-RES" style="display:none;">
+      <div class="sub-header">
+        <div class="title">投票结果</div>
+        <a href="#page-M-5-VOTE-LST" onclick="showPage('M-5-VOTE-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card green" style="text-align:center;">
+        <div style="font-size:36px;margin-bottom:6px;">✓</div>
+        <h3 style="font-size:18px;">投票已成功提交</h3>
+        <div style="font-size:12px;opacity:.9;margin-top:4px;">系统已记入您的个人投票档案</div>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div style="font-size:13px;color:var(--txt2);">您选择的选项</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:18px;">A</div>
+          <div style="font-size:15px;font-weight:600;">同意使用维修资金 23.6 万</div>
+        </div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:8px;">提交时间:2025-11-10 14:38:25</div>
+      </div>
+
+      <div class="section-title"><h3>📊 当前投票分布</h3><span style="color:var(--txt3);font-size:11px;">实时</span></div>
+      <div class="card pie">
+        <div class="pie-chart"></div>
+        <ul class="pie-legend">
+          <li><div class="lg"><span class="d" style="background:var(--primary);"></span>A 同意</div><b style="color:var(--primary);">58%</b></li>
+          <li><div class="lg"><span class="d" style="background:var(--ok);"></span>B 同意但延期</div><b style="color:var(--ok);">20%</b></li>
+          <li><div class="lg"><span class="d" style="background:var(--warn);"></span>C 不同意</div><b style="color:var(--warn);">12%</b></li>
+          <li><div class="lg"><span class="d" style="background:var(--danger);"></span>D 弃权</div><b style="color:var(--danger);">10%</b></li>
+        </ul>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-box purple"><div class="num">502</div><div class="lbl">已投票</div></div>
+        <div class="kpi-box green"><div class="num">68%</div><div class="lbl">通过率</div></div>
+        <div class="kpi-box orange"><div class="num">3</div><div class="lbl">剩 (天)</div></div>
+      </div>
+
+      <div style="padding:14px 16px;">
+</div>
+
+      <div style="padding:14px 16px;">
+        <a href="#page-M-5-VOTE-LST" onclick="showPage('M-5-VOTE-LST');return false;" class="btn ghost btn-block">返回投票列表</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Tab 3: 报修 (M-4-REP / LST / DTL) ============ -->
+  <div class="tab-content" id="tab-M-4">
+
+    <!-- M-4-REP: 报修上报 -->
+    <div class="page" id="page-M-4-REP">
+      <div class="sub-header">
+        <div class="title">⌫ 报修上报<small>拍照上传 · 维修人自动分配</small></div>
+      </div>
+
+      <div class="gradient-card blue">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:30px;">🛠</span>
+          <div>
+            <h3 style="font-size:16px;">报修服务</h3>
+            <div style="font-size:12px;opacity:.9;margin-top:2px;">西安万科物业有限公司 · 平均响应 30 分钟</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">报修类型</div>
+          <div class="ctrl">
+            <select>
+              <option>电梯故障</option>
+              <option>水电维修</option>
+              <option>门窗维修</option>
+              <option>公共设施</option>
+              <option>屋面漏水</option>
+              <option>其他</option>
+            </select>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">问题描述</div>
+          <div class="ctrl"><textarea placeholder="请简要描述故障情况、位置、影响范围…"></textarea></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">期望上门</div>
+          <div class="ctrl">
+            <span>2025-11-11 10:00 - 12:00</span>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">房号</div>
+          <div class="ctrl"><span style="color:var(--txt3);">7 号楼 2 单元 301 (自动绑定)</span></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">联系手机</div>
+          <div class="ctrl"><span style="color:var(--txt3);">138****1234</span></div>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>📷 现场照片 (选填)</h3><span style="font-size:11px;color:var(--txt3);">最多 9 张</span></div>
+      <div style="padding:0 4px;">
+        <div class="up-zone">
+          <span class="up-ico">📷</span>
+          <div style="font-size:13px;">拍照或从相册选择</div>
+        </div>
+        <div class="up-thumbs">
+          <div class="up-thumb">🪜<div class="x">×</div></div>
+          <div class="up-thumb">🚪<div class="x">×</div></div>
+          <div class="up-thumb" style="border:2px dashed var(--line);background:#FAFAFE;color:var(--primary);font-size:24px;">+</div>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>🔧 自动匹配</h3></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#FFD580,#FF9248);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;">👨‍🔧</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:600;">张师傅</div>
+            <div style="font-size:11px;color:var(--txt3);">电梯维修 · 8 年经验 · ⭐ 4.9</div>
+          </div>
+          <span class="tag green">推荐</span>
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <a onclick="gbToast('保存成功')" href="#page-M-4-REP" class="btn ghost">暂存</a>
+        <a href="#page-M-4-REP-LST" onclick="showPage('M-4-REP-LST');return false;" class="btn primary">提交工单</a>
+      </div>
+    </div>
+
+    <!-- M-4-REP-LST: 我的报修列表 -->
+    <div class="page" id="page-M-4-REP-LST" style="display:none;">
+      <div class="sub-header">
+        <div class="title">⌫ 我的报修<small>共 5 单 · 处理中 1</small></div>
+        <a href="#page-M-4-REP" onclick="showPage('M-4-REP');return false;" class="btn small primary" style="padding:6px 12px;border-radius:8px;">+ 新报</a>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on">全部 5</div>
+        <div class="radio-pill">处理中 1</div>
+        <div class="radio-pill">已完成 4</div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box purple"><div class="num">5</div><div class="lbl">总单数</div></div>
+        <div class="kpi-box orange"><div class="num">1</div><div class="lbl">处理中</div></div>
+        <div class="kpi-box green"><div class="num">4</div><div class="lbl">已完成</div></div>
+        <div class="kpi-box blue"><div class="num">2.5h</div><div class="lbl">平均时长</div></div>
+      </div>
+
+      <div class="section-title"><h3>进行中</h3></div>
+      <div class="list-card">
+        <a href="#page-M-4-REP-DTL" onclick="showPage('M-4-REP-DTL');return false;" class="list-row">
+          <div class="icowrap orange">⌫</div>
+          <div class="body">
+            <div class="t">#WO-20251110-0073 · 电梯异响</div>
+            <div class="m">张师傅 · 今天 10:00 上门</div>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <span class="tag orange">已分派</span>
+              <span class="tag purple">电梯</span>
+            </div>
+          </div>
+          <div class="right"><div class="arrow">›</div></div>
+        </a>
+      </div>
+
+      <div class="section-title"><h3>已完成</h3></div>
+      <div class="list-card">
+        <a href="#page-M-4-REP-DTL" onclick="showPage('M-4-REP-DTL');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">#WO-20251105-0062 · 客厅灯不亮</div>
+            <div class="m">李师傅 <span class="dot">·</span> 11-05 完成 <span class="dot">·</span> ⭐ 5</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </a>
+        <a href="#page-M-4-REP-DTL" onclick="showPage('M-4-REP-DTL');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">#WO-20251028-0058 · 卫生间漏水</div>
+            <div class="m">王师傅 <span class="dot">·</span> 10-29 完成 <span class="dot">·</span> ⭐ 4.8</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </a>
+        <a href="#page-M-4-REP-DTL" onclick="showPage('M-4-REP-DTL');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">#WO-20251020-0049 · 空调外机故障</div>
+            <div class="m">李师傅 <span class="dot">·</span> 10-21 完成</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </a>
+        <a href="#page-M-4-REP-DTL" onclick="showPage('M-4-REP-DTL');return false;" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">#WO-20251012-0042 · 门禁卡失灵</div>
+            <div class="m">物业工程 <span class="dot">·</span> 10-13 完成</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- M-4-REP-DTL: 报修详情 -->
+    <div class="page" id="page-M-4-REP-DTL" style="display:none;">
+      <div class="sub-header">
+        <div class="title">报修详情</div>
+        <a href="#page-M-4-REP-LST" onclick="showPage('M-4-REP-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card orange">
+        <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">⌫ 工单 #WO-20251110-0073</span>
+        <h2 style="font-size:18px;margin:6px 0 4px;">7 号楼电梯异响</h2>
+        <div style="font-size:12px;opacity:.9;">电梯故障 · 报修 14:38 · 紧急程度 普通</div>
+      </div>
+
+      <!-- 维修人 -->
+      <div class="section-title"><h3>👨‍🔧 维修人</h3></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FFD580,#FF9248);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;">👨‍🔧</div>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;">张师傅</div>
+            <div style="font-size:12px;color:var(--txt3);">电梯维修 · 8 年经验 · ⭐ 4.9 · 300+ 单</div>
+            <div style="display:flex;gap:6px;margin-top:4px;">
+              <span class="tag blue">认证</span>
+              <span class="tag green">已分派</span>
+            </div>
+          </div>
+          <a onclick="gbToast('操作已受理(演示环境)')" href="javascript:showToast('呼叫张师傅')" class="btn small primary" style="border-radius:50%;width:38px;height:38px;padding:0;">☏</a>
+        </div>
+      </div>
+
+      <!-- 进度时间线 -->
+      <div class="section-title"><h3>📅 进度时间线</h3></div>
+      <div class="card timeline">
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-11-10 14:38</div>
+            <div class="what"><b>业主报修</b> · 陈默上报"7 号楼电梯异响"</div>
+            <div class="who">系统已自动编号 #WO-20251110-0073 · 推送企业</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-11-10 14:42</div>
+            <div class="what">物业企业接单 · 项目经理分派</div>
+            <div class="who">王经理 → 张师傅 (电梯组)</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">⏵</div>
+          <div class="tl-body">
+            <div class="when">2025-11-11 10:00 (预计)</div>
+            <div class="what">维修人上门处理</div>
+            <div class="who">提前 30 分钟电话联系</div>
+          </div>
+        </div>
+        <div class="tl-row" style="opacity:.5;">
+          <div class="tl-dot" style="background:var(--line);">◯</div>
+          <div class="tl-body">
+            <div class="when">处理完成</div>
+            <div class="what">上传完成凭证 · 业主签字确认</div>
+          </div>
+        </div>
+        <div class="tl-row" style="opacity:.5;">
+          <div class="tl-dot" style="background:var(--line);">◯</div>
+          <div class="tl-body">
+            <div class="when">归档</div>
+            <div class="what">自动归档至 D-1 维修档案</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 完成凭证 (空,处理中无) -->
+      <div class="card-flat">
+        <div class="card-title"><h3>📷 完成凭证</h3><span class="more" style="color:var(--txt3);">处理后上传</span></div>
+        <div class="empty">
+          <span class="em">📷</span>
+          维修人完成后将上传照片供您确认
+        </div>
+      </div>
+
+      <div style="padding:0 16px 14px;">
+        <a onclick="gbToast('操作已受理(演示环境)')" href="#page-M-4-REP-DTL" class="btn ghost btn-block">联系维修人</a>
+      </div>
+
+      <div style="padding:0 16px 14px;color:var(--txt3);font-size:12px;text-align:center;">
+        工单状态:<span class="tag orange">已分派</span> · 业主评价后将归档
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Tab 4: 投诉 (M-3-CMP / LST / DTL) ============ -->
+  <div class="tab-content" id="tab-M-3">
+
+    <!-- M-3-CMP: 物业投诉上报 -->
+    <div class="page" id="page-M-3-CMP">
+      <div class="sub-header">
+        <div class="title">⌨ 物业投诉<small>投诉物业服务、环境、安全等问题</small></div>
+      </div>
+
+      <div class="gradient-card red">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:30px;">⚠</span>
+          <div>
+            <h3 style="font-size:16px;">您的诉求,我们倾听</h3>
+            <div style="font-size:12px;opacity:.9;margin-top:2px;">匿名提交 · 主管部门会同步监督</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">投诉来源</div>
+          <div class="ctrl">
+            <select>
+              <option>业主端 (秦务员)</option>
+              <option>12345 政务热线</option>
+              <option>走访登记</option>
+            </select>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">投诉时间</div>
+          <div class="ctrl"><span>2025-11-10 14:38 (默认当前)</span></div>
+        </div>
+        <div class="form-item" style="display:block;padding:12px 0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:var(--txt2);">匿名提交</span>
+            <div class="switch" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div style="font-size:11px;color:var(--txt3);margin-top:4px;">开启后,业主姓名与联系方式将脱敏显示</div>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>问题分类</h3></div>
+      <div style="padding:0 4px;">
+        <div class="radio-group" style="padding:0 12px;">
+          <div class="radio-pill on">环境卫生</div>
+          <div class="radio-pill">设施损坏</div>
+          <div class="radio-pill">安全隐患</div>
+          <div class="radio-pill">服务态度</div>
+          <div class="radio-pill">噪音扰民</div>
+          <div class="radio-pill">停车纠纷</div>
+          <div class="radio-pill">物业收费</div>
+          <div class="radio-pill">其他</div>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>紧急程度</h3></div>
+      <div style="padding:0 16px;display:flex;gap:8px;">
+        <div class="radio-pill">普通</div>
+        <div class="radio-pill on" style="background:#FFE7E7;color:var(--danger);border-color:var(--danger);">紧急</div>
+        <div class="radio-pill">非常紧急</div>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <div class="form-item" style="display:block;border:none;">
+          <div class="lbl" style="width:auto;margin-bottom:6px;">详细描述</div>
+          <textarea placeholder="说明事情经过、涉及楼栋、频率、影响等…" style="width:100%;border:none;outline:none;min-height:80px;font-size:14px;resize:none;font-family:inherit;"></textarea>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>📎 凭证附件 (选填)</h3></div>
+      <div style="padding:0 4px;">
+        <div class="up-zone">
+          <span class="up-ico">📷</span>
+          <div style="font-size:13px;">拍照 / 录像上传</div>
+          <div class="tip">支持 拍照、录像、录音</div>
+        </div>
+        <div class="up-thumbs">
+          <div class="up-thumb">📹<div class="x">×</div></div>
+          <div class="up-thumb">🎙<div class="x">×</div></div>
+          <div class="up-thumb" style="border:2px dashed var(--line);background:#FAFAFE;color:var(--primary);font-size:24px;">+</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">责任企业</div>
+          <div class="ctrl"><span style="color:var(--txt);font-size:13px;">西安万科物业服务公司</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#E8E7FA;box-shadow:none;">
+        <div style="font-size:12px;color:var(--primary);line-height:1.6;">
+          📌 提交后系统会自动编号 CMP-20251110-XXXX,推送至物业企业与所属街道主管部门,处置时限内未响应将自动升级。
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <a href="#page-M-3-CMP-LST" onclick="showPage('M-3-CMP-LST');return false;" class="btn ghost">取消</a>
+        <a href="#page-M-3-CMP-LST" onclick="showPage('M-3-CMP-LST');return false;" class="btn danger">提交投诉</a>
+      </div>
+    </div>
+
+    <!-- M-3-CMP-LST: 我的投诉列表 -->
+    <div class="page" id="page-M-3-CMP-LST" style="display:none;">
+      <div class="sub-header">
+        <div class="title">⌨ 我的投诉<small>共 0 单 · 处理中 0</small></div>
+        <a href="#page-M-3-CMP" onclick="showPage('M-3-CMP');return false;" class="btn small primary" style="padding:6px 12px;border-radius:8px;">+ 新建</a>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on">全部 0</div>
+        <div class="radio-pill">处理中 0</div>
+        <div class="radio-pill">已完结 0</div>
+      </div>
+
+      <div class="empty">
+        <span class="em">📝</span>
+        暂无投诉记录
+        <div style="margin-top:14px;">
+          <a href="#page-M-3-CMP" onclick="showPage('M-3-CMP');return false;" class="btn small primary">发起投诉</a>
+        </div>
+      </div>
+
+      <!-- 示例 列表 (示意) -->
+      <div class="section-title"><h3>历史投诉 (示意)</h3></div>
+      <div class="list-card">
+        <a href="#page-M-3-CMP-DTL" onclick="showPage('M-3-CMP-DTL');return false;" class="list-row">
+          <div class="icowrap gray">⌨</div>
+          <div class="body">
+            <div class="t">#CMP-20251028-0089 · 楼道堆放杂物</div>
+            <div class="m">已提交企业处理 <span class="dot">·</span> 10-30 完成</div>
+          </div>
+          <div class="right"><span class="tag green">已完结</span></div>
+        </a>
+        <a href="#page-M-3-CMP-DTL" onclick="showPage('M-3-CMP-DTL');return false;" class="list-row">
+          <div class="icowrap gray">⌨</div>
+          <div class="body">
+            <div class="t">#CMP-20251012-0071 · 电梯故障</div>
+            <div class="m">已提交 <span class="dot">·</span> 物业反馈满意</div>
+          </div>
+          <div class="right"><span class="tag green">已完结</span></div>
+        </a>
+      </div>
+
+      <div style="padding:14px 16px;">
+</div>
+    </div>
+
+    <!-- M-3-CMP-DTL: 投诉详情 -->
+    <div class="page" id="page-M-3-CMP-DTL" style="display:none;">
+      <div class="sub-header">
+        <div class="title">投诉详情</div>
+        <a href="#page-M-3-CMP-LST" onclick="showPage('M-3-CMP-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card gray" style="background:linear-gradient(135deg,#86909C 0%,#A3A8B0 100%);">
+        <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">⌨ 投诉 #CMP-20251028-0089</span>
+        <h2 style="font-size:18px;margin:6px 0 4px;">7 号楼 2 单元楼道堆放杂物</h2>
+        <div style="font-size:12px;opacity:.9;">环境卫生 · 普通 · 已完结</div>
+      </div>
+
+      <!-- 时间线 -->
+      <div class="section-title"><h3>📅 处置时间线</h3></div>
+      <div class="card timeline">
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-10-28 16:42</div>
+            <div class="what"><b>业主提交投诉</b> · 陈默 · 秦务员</div>
+            <div class="who">CMP-20251028-0089 · 自动分派物业企业</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-10-28 17:05</div>
+            <div class="what">物业企业接单 · 派员现场查看</div>
+            <div class="who">王经理 → 安保部</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-10-29 09:30</div>
+            <div class="what">现场清理完成 · 拍照上传</div>
+            <div class="who">附 3 张凭证照片</div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body">
+            <div class="when">2025-10-30 14:20</div>
+            <div class="what"><b>处置完成 · 业主确认满意</b></div>
+            <div class="who">已签字 · ⭐ 4 星 · 自动归档</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 企业响应 -->
+      <div class="section-title"><h3>💬 企业响应</h3></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;display:flex;align-items:center;justify-content:center;">王</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;">王经理 (物业企业)</div>
+            <div style="font-size:11px;color:var(--txt3);">2025-10-29 10:15</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--txt);line-height:1.6;background:#F7F8FA;padding:10px;border-radius:8px;">
+          您好!我们已于今早 9:30 完成 7 号楼 2 单元楼道清理,已将堆放杂物清理至楼下临时堆放点。对相关业主已上门告知。建议业主大会更新《住户公约》对此类行为加强约束。
+        </div>
+      </div>
+
+      <!-- 主管部门核验 -->
+      <div class="section-title"><h3>🛡 主管部门核验</h3></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:600;">高新区住建局</div>
+            <div style="font-size:11px;color:var(--txt3);">投诉处置符合规范,准予结案</div>
+          </div>
+          <span class="tag green">核验通过</span>
+        </div>
+      </div>
+
+      <!-- 附件 -->
+      <div class="section-title"><h3>📎 凭证附件</h3></div>
+      <div class="up-thumbs" style="padding:0 16px;">
+        <div class="up-thumb">🧹</div>
+        <div class="up-thumb">📦</div>
+        <div class="up-thumb">📋</div>
+      </div>
+
+      <!-- 业主评价 -->
+      <div class="card" style="margin:14px;">
+        <div style="text-align:center;">
+          <div style="font-size:13px;color:var(--txt2);margin-bottom:8px;">本次投诉处置评价</div>
+          <div style="font-size:28px;color:var(--warn);">⭐ ⭐ ⭐ ⭐ ☆</div>
+          <div style="font-size:12px;color:var(--txt3);margin-top:6px;">4 星 · 基本满意</div>
+        </div>
+      </div>
+
+      <div style="height:24px;"></div>
+    </div>
+
+  </div>
+
+  <!-- ============ Tab 5: 我的 (M-7-MY/AUTH/HOUSE/MTG-LST/MTG-DTL) ============ -->
+  <div class="tab-content" id="tab-M-7">
+
+    <!-- M-7-MY: 个人中心 -->
+    <div class="page" id="page-M-7-MY">
+      <div class="sub-header">
+        <div class="title">⚙ 个人中心</div>
+      </div>
+
+      <!-- 用户卡 -->
+      <div class="gradient-card purple" style="padding:20px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:60px;height:60px;border-radius:50%;background:#fff;color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:600;">陈</div>
+          <div style="flex:1;">
+            <div style="font-size:18px;font-weight:600;margin-bottom:3px;">陈默</div>
+            <div style="font-size:12px;opacity:.85;margin-bottom:6px;">138****1234</div>
+            <div style="display:flex;gap:6px;">
+              <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">✓ 已实名</span>
+              <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">🥇 资深业主</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-around;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);">
+          <div style="text-align:center;"><div style="font-size:18px;font-weight:600;">7</div><div style="font-size:11px;opacity:.85;">投票</div></div>
+          <div style="text-align:center;"><div style="font-size:18px;font-weight:600;">5</div><div style="font-size:11px;opacity:.85;">报修</div></div>
+          <div style="text-align:center;"><div style="font-size:18px;font-weight:600;">2</div><div style="font-size:11px;opacity:.85;">投诉</div></div>
+          <div style="text-align:center;"><div style="font-size:18px;font-weight:600;">98</div><div style="font-size:11px;opacity:.85;">积分</div></div>
+        </div>
+      </div>
+
+      <!-- 房屋绑定 -->
+      <div class="card" style="padding:0;">
+        <a href="#page-M-7-HOUSE" onclick="showPage('M-7-HOUSE');return false;" class="list-row" style="border-bottom:1px solid var(--line);">
+          <div class="icowrap purple">⌒</div>
+          <div class="body">
+            <div class="t">我的房屋</div>
+            <div class="m">万科花园 7-2-301 · 已绑定 2 套</div>
+          </div>
+          <div class="right"><span class="tag green">已认证</span><div class="arrow">›</div></div>
+        </a>
+        <a href="#page-M-7-AUTH" onclick="showPage('M-7-AUTH');return false;" class="list-row">
+          <div class="icowrap blue">⌹</div>
+          <div class="body">
+            <div class="t">身份认证</div>
+            <div class="m">实名 + 短信 + 房屋绑定</div>
+          </div>
+          <div class="right"><span class="tag green">已认证</span><div class="arrow">›</div></div>
+        </a>
+      </div>
+
+      <!-- 业主大会 -->
+      <div class="section-title"><h3>🏛 业主自治</h3></div>
+      <div class="card" style="padding:0;">
+        <a href="#page-M-6-MTG-LST" onclick="showPage('M-6-MTG-LST');return false;" class="list-row">
+          <div class="icowrap orange">⌬</div>
+          <div class="body">
+            <div class="t">业主大会</div>
+            <div class="m">查看大会通知、议程、决议</div>
+          </div>
+          <div class="right"><div class="arrow">›</div></div>
+        </a>
+        <a href="#page-M-6-MTG-DTL" onclick="showPage('M-6-MTG-DTL');return false;" class="list-row">
+          <div class="icowrap purple">⌬</div>
+          <div class="body">
+            <div class="t">决议备案</div>
+            <div class="m">历届决议查询 · 归档凭证</div>
+          </div>
+          <div class="right"><div class="arrow">›</div></div>
+        </a>
+      </div>
+
+      <!-- 设置 -->
+      <div class="section-title"><h3>⚙ 设置</h3></div>
+      <div class="card" style="padding:0;">
+        <a href="javascript:showToast('通知设置')" class="list-row">
+          <div class="icowrap gray">⌮</div>
+          <div class="body">
+            <div class="t">通知与隐私</div>
+            <div class="m">开关各类通知、隐私设置</div>
+          </div>
+          <div class="right"><div class="arrow">›</div></div>
+        </a>
+        <a href="javascript:showToast('数字证书管理')" class="list-row">
+          <div class="icowrap gray">⌐</div>
+          <div class="body">
+            <div class="t">数字证书 / UKey</div>
+            <div class="m">证书绑定 · UKey 管理</div>
+          </div>
+          <div class="right"><span class="tag green">已绑定</span><div class="arrow">›</div></div>
+        </a>
+        <a href="javascript:showToast('退出登录')" class="list-row">
+          <div class="icowrap red">⏻</div>
+          <div class="body">
+            <div class="t">退出登录</div>
+            <div class="m">清除本地缓存 · 安全退出</div>
+          </div>
+          <div class="right"><div class="arrow">›</div></div>
+        </a>
+      </div>
+
+      <div style="text-align:center;padding:14px;color:var(--txt3);font-size:11px;">
+        秦务员 v3.8.5 · 陕西数字住建
+      </div>
+
+      <div style="height:24px;"></div>
+    </div>
+
+    <!-- M-7-AUTH: 身份认证 -->
+    <div class="page" id="page-M-7-AUTH" style="display:none;">
+      <div class="sub-header">
+        <div class="title">⌹ 身份认证</div>
+        <a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card purple">
+        <h3 style="font-size:16px;">实名 + 房屋绑定</h3>
+        <div style="font-size:12px;opacity:.9;margin-top:4px;">完成认证后才可参与投票表决</div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">真实姓名</div>
+          <div class="ctrl"><span style="color:var(--txt3);">陈默</span></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">身份证号</div>
+          <div class="ctrl"><span style="color:var(--txt3);">6101**********1234</span></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">手机号</div>
+          <div class="ctrl"><span style="color:var(--txt3);">138****1234</span></div>
+        </div>
+      </div>
+
+      <!-- 人脸识别 / OCR -->
+      <div class="section-title"><h3>📷 人脸识别</h3></div>
+      <div style="padding:0 16px;">
+        <div class="up-zone">
+          <span class="up-ico">📷</span>
+          <div style="font-size:13px;">点击进行人脸识别</div>
+          <div class="tip">请正对手机,在光线充足环境下完成</div>
+        </div>
+      </div>
+
+      <!-- SMS 验证 -->
+      <div class="section-title"><h3>📱 短信验证</h3></div>
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">短信验证码</div>
+          <div class="ctrl">
+            <input placeholder="6 位" style="max-width:120px;">
+            <button class="btn small primary" onclick="sendSms(this)">获取</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- OAuth 关联 -->
+      <div class="section-title"><h3>🔗 账户关联</h3></div>
+      <div class="card" style="padding:0;">
+        <a href="javascript:showToast('已关联秦务员账户')" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">秦务员 App OAuth</div>
+            <div class="m">已通过陕西省政务统一身份认证</div>
+          </div>
+          <div class="right"><span class="tag green">已关联</span></div>
+        </a>
+      </div>
+
+      <div class="card" style="background:#E8FFEA;box-shadow:none;">
+        <div style="font-size:12px;color:var(--ok);line-height:1.6;">
+          ✓ 您已完成认证,可参与投票表决、业委会候选人推(自)荐等需要认证的操作。
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false;" class="btn ghost">返回</a>
+        <a href="#page-M-7-HOUSE" onclick="showPage('M-7-HOUSE');return false;" class="btn primary">前往房屋绑定</a>
+      </div>
+    </div>
+
+    <!-- M-7-HOUSE: 房屋绑定 -->
+    <div class="page" id="page-M-7-HOUSE" style="display:none;">
+      <div class="sub-header">
+        <div class="title">⌒ 房屋绑定</div>
+        <a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box purple"><div class="num">2</div><div class="lbl">已绑定</div></div>
+        <div class="kpi-box green"><div class="num">1</div><div class="lbl">主房屋</div></div>
+        <div class="kpi-box orange"><div class="num">1</div><div class="lbl">辅房屋</div></div>
+        <div class="kpi-box blue"><div class="num">128m²</div><div class="lbl">总面积</div></div>
+      </div>
+
+      <div class="section-title"><h3>已绑定房屋</h3><span style="font-size:11px;color:var(--primary);">+ 添加</span></div>
+      <div class="list-card">
+        <div class="list-row">
+          <div class="icowrap purple">⌒</div>
+          <div class="body">
+            <div class="t">万科花园 7 号楼 2 单元 301</div>
+            <div class="m">128m² · 高新区 · <span class="tag green" style="font-size:10px;">主房屋</span></div>
+            <div style="font-size:11px;color:var(--ok);margin-top:4px;">✓ 产权校验通过 · 与公安户籍一致</div>
+          </div>
+          <div class="right"><span class="tag green">使用中</span></div>
+        </div>
+        <div class="list-row">
+          <div class="icowrap orange">⌒</div>
+          <div class="body">
+            <div class="t">万科花园 9 号楼 1 单元 802</div>
+            <div class="m">98m² · <span class="tag orange" style="font-size:10px;">辅房屋</span></div>
+          </div>
+          <div class="right"><span class="tag gray">备查</span></div>
+        </div>
+      </div>
+
+      <div class="section-title"><h3>添加新房屋</h3></div>
+      <div class="form-group">
+        <div class="form-item">
+          <div class="lbl">所在小区</div>
+          <div class="ctrl">
+            <select>
+              <option>万科花园</option>
+              <option>中海寰宇</option>
+            </select>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">楼栋</div>
+          <div class="ctrl">
+            <select>
+              <option>1 号楼</option>
+              <option>2 号楼</option>
+              <option>7 号楼</option>
+            </select>
+            <span class="arrow">›</span>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">单元</div>
+          <div class="ctrl"><input placeholder="2"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">房号</div>
+          <div class="ctrl"><input placeholder="301"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">产权人</div>
+          <div class="ctrl"><input placeholder="陈默"></div>
+        </div>
+        <div class="form-item">
+          <div class="lbl">产权证号</div>
+          <div class="ctrl"><input placeholder="陕(2020)西安市不动产权第XXXX号"></div>
+        </div>
+      </div>
+
+      <div class="btn-bar">
+        <a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false;" class="btn ghost">取消</a>
+        <a onclick="gbToast('检测任务已启动')" href="javascript:showToast('产权校验中...')" class="btn primary">校验并绑定</a>
+      </div>
+    </div>
+
+    <!-- M-6-MTG-LST: 业主大会列表 -->
+    <div class="page" id="page-M-6-MTG-LST" style="display:none;">
+      <div class="sub-header">
+        <div class="title">⌬ 业主大会<small>筹备中 1 · 已召开 5</small></div>
+        <a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on">全部 6</div>
+        <div class="radio-pill">筹备中 1</div>
+        <div class="radio-pill">已召开 5</div>
+      </div>
+
+      <div class="section-title"><h3>🔴 筹备中</h3></div>
+      <div class="list-card">
+        <a href="#page-M-6-MTG-DTL" onclick="showPage('M-6-MTG-DTL');return false;" class="list-row">
+          <div class="icowrap red">⌬</div>
+          <div class="body">
+            <div class="t">2025 年第二次业主大会</div>
+            <div class="m">11-20 召开 <span class="dot">·</span> 议案 3 项 <span class="dot">·</span> 812 业主</div>
+          </div>
+          <div class="right"><span class="tag red">紧急</span><div class="arrow" style="margin-top:4px;">›</div></div>
+        </a>
+      </div>
+
+      <div class="section-title"><h3>📁 已召开 (近一年)</h3></div>
+      <div class="list-card">
+        <a href="#page-M-6-MTG-DTL" onclick="showPage('M-6-MTG-DTL');return false;" class="list-row">
+          <div class="icowrap green">⌬</div>
+          <div class="body">
+            <div class="t">2025 年第一次业主大会</div>
+            <div class="m">06-15 召开 <span class="dot">·</span> 业委会换届 <span class="dot">·</span> 决议通过</div>
+          </div>
+          <div class="right"><span class="tag green">已备案</span></div>
+        </a>
+        <a href="#page-M-6-MTG-DTL" onclick="showPage('M-6-MTG-DTL');return false;" class="list-row">
+          <div class="icowrap green">⌬</div>
+          <div class="body">
+            <div class="t">2024 年度业主大会</div>
+            <div class="m">12-28 召开 <span class="dot">·</span> 物业费 <span class="dot">·</span> 决议通过</div>
+          </div>
+          <div class="right"><span class="tag green">已备案</span></div>
+        </a>
+        <a href="#page-M-6-MTG-DTL" onclick="showPage('M-6-MTG-DTL');return false;" class="list-row">
+          <div class="icowrap green">⌬</div>
+          <div class="body">
+            <div class="t">2024 年中期业主大会</div>
+            <div class="m">07-20 召开 <span class="dot">·</span> 维修资金</div>
+          </div>
+          <div class="right"><span class="tag green">已备案</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- M-6-MTG-DTL: 业主大会详情 -->
+    <div class="page" id="page-M-6-MTG-DTL" style="display:none;">
+      <div class="sub-header">
+        <div class="title">业主大会详情</div>
+        <a href="#page-M-6-MTG-LST" onclick="showPage('M-6-MTG-LST');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div class="gradient-card red">
+        <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">第七届 第 03 次</span>
+        <h2 style="font-size:18px;margin:6px 0 4px;">2025 年第二次业主大会</h2>
+        <div style="font-size:12px;opacity:.9;">📅 2025-11-20 09:00 · 小区中心广场</div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box purple"><div class="num">812</div><div class="lbl">业主</div></div>
+        <div class="kpi-box blue"><div class="num">3</div><div class="lbl">议案</div></div>
+        <div class="kpi-box green"><div class="num">65%</div><div class="lbl">出席率</div></div>
+        <div class="kpi-box orange"><div class="num">68%</div><div class="lbl">通过率</div></div>
+      </div>
+
+      <!-- 议程 -->
+      <div class="section-title"><h3>📋 议程</h3></div>
+      <div class="card timeline">
+        <div class="tl-row">
+          <div class="tl-dot cur">1</div>
+          <div class="tl-body"><div class="what">9:00 业主签到 · 清点到会人数</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">2</div>
+          <div class="tl-body"><div class="what">9:30 业委会作 2025 上半年工作报告</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">3</div>
+          <div class="tl-body"><div class="what">10:00 议案一:7 号楼电梯改造表决(维修资金 23.6 万)</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">4</div>
+          <div class="tl-body"><div class="what">10:45 议案二:续聘万科物业三年</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">5</div>
+          <div class="tl-body"><div class="what">11:30 议案三:停车管理办法修订</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot cur">6</div>
+          <div class="tl-body"><div class="what">12:00 现场答疑 · 表决统计</div></div>
+        </div>
+      </div>
+
+      <!-- 决议备案 -->
+      <div class="section-title"><h3>📑 决议与备案</h3></div>
+      <div class="card" style="padding:0;">
+        <a href="javascript:showToast('已转发业主电子签章')" class="list-row">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">决议文件</div>
+            <div class="m">业主大会决议书 11-20.pdf</div>
+          </div>
+          <div class="right"><span class="tag green">已签章</span></div>
+        </a>
+        <a href="javascript:showToast('已提交备案')" class="list-row">
+          <div class="icowrap blue">⌬</div>
+          <div class="body">
+            <div class="t">备案回执</div>
+            <div class="m">高新住建备字 [2025] 第 23 号</div>
+          </div>
+          <div class="right"><span class="tag blue">已备案</span></div>
+        </a>
+      </div>
+
+      <!-- 关联投票 -->
+      <div class="section-title"><h3>🔗 关联投票事项</h3></div>
+      <div class="card" style="padding:0;">
+        <a href="#page-M-5-VOTE-LST" onclick="switchTab('M-5');showPage('M-5-VOTE-LST');return false;" class="list-row">
+          <div class="icowrap red">🔥</div>
+          <div class="body">
+            <div class="t">7 号楼电梯更新改造表决</div>
+            <div class="m">剩 3 天 · 62% 已投</div>
+          </div>
+          <div class="right"><span class="tag red">紧急</span></div>
+        </a>
+        <a href="#page-M-5-VOTE-LST" onclick="switchTab('M-5');showPage('M-5-VOTE-LST');return false;" class="list-row">
+          <div class="icowrap orange">⌧</div>
+          <div class="body">
+            <div class="t">停车管理办法修订</div>
+            <div class="m">剩 7 天 · 进行中</div>
+          </div>
+          <div class="right"><span class="tag orange">进行中</span></div>
+        </a>
+      </div>
+
+      <div style="padding:14px 16px;">
+</div>
+    </div>
+
+  </div>
+
+  <!-- ============ 浮动按钮 (返回顶部 / 主页) ============ -->
+  <div class="mini-bar">
+    <a href="#page-M-1-HOME" onclick="switchTab('M-2');showPage('M-1-HOME');return false;" class="mini-float" title="主页">⌂</a>
+    <a href="javascript:scrollToTop()" class="mini-float" style="width:36px;height:36px;font-size:14px;background:var(--card);color:var(--primary);box-shadow:var(--shadow-card);">▲</a>
+  </div>
+
+  <!-- ============ 底部 TabBar (5 项真实可点击) ============ -->
+  <div class="tabbar">
+    <div class="tabbar-item active" data-tab="M-2" onclick="switchTab('M-2')">
+      <span class="ico">📢</span><span>公告</span>
+    </div>
+    <div class="tabbar-item" data-tab="M-5" onclick="switchTab('M-5')">
+      <span class="ico">⌧</span><span>投票</span>
+    </div>
+    <div class="tabbar-item" data-tab="M-4" onclick="switchTab('M-4')">
+      <span class="ico">⌫</span><span>报修</span>
+    </div>
+    <div class="tabbar-item" data-tab="M-3" onclick="switchTab('M-3')">
+      <span class="ico">⌨</span><span>投诉</span>
+    </div>
+    <div class="tabbar-item" data-tab="M-7" onclick="switchTab('M-7')">
+      <span class="ico">⌹</span><span>我的</span>
+    </div>
+  </div>
+
+  <!-- Toast 工具条 -->
+  <div id="toast" class="toast"></div>
+
+</div>
+
+<!-- M-7-SET 通知与隐私设置(R5 补齐) -->
+<div class="page" id="page-M-7-SET" style="display:none">
+  <div class="immersive-header"><div style="padding:24px 16px 12px;display:flex;align-items:center;gap:10px"><a href="#page-M-7-MY" onclick="showPage('M-7-MY');return false" style="color:#fff;font-size:18px;text-decoration:none">‹</a><div><div style="color:#fff;font-size:17px;font-weight:600">通知与隐私设置</div><div style="color:rgba(255,255,255,.7);font-size:12px;margin-top:2px">管理推送与个人信息可见范围</div></div></div></div>
+  <div style="padding:12px 16px 80px">
+    <div style="font-size:13px;color:#86909C;margin:8px 0 8px">消息通知</div>
+    <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #F2F3F5"><div><div style="font-size:14px;color:#1D2129">物业通知公告</div><div style="font-size:11px;color:#86909C;margin-top:2px">小区物业发布的各类通知</div></div><div style="width:44px;height:26px;border-radius:13px;background:#534AB7;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #F2F3F5"><div><div style="font-size:14px;color:#1D2129">投票提醒</div><div style="font-size:11px;color:#86909C;margin-top:2px">业主投票开始 / 截止前提醒</div></div><div style="width:44px;height:26px;border-radius:13px;background:#534AB7;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #F2F3F5"><div><div style="font-size:14px;color:#1D2129">报修进度通知</div><div style="font-size:11px;color:#86909C;margin-top:2px">工单受理 / 派单 / 完工推送</div></div><div style="width:44px;height:26px;border-radius:13px;background:#534AB7;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><div><div style="font-size:14px;color:#1D2129">投诉处理结果</div><div style="font-size:11px;color:#86909C;margin-top:2px">处置核验完成通知</div></div><div style="width:44px;height:26px;border-radius:13px;background:#E5E6EB;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;left:2px;top:2px"></div></div></div>
+    </div>
+    <div style="font-size:13px;color:#86909C;margin:18px 0 8px">隐私设置</div>
+    <div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #F2F3F5"><div><div style="font-size:14px;color:#1D2129">隐藏手机号中间四位</div><div style="font-size:11px;color:#86909C;margin-top:2px">对物业企业和邻居隐藏</div></div><div style="width:44px;height:26px;border-radius:13px;background:#534AB7;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px"></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px"><div><div style="font-size:14px;color:#1D2129">公示表决匿名显示</div><div style="font-size:11px;color:#86909C;margin-top:2px">计票公示时仅显示"某栋业主"</div></div><div style="width:44px;height:26px;border-radius:13px;background:#534AB7;position:relative"><div style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;right:2px;top:2px"></div></div></div>
+    </div>
+    <div style="font-size:12px;color:#C9CDD4;margin-top:16px;text-align:center">依据《个人信息保护法》,您可随时调整个人信息可见范围</div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  // 倒计时
+  startCountdown(3, 7, 32, 45);
+  // hash 自动定位
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash) {
+    // 找到该 page 属于哪个 tab
+    var map = { 'M-1-HOME':'M-2', 'M-2-LST':'M-2', 'M-2-DTL':'M-2',
+                'M-5-VOTE-LST':'M-5','M-5-VOTE-DTL':'M-5','M-5-VOTE-CAST':'M-5','M-5-VOTE-PX':'M-5','M-5-VOTE-RES':'M-5',
+                'M-4-REP':'M-4','M-4-REP-LST':'M-4','M-4-REP-DTL':'M-4',
+                'M-3-CMP':'M-3','M-3-CMP-LST':'M-3','M-3-CMP-DTL':'M-3',
+                'M-7-MY':'M-7','M-7-AUTH':'M-7','M-7-HOUSE':'M-7','M-6-MTG-LST':'M-7','M-6-MTG-DTL':'M-7'};
+    var tab = map[hash] || 'M-2';
+    switchTab(tab);
+    showPage(hash);
+  } else {
+    switchTab('M-2');
+  }
+});
+
+function switchTab(tabId){
+  // 隐藏所有 tab
+  document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.tabbar-item').forEach(function(el){el.classList.remove('active');});
+  // 显示目标
+  var t = document.getElementById('tab-' + tabId);
+  if(t) t.classList.add('active');
+  var b = document.querySelector('.tabbar-item[data-tab="' + tabId + '"]');
+  if(b) b.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showPage(pageId){
+  // 隐藏当前 tab 内所有 page
+  document.querySelectorAll('.tab-content.active .page').forEach(function(p){p.style.display='none';});
+  // 显示目标
+  var target = document.getElementById('page-' + pageId);
+  if(target){ target.style.display = 'block'; window.scrollTo({top:0, behavior:'smooth'}); }
+}
+
+function selectVote(el){
+  document.querySelectorAll('.vote-opt').forEach(function(o){o.classList.remove('on');});
+  el.classList.add('on');
+}
+
+function sendSms(btn){
+  var orig = btn.innerText;
+  var n = 60;
+  btn.disabled = true;
+  btn.innerText = n + 's 后重发';
+  var t = setInterval(function(){
+    n--;
+    btn.innerText = n + 's 后重发';
+    if(n <= 0){ btn.disabled = false; btn.innerText = orig; clearInterval(t); }
+  }, 1000);
+  showToast('验证码已发送至 138****1234');
+}
+
+function gbToast(msg){showToast(msg);}
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 1800);
+}
+
+function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+function startCountdown(d, h, m, s){
+  var el_d = document.getElementById('cd-d');
+  var el_h = document.getElementById('cd-h');
+  var el_m = document.getElementById('cd-m');
+  var el_s = document.getElementById('cd-s');
+  if(!el_d) return;
+  var total = d*86400 + h*3600 + m*60 + s;
+  setInterval(function(){
+    if(total <= 0) return;
+    total--;
+    var dd = Math.floor(total / 86400);
+    var hh = Math.floor((total % 86400) / 3600);
+    var mm = Math.floor((total % 3600) / 60);
+    var ss = total % 60;
+    el_d.innerText = (dd<10?'0':'') + dd;
+    el_h.innerText = (hh<10?'0':'') + hh;
+    el_m.innerText = (mm<10?'0':'') + mm;
+    el_s.innerText = (ss<10?'0':'') + ss;
+  }, 1000);
+}
+
+// tab hash 互跳: 直接打开子页面时,父 link 会通过 #page-M-XXX 定位
+window.addEventListener('hashchange', function(){
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash) showPage(hash);
+});
+</script>
+</body>
+</html>

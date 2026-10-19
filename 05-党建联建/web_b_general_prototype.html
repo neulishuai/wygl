@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>陕西数字住建 · 物业服务管理子系统 · 社区物业党建联建</title>
+<style>
+/* ============ Arco Design 设计规范 CSS 变量(web_d 统一布局 R6) ============ */
+:root{
+  --primary:#165DFF; --primary-hover:#4080FF; --primary-active:#003CB3;
+  --primary-1:#E8F1FF; --primary-2:#BEDAFF;
+  --success:#00B42A; --success-bg:#E8FFEA; --success-border:#ABF2BC;
+  --warning:#FF7D00; --warning-bg:#FFF3E0; --warning-border:#FFD199;
+  --danger:#F53F3F; --danger-bg:#FFECE8; --danger-border:#FDBDB5;
+  --text-1:#1D2129; --text-2:#4E5969; --text-3:#86909C; --text-4:#C9CDD4;
+  --border:#E5E6EB; --border-2:#F2F3F5; --fill:#F7F8FA; --fill-2:#F2F3F5;
+  --bg:#FFFFFF; --bg-page:#F7F8FA;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-sm:4px; --r:8px; --r-lg:12px; --r-xl:16px;
+  --top-h:56px; --sider-w:208px; --sider-c:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font);font-size:14px;color:var(--text-1);background:var(--bg-page);-webkit-font-smoothing:antialiased;line-height:1.5;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:inherit;font-size:13px;outline:none}
+ul,ol{list-style:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#d4d6d9;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 顶栏(web_d 统一:深蓝渐变) ============ */
+.topbar{height:var(--top-h);background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);color:#fff;display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;padding-right:18px;border-right:1px solid rgba(255,255,255,.18);margin-right:18px;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#69b1ff,#fff);color:#165DFF;display:flex;align-items:center;justify-content:center;font-weight:700}
+.global-nav{display:flex;gap:4px;flex:1}
+.global-nav a{display:flex;align-items:center;gap:6px;padding:0 16px;height:56px;font-size:14px;color:rgba(255,255,255,.85);font-weight:500;position:relative;transition:color .2s}
+.global-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.global-nav a.cur{color:#fff;font-weight:600}
+.global-nav a.cur::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:28px;height:3px;background:#fff;border-radius:2px}
+.topbar-right{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.9);font-size:13px}
+.top-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 14px;border-radius:18px;font-size:13px;color:rgba(255,255,255,.85)}
+.top-search input{background:transparent;border:none;outline:none;color:#fff;width:200px;font-size:13px}
+.top-search input::placeholder{color:rgba(255,255,255,.6)}
+.top-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;font-size:15px}
+.top-icon:hover{background:rgba(255,255,255,.12)}
+.top-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#E9353A;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #003a8c}
+.top-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FFB84D,#E9353A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer}
+.top-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:8px;cursor:pointer}
+.top-user:hover{background:rgba(255,255,255,.12)}
+
+/* ============ 主体布局(web_d 统一:白底侧栏) ============ */
+.layout{display:flex;min-height:calc(100vh - var(--top-h))}
+.sider{width:var(--sider-w);min-width:var(--sider-w);background:#FFFFFF;color:#1D2129;border-right:1px solid #E5E6EB;transition:width .25s;display:flex;flex-direction:column}
+.sider.collapsed{width:var(--sider-c);min-width:var(--sider-c)}
+.sider-hd{padding:14px 18px;font-size:12px;color:#86909C;letter-spacing:1px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:8px}
+.sider.collapsed .sider-hd-label{display:none}
+.sider-bd{flex:1;overflow-y:auto;padding:8px 0}
+.sider-grp{padding:10px 18px 4px;font-size:11px;color:#86909C;font-weight:500;letter-spacing:1px}
+.sider.collapsed .sider-grp{display:none}
+.sider a.s-item{display:flex;align-items:center;gap:10px;padding:9px 18px;margin:2px 8px;border-radius:var(--r);font-size:13px;color:#4E5969;cursor:pointer;transition:all .2s;position:relative}
+.sider a.s-item:hover{background:#F2F3F5;color:#165DFF}
+.sider a.s-item.cur{background:#E8F1FF;color:#165DFF;font-weight:600}
+.sider a.s-item.cur::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:#165DFF;border-radius:0 2px 2px 0}
+.sider a.s-item .s-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sider a.s-item .s-tag{margin-left:auto;background:#F2F3F5;color:#4E5969;font-size:10px;padding:1px 6px;border-radius:8px}
+.sider a.s-item.cur .s-tag{background:#165DFF;color:#fff}
+.sider.collapsed .s-label,.sider.collapsed .s-tag{display:none}
+.sider.collapsed a.s-item{justify-content:center;padding:10px 0;margin:2px 6px}
+.sider-ft{padding:10px;border-top:1px solid #F2F3F5;font-size:12px;color:#86909C;display:flex;align-items:center;gap:6px;cursor:pointer}
+.sider-ft:hover{background:#F2F3F5;color:#165DFF}
+.sider.collapsed .sider-ft{justify-content:center;padding:10px 0}
+
+/* ============ 内容区(web_d 统一:page-hd 面包屑+蓝条标题) ============ */
+.main{flex:1;min-width:0;background:#F7F8FA;overflow:hidden}
+.page-hd{background:#fff;padding:18px 24px 0;border-bottom:1px solid #F2F3F5}
+.page-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}
+.page-title-bar{width:4px;height:20px;background:#165DFF;border-radius:2px}
+.page-desc{font-size:13px;color:#86909C;margin-left:14px}
+.page-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.breadcrumb{font-size:13px;color:#86909C;display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.breadcrumb span:not(:last-child)::after{content:"/";margin-left:6px;color:#C9CDD4}
+.breadcrumb span:last-child{color:#1D2129;font-weight:500}
+.tabbar{display:flex;flex-wrap:wrap;align-items:stretch}
+.tabbar a{padding:0 14px;height:42px;display:flex;align-items:center;gap:6px;font-size:13px;color:#4E5969;border-bottom:2px solid transparent;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tabbar a:hover{color:#165DFF}
+.tabbar a.cur{color:#165DFF;border-bottom-color:#165DFF;font-weight:600}
+.tabbar a .tab-tag{background:#E8F1FF;color:#165DFF;font-size:10px;padding:1px 5px;border-radius:8px;font-weight:600}
+.page-bd{padding:18px 22px 36px;overflow-y:auto}
+
+/* ============ 页面切换(web_d 统一) ============ */
+.page{display:none}
+.page.cur{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page a{color:#165DFF;cursor:pointer}
+.page a:hover{text-decoration:underline}
+
+.btn{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px;border:1px solid transparent;transition:.15s;background:#fff;color:#1D2129;cursor:pointer;line-height:1.4}
+.btn:hover{opacity:.88}
+.btn-primary{background:#165DFF;color:#fff;border-color:#165DFF}
+.btn-primary:hover{background:#0E4AD9}
+.btn-danger{background:#F53F3F;color:#fff;border-color:#F53F3F}
+.btn-warn{background:#FF7D00;color:#fff;border-color:#FF7D00}
+.btn-success{background:#00B42A;color:#fff;border-color:#00B42A}
+.btn-default{background:#FFFFFF;color:#1D2129;border-color:#E5E6EB}
+.btn-default:hover{border-color:#C9CDD4;background:#F7F8FA}
+.btn-text{background:transparent;color:#165DFF;border:none;padding:3px 6px}
+.btn-text:hover{background:#E8F1FF}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-lg{padding:8px 18px;font-size:13px}
+
+.card{background:#FFFFFF;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:18px;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:600;color:#1D2129;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-title .extra{font-size:12px;color:#86909C;font-weight:400}
+.card-grid{display:grid;gap:14px;margin-bottom:14px}
+.card-grid-4{grid-template-columns:repeat(4,1fr)}
+.card-grid-3{grid-template-columns:repeat(3,1fr)}
+.card-grid-2{grid-template-columns:repeat(2,1fr)}
+
+.kpi-card{background:#FFFFFF;border-radius:12px;padding:16px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.kpi-card::before{content:"";position:absolute;right:-20px;top:-20px;width:70px;height:70px;border-radius:50%;background:rgba(22,93,255,.08)}
+.kpi-card .label{font-size:12px;color:#4E5969;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kpi-card .label::before{content:"";width:3px;height:12px;border-radius:2px;background:#165DFF}
+.kpi-card .value{font-size:28px;font-weight:600;color:#1D2129;letter-spacing:-0.5px;line-height:1.2}
+.kpi-card .value small{font-size:13px;color:#86909C;font-weight:400;margin-left:3px}
+.kpi-card .sub{font-size:11px;color:#86909C;margin-top:5px;display:flex;align-items:center;gap:6px}
+.kpi-card .sub .up{color:#00B42A}
+.kpi-card .sub .down{color:#F53F3F}
+.kpi-card.danger::before{background:rgba(245,63,63,.08)}
+.kpi-card.danger .label::before{background:#F53F3F}
+.kpi-card.danger .value{color:#F53F3F}
+.kpi-card.warn::before{background:rgba(255,125,0,.08)}
+.kpi-card.warn .label::before{background:#FF7D00}
+.kpi-card.warn .value{color:#FF7D00}
+.kpi-card.success::before{background:rgba(0,180,42,.08)}
+.kpi-card.success .label::before{background:#00B42A}
+.kpi-card.success .value{color:#00B42A}
+
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11px;line-height:1.6;font-weight:500}
+.tag-blue{background:#E8F1FF;color:#165DFF}
+.tag-green{background:#E8FFEA;color:#00B42A}
+.tag-red{background:#FFECE8;color:#F53F3F}
+.tag-orange{background:#FFF3E0;color:#FF7D00}
+.tag-gray{background:#F2F3F5;color:#86909C}
+.tag-purple{background:#F0E8FF;color:#534AB7}
+.tag-red-strong{background:#E9353A;color:#fff}
+
+.table-wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+table.data{width:100%;border-collapse:collapse;background:#fff}
+table.data thead th{background:#F7F8FA;color:#1D2129;font-weight:600;font-size:12px;padding:10px;text-align:left;border-bottom:1px solid #E5E6EB;white-space:nowrap}
+table.data tbody td{padding:10px;font-size:12px;color:#1D2129;border-bottom:1px solid #F2F3F5;vertical-align:middle}
+table.data tbody tr:hover{background:#FAFBFC}
+table.data tbody tr:last-child td{border-bottom:none}
+table.data .row-actions{display:flex;gap:3px;flex-wrap:nowrap}
+
+.form-row{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.form-item{flex:1;min-width:200px}
+.form-item label{display:block;font-size:12px;color:#4E5969;margin-bottom:5px}
+.form-item label .req{color:#F53F3F;margin-right:2px}
+.form-item input[type=text],.form-item input[type=password],.form-item input[type=email],.form-item textarea,.form-item select,.form-control{width:100%;padding:7px 11px;border:1px solid #E5E6EB;border-radius:8px;font-size:13px;color:#1D2129;background:#fff;transition:.15s}
+.form-item input:focus,.form-item textarea:focus,.form-item select:focus,.form-control:focus{border-color:#165DFF;box-shadow:0 0 0 2px rgba(22,93,255,.15)}
+.form-item textarea{resize:vertical;min-height:70px}
+.form-item .hint{font-size:11px;color:#86909C;margin-top:3px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
+.steps{display:flex;align-items:center;justify-content:space-between;margin:14px 0;padding:0 20px}
+.step{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;position:relative}
+.step:not(:last-child)::after{content:"";position:absolute;top:14px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:#E5E6EB}
+.step.done::after{background:#00B42A}
+.step .dot{width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #E5E6EB;color:#86909C;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;z-index:1}
+.step.active .dot{background:#165DFF;border-color:#165DFF;color:#fff;box-shadow:0 0 0 4px rgba(22,93,255,.15)}
+.step.done .dot{background:#00B42A;border-color:#00B42A;color:#fff}
+.step .name{font-size:12px;color:#86909C}
+.step.active .name{color:#165DFF;font-weight:600}
+.step.done .name{color:#00B42A}
+
+.filter-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#fff;padding:12px 14px;border-radius:12px 12px 0 0;border-bottom:1px solid #F2F3F5}
+.filter-bar .filter-label{font-size:12px;color:#86909C}
+.filter-bar input[type=text],.filter-bar input[type=date],.filter-bar select{padding:5px 10px;border:1px solid #E5E6EB;border-radius:6px;font-size:12px;background:#fff;min-width:120px}
+
+.pagination{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:0 0 12px 12px}
+.pagination .info{font-size:12px;color:#86909C}
+.pagination .pages{display:flex;gap:3px}
+.pagination .pages button{width:28px;height:28px;border:1px solid #E5E6EB;background:#fff;border-radius:6px;font-size:12px;color:#4E5969}
+.pagination .pages button.active{background:#165DFF;color:#fff;border-color:#165DFF}
+
+.timeline{position:relative;padding-left:22px}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:#E5E6EB}
+.timeline-item{position:relative;padding-bottom:14px}
+.timeline-item::before{content:"";position:absolute;left:-20px;top:5px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #165DFF;z-index:1}
+.timeline-item.success::before{border-color:#00B42A}
+.timeline-item.warn::before{border-color:#FF7D00}
+.timeline-item.danger::before{border-color:#F53F3F}
+.timeline-item .time{font-size:11px;color:#86909C;margin-bottom:3px}
+.timeline-item .title{font-size:13px;font-weight:600;color:#1D2129;margin-bottom:3px}
+.timeline-item .content{font-size:12px;color:#4E5969;line-height:1.6}
+.timeline-item .meta{font-size:11px;color:#86909C;margin-top:3px}
+
+.upload-area{border:2px dashed #C9CDD4;border-radius:8px;padding:18px;text-align:center;background:#FAFBFC;transition:.15s;cursor:pointer}
+.upload-area:hover{border-color:#165DFF;background:#E8F1FF}
+.upload-area .icon{font-size:28px;color:#86909C;margin-bottom:6px}
+.upload-area .txt{font-size:12px;color:#4E5969}
+.upload-area .hint{font-size:11px;color:#86909C;margin-top:3px}
+
+.geo-map{background:linear-gradient(180deg,#F0F5FF 0%,#E8F1FF 100%);border-radius:12px;padding:14px;position:relative;min-height:440px}
+.geo-map svg{width:100%;height:auto;display:block}
+
+.event-stream{background:#0F1F35;border-radius:12px;padding:0;overflow:hidden;height:560px;display:flex;flex-direction:column;border:1px solid #1F3050}
+.event-stream .head{padding:12px 14px;border-bottom:1px solid #1F3050;display:flex;align-items:center;justify-content:space-between;background:rgba(22,93,255,.1)}
+.event-stream .head .live{display:flex;align-items:center;gap:6px;font-size:12px;color:#4080FF;font-weight:600}
+.event-stream .head .live::before{content:"";width:8px;height:8px;border-radius:50%;background:#F53F3F;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.event-stream .body{flex:1;overflow:hidden;position:relative}
+.event-stream .list{padding:6px 0;animation:scroll 50s linear infinite}
+@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+.event-stream:hover .list{animation-play-state:paused}
+.event-stream .item{padding:9px 14px;display:flex;align-items:flex-start;gap:8px;border-bottom:1px dashed rgba(255,255,255,.05);font-size:12px}
+.event-stream .item .dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:5px}
+.event-stream .item .body{flex:1;min-width:0}
+.event-stream .item .t{color:#86909C;font-size:10px;margin-bottom:2px}
+.event-stream .item .c{color:#fff;line-height:1.5}
+
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+.dash-block{background:#0E1A2B;border-radius:12px;color:#fff;padding:16px;position:relative;overflow:hidden;border:1px solid #1F3050}
+.dash-block::before{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:linear-gradient(180deg,#165DFF,#00B42A)}
+.dash-block .ttl{font-size:13px;color:#A0CFFF;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:500}
+.dash-block .num{font-size:28px;font-weight:600;color:#fff;line-height:1.2}
+.metric-row{display:flex;gap:8px;align-items:baseline;margin-bottom:6px;font-size:12px}
+.metric-row .l{color:#A0CFFF;flex-shrink:0}
+.metric-row .v{font-size:20px;font-weight:600;color:#fff;margin-left:auto}
+.metric-row .delta{font-size:11px;color:#00B42A;margin-left:6px}
+
+.rating-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}
+.rating-item{text-align:center;padding:6px;border-radius:6px;background:#F7F8FA}
+.rating-item .s{font-size:16px;font-weight:600;color:#1D2129}
+.rating-item .l{font-size:11px;color:#86909C;margin-top:2px}
+.rating-item.ok{background:#E8FFEA}
+.rating-item.ok .s{color:#00B42A}
+.rating-item.mid{background:#FFF3E0}
+.rating-item.mid .s{color:#FF7D00}
+
+.switch{position:relative;display:inline-block;width:32px;height:18px;background:#C9CDD4;border-radius:10px;transition:.15s;cursor:pointer;vertical-align:middle}
+.switch::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s}
+.switch.on{background:#165DFF}
+.switch.on::after{left:16px}
+
+.progress{height:6px;background:#F2F3F5;border-radius:3px;overflow:hidden}
+.progress .bar{height:100%;background:linear-gradient(90deg,#165DFF,#4080FF);border-radius:3px}
+.progress .bar.orange{background:linear-gradient(90deg,#FF7D00,#FFA940)}
+.progress .bar.green{background:linear-gradient(90deg,#00B42A,#33D45A)}
+.progress .bar.red{background:linear-gradient(90deg,#F53F3F,#FF7878)}
+
+.party-banner{background:linear-gradient(135deg,#E9353A 0%,#FF7878 100%);color:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(233,53,58,.15)}
+.party-banner .emblem{width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.party-banner h3{font-size:18px;font-weight:600;margin-bottom:3px}
+.party-banner p{font-size:12px;opacity:.9}
+
+.wf-canvas{background:#F7F8FA;border-radius:12px;padding:18px;position:relative;min-height:300px;border:1px dashed #E5E6EB}
+.wf-node{position:absolute;background:#fff;border:2px solid #165DFF;border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 2px 8px rgba(22,93,255,.15);min-width:110px;text-align:center}
+.wf-node:hover{box-shadow:0 4px 16px rgba(22,93,255,.25)}
+.wf-node.start{border-color:#00B42A;background:#E8FFEA}
+.wf-node.end{border-color:#86909C;background:#F7F8FA}
+.wf-node .lbl{font-weight:600;color:#1D2129;margin-bottom:1px}
+.wf-node .meta{font-size:10px;color:#86909C}
+
+.dict-tree{background:#fff;border-radius:6px;border:1px solid #E5E6EB;max-height:480px;overflow-y:auto}
+.dict-tree .item{padding:6px 10px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px}
+.dict-tree .item:hover{background:#FAFBFC}
+.dict-tree .item.active{background:#E8F1FF;color:#165DFF;font-weight:600}
+.dict-tree .item .count{margin-left:auto;font-size:10px;color:#86909C;background:#F2F3F5;padding:1px 5px;border-radius:8px}
+
+.score-ring{position:relative;width:130px;height:130px;margin:0 auto}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;color:#165DFF}
+.score-ring .score-num small{font-size:13px;color:#86909C;font-weight:400;margin-left:2px}
+
+.flex{display:flex}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.text-muted{color:#86909C}
+.text-danger{color:#F53F3F}
+.text-success{color:#00B42A}
+.text-warn{color:#FF7D00}
+.text-primary{color:#165DFF}
+.text-bold{font-weight:600}
+.f12{font-size:12px}
+.f13{font-size:13px}
+.f14{font-size:14px}
+.center{text-align:center}
+.divider{height:1px;background:#F2F3F5;margin:14px 0}
+
+.cross-link{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:#FFF3E0;color:#FF7D00;border-radius:5px;border:1px solid #FFAA1F;font-size:11px;margin:1px}
+.cross-link::before{content:"↗";font-size:12px}
+.cross-link:hover{background:#FFE8C2;text-decoration:none}
+
+/* R12 通用按钮交互反馈 */
+.gb-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(29,33,41,.92);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.gb-toast.show{opacity:1}
+
+/* R14 侧栏折叠交互 */
+.sider-grp.sider-grp-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.sider-grp.sider-grp-toggle:hover{color:#165DFF}
+.grp-arrow{font-size:10px;transition:transform .2s;display:inline-block}
+.sider-grp-toggle.collapsed .grp-arrow{transform:rotate(-90deg)}
+.grp-body{overflow:hidden;max-height:3000px;transition:max-height .25s ease}
+.grp-body.grp-hidden{max-height:0}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶栏(web_d 统一:深蓝渐变 + global-nav + 搜索 + 图标 + 头像) ============ -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">陕</div>
+    <span>陕西数字住建</span>
+  </div>
+  <nav class="global-nav">
+    <a href="../00-主页/web_main.html">⌂ 主页</a>
+    <a href="../01-物业监管-备案/web_a1_filing_prototype.html">▤ 物业监管</a>
+    <a class="cur">⌬ 社区物业党建联建</a>
+    <a href="../06-业主决策/web_c_decision_prototype.html">⌧ 业主决策</a>
+    <a href="../07-档案归档/web_d_archive_prototype.html">▤ 档案归档</a>
+    <a href="../09-系统管理/web_z_system_prototype.html">⚙ 系统管理</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="top-search">⌕ <input placeholder="搜索党组织 / 党员 / 活动…"></div>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-PWD" class="top-icon" title="设置">⚙</a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-NOTI" class="top-icon" title="通知">⌭<span class="top-badge">12</span></a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG" class="top-icon" title="消息">✉<span class="top-badge">5</span></a>
+    <div class="top-user">
+      <div class="top-avatar">陈</div>
+      <span>陈默</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 布局(web_d 统一) ============ -->
+<div class="layout">
+
+  <!-- 左侧导航:党建联建(R7 拆分后纯党建)+ 系统管理跨文件入口 -->
+  <aside class="sider" id="sider">
+    <div class="sider-hd">⌬ <span class="sider-hd-label">社区物业党建联建子系统</span></div>
+    <div class="sider-bd">
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>党建联建</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item cur" href="#page-B-1-L" onclick="switchPage('B-1-L');return false;"><span class="s-ico">⌂</span><span class="s-label">党组织列表</span></a>
+      <a class="s-item" href="#page-B-1-F" onclick="switchPage('B-1-F');return false;"><span class="s-ico">⊕</span><span class="s-label">党组织新增</span></a>
+      <a class="s-item" href="#page-B-2-L" onclick="switchPage('B-2-L');return false;"><span class="s-ico">⌹</span><span class="s-label">党员管理</span></a>
+      <a class="s-item" href="#page-B-3-L" onclick="switchPage('B-3-L');return false;"><span class="s-ico">⌐</span><span class="s-label">服务中心地图</span></a>
+      <a class="s-item" href="#page-B-4-L" onclick="switchPage('B-4-L');return false;"><span class="s-ico">⚙</span><span class="s-label">党建活动</span></a>
+      <a class="s-item" href="#page-B-5-L" onclick="switchPage('B-5-L');return false;"><span class="s-ico">▤</span><span class="s-label">党务公开</span></a>
+      <a class="s-item" href="#page-B-6-L" onclick="switchPage('B-6-L');return false;"><span class="s-ico">⌮</span><span class="s-label">党建动态</span></a>
+      <a class="s-item" href="#page-B-7-L" onclick="switchPage('B-7-L');return false;"><span class="s-ico">⭐</span><span class="s-label">党建评价</span></a>
+      <a class="s-item" href="#page-B-8-L" onclick="switchPage('B-8-L');return false;"><span class="s-ico">⚑</span><span class="s-label">应建覆盖率</span><span class="s-tag">P0</span></a>
+      </div>
+            </div>
+    <div class="sider-ft" onclick="toggleSider()">⇆ <span class="sider-hd-label">收起菜单</span></div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main">
+
+    <!-- 页面头(web_d 统一:面包屑 + 蓝条标题 + desc + actions) -->
+    <div class="page-hd">
+      <div class="page-hd-row">
+        <div>
+          <div class="breadcrumb">
+            <span>首页</span>
+            <span>党建联建</span>
+            <span id="crumb-3">党组织列表</span>
+          </div>
+          <div class="page-title">
+            <span class="page-title-bar"></span>
+            <span id="page-title-text">党组织列表</span>
+            <span class="page-desc" id="page-desc-text">物业服务企业 / 物业区域 / 业主委员会党组织的统一管理 · 共 <strong>1,287</strong> 个党组织</span>
+          </div>
+        </div>
+        <div class="page-actions" id="page-actions-box">
+          <a onclick="gbToast('操作已受理(演示环境)')" class="btn btn-sm" href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG">✉ 站内消息</a>
+          <a onclick="gbToast('操作已受理(演示环境)')" class="btn btn-sm" href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT">⏱ 操作审计</a>
+          <button class="btn btn-primary btn-sm" onclick="switchPage('B-1-F')">⊕ 新增党组织</button>
+        </div>
+      </div>
+
+      <!-- Tab 切换:9 个 page(R7:Z 系统管理 11 页已拆出至 web_z) -->
+      <nav class="tabbar" id="tabbar">
+        <a href="#page-B-1-L" data-tab="B-1-L" class="cur" onclick="switchPage('B-1-L');return false;">⌂ 党组织列表</a>
+        <a href="#page-B-1-F" data-tab="B-1-F" onclick="switchPage('B-1-F');return false;">⊕ 党组织新增</a>
+        <a href="#page-B-2-L" data-tab="B-2-L" onclick="switchPage('B-2-L');return false;">⌹ 党员管理</a>
+        <a href="#page-B-3-L" data-tab="B-3-L" onclick="switchPage('B-3-L');return false;">⌐ 服务中心地图</a>
+        <a href="#page-B-4-L" data-tab="B-4-L" onclick="switchPage('B-4-L');return false;">⚙ 党建活动</a>
+        <a href="#page-B-5-L" data-tab="B-5-L" onclick="switchPage('B-5-L');return false;">▤ 党务公开</a>
+        <a href="#page-B-6-L" data-tab="B-6-L" onclick="switchPage('B-6-L');return false;">⌮ 党建动态</a>
+        <a href="#page-B-7-L" data-tab="B-7-L" onclick="switchPage('B-7-L');return false;">⭐ 党建评价</a>
+        <a href="#page-B-8-L" data-tab="B-8-L" onclick="switchPage('B-8-L');return false;">⚑ 应建覆盖率 <span class="tab-tag">P0</span></a>
+      </nav>
+    </div>
+
+    <!-- 页面内容:9 个 page(R7 纯党建,原样保留) -->
+    <div class="page-bd">
+
+    <!-- ============ B-1-L 党组织列表 ============ -->
+    <section class="page cur" id="page-B-1-L">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card success"><div class="label">已建党组织</div><div class="value">1,287 <small>个</small></div><div class="sub"><span class="up">↑ 12 本月新增</span><span class="text-muted">较上月 +0.94%</span></div></div>
+        <div class="kpi-card"><div class="label">联建物业企业</div><div class="value">986 <small>家</small></div><div class="sub"><span class="text-muted">覆盖企业总数 76.6%</span></div></div>
+        <div class="kpi-card"><div class="label">在册党员</div><div class="value">9,432 <small>名</small></div><div class="sub"><span class="up">↑ 156 本月新增</span><span class="text-muted">含流动党员 384</span></div></div>
+        <div class="kpi-card warn"><div class="label">待整改组织</div><div class="value">23 <small>个</small></div><div class="sub"><span class="down">↓ 5 较上周</span><span class="text-muted">超期未换届 / 活动未达标</span></div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <span class="filter-label">党组织名称:</span><input type="text" placeholder="如:万科物业西安分公司党支部" value="万科">
+          <span class="filter-label">组织类型:</span><select><option>全部</option><option>独立党支部</option><option>联合党支部</option><option>党总支</option></select>
+          <span class="filter-label">所属物业企业:</span><select><option>全部</option><option selected>中海物业(西安)</option></select>
+          <span class="filter-label">所属区域:</span><select><option>全省</option><option selected>西安市</option></select>
+          <span class="filter-label">状态:</span><select><option>全部</option><option>正常</option><option>待整改</option></select>
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+          <button onclick="gbToast('筛选条件已重置');" class="btn btn-default btn-sm">↻ 重置</button>
+        </div>
+        <table class="data">
+          <thead><tr><th width="36"><input type="checkbox"></th><th>党组织名称</th><th>类型</th><th>联建物业企业</th><th>所属区域</th><th>党员数</th><th>书记</th><th>换届到期</th><th>状态</th><th width="220">操作</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td><strong>中共万科物业西安分公司党支部</strong><div class="text-muted f12">统一社会信用代码:51610100MJ0***</div></td><td><span class="tag tag-blue">独立党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">万科物业西安分公司</a></td><td>西安市 · 雁塔区</td><td><strong>42</strong></td><td>陈默</td><td>2026-08-15</td><td><span class="tag tag-green">正常</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button class="btn btn-text" onclick="go('B-7-L')">⭐ 评价</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共中海物业西安党支部</strong><div class="text-muted f12">党委下辖 3 个支部</div></td><td><span class="tag tag-purple">党总支</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">中海物业(西安)</a></td><td>西安市 · 高新区</td><td><strong>156</strong></td><td>李建国</td><td>2027-03-20</td><td><span class="tag tag-green">正常</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⊕ 增支部</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共保利陕西物业公司联合党支部</strong></td><td><span class="tag tag-blue">联合党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">保利物业陕西分公司</a></td><td>西安市 · 未央区</td><td><strong>68</strong></td><td>王秀英</td><td>2025-12-10</td><td><span class="tag tag-orange">待换届</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⊕ 推动换届</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共西安曲江物业服务党支部</strong></td><td><span class="tag tag-blue">独立党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">西安曲江物业</a></td><td>西安市 · 曲江新区</td><td><strong>24</strong></td><td>张博文</td><td>2026-05-08</td><td><span class="tag tag-green">正常</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button class="btn btn-text" onclick="go('B-7-L')">⭐ 评价</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共咸阳物业行业联合党支部</strong></td><td><span class="tag tag-blue">联合党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">咸阳 12 家物业公司</a></td><td>咸阳市 · 秦都区</td><td><strong>89</strong></td><td>赵建斌</td><td>2025-11-30</td><td><span class="tag tag-orange">待换届</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⊕ 推动换届</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共宝鸡市物业管理协会党支部</strong></td><td><span class="tag tag-blue">独立党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">宝鸡物业协会</a></td><td>宝鸡市 · 金台区</td><td><strong>31</strong></td><td>孙卫东</td><td>2026-09-22</td><td><span class="tag tag-green">正常</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button class="btn btn-text" onclick="go('B-7-L')">⭐ 评价</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共延安红色物业党支部</strong></td><td><span class="tag tag-red-strong">党建示范点</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">延安红色物业服务公司</a></td><td>延安市 · 宝塔区</td><td><strong>55</strong></td><td>高志强</td><td>2026-06-18</td><td><span class="tag tag-green">示范 · 正常</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button class="btn btn-text" onclick="go('B-7-L')">⭐ 评价</button><button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></div></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>中共汉中锦园物业党支部</strong></td><td><span class="tag tag-blue">独立党支部</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">汉中锦园物业</a></td><td>汉中市 · 汉台区</td><td><strong>18</strong></td><td>杨瑞华</td><td>2025-10-15</td><td><span class="tag tag-red">超期未换届</span></td><td><div class="row-actions"><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button><button onclick="switchPage('B-1-F');" class="btn btn-text">⎘ 编辑</button><button onclick="switchPage('B-1-F');" class="btn btn-warn btn-sm">⊕ 立即推动</button></div></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <div class="info">共 1,287 条 · 当前 1-8 条</div>
+          <div class="pages"><button onclick="gbToast('翻页操作');">‹</button><button onclick="gbToast('已跳转至第 1 页');" class="active">1</button><button onclick="gbToast('已跳转至第 2 页');">2</button><button onclick="gbToast('已跳转至第 3 页');">3</button><button onclick="gbToast('已跳转至第 4 页');">4</button><button onclick="gbToast('翻页操作');">…</button><button onclick="gbToast('已跳转至第 161 页');">161</button><button onclick="gbToast('翻页操作');">›</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ B-1-F 党组织新增 ============ -->
+    <section class="page" id="page-B-1-F">
+
+      <div class="steps">
+        <div class="step active"><div class="dot">1</div><div class="name">基础信息</div></div>
+        <div class="step"><div class="dot">2</div><div class="name">联建主体</div></div>
+        <div class="step"><div class="dot">3</div><div class="name">班子成员</div></div>
+        <div class="step"><div class="dot">4</div><div class="name">上传附件</div></div>
+        <div class="step"><div class="dot">5</div><div class="name">提交审核</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 党组织基础信息 <span class="extra">必填 *</span></div>
+        <div class="form-grid">
+          <div class="form-item"><label><span class="req">*</span>党组织名称</label><input type="text" placeholder="如:中共XX物业XX分公司党支部" value="中共中海物业西安分公司党支部"><div class="hint">建议与公司全称保持一致</div></div>
+          <div class="form-item"><label><span class="req">*</span>组织类型</label><select><option>独立党支部</option><option selected>联合党支部</option><option>党总支</option><option>党委</option></select></div>
+          <div class="form-item"><label><span class="req">*</span>成立日期</label><input type="date" value="2018-05-12"></div>
+          <div class="form-item"><label><span class="req">*</span>党员人数</label><input type="text" placeholder="正式党员 + 预备党员" value="42"></div>
+          <div class="form-item"><label><span class="req">*</span>所属上级党组织</label><input type="text" value="中共西安市雁塔区物业管理行业委员会"></div>
+          <div class="form-item"><label><span class="req">*</span>联系电话</label><input type="text" placeholder="座机或手机" value="029-88886666"></div>
+          <div class="form-item" style="grid-column:span 2"><label><span class="req">*</span>办公地址</label><input type="text" value="西安市雁塔区科技路 38 号万邦物业大厦 8 层"></div>
+          <div class="form-item"><label><span class="req">*</span>业务范围</label><select multiple style="height:70px"><option selected>物业服务</option><option selected>社区治理</option><option>业主自治指导</option><option>志愿服务</option><option>纠纷调解</option></select></div>
+          <div class="form-item"><label>示范点级别</label><select><option>非示范点</option><option>区级示范点</option><option selected>市级示范点</option><option>省级示范点</option></select></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏢 联建主体 <span class="extra">支持物业企业 / 物业区域 / 业委会 N:N 联建</span></div>
+        <div class="form-grid">
+          <div class="form-item"><label><span class="req">*</span>联建物业企业(主)</label><select><option selected>中海物业(西安) · 信用 AAA</option><option>万科物业西安分公司 · 信用 AAA</option><option>保利物业陕西分公司 · 信用 AA</option></select><div class="hint"><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">查看物业企业详情</a></div></div>
+          <div class="form-item"><label>联建物业企业(从,可多选)</label><select multiple style="height:70px"><option>西安曲江物业</option><option>咸阳物业联合体</option></select></div>
+          <div class="form-item"><label><span class="req">*</span>联建物业区域</label><select><option selected>中海·寰宇天下(雁塔区)</option><option>中海·铂悦府(高新区)</option><option>中海·熙岸(曲江新区)</option></select><div class="hint"><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-2-D" class="cross-link">查看物业区域详情</a></div></div>
+          <div class="form-item"><label>覆盖业主委员会</label><select multiple style="height:70px"><option selected>寰宇天下业委会</option><option>铂悦府业委会(筹备)</option></select></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">👥 班子成员 <button onclick="gbToast('打开新增表单');" class="btn btn-default btn-sm">⊕ 新增成员</button></div>
+        <table class="data">
+          <thead><tr><th>姓名</th><th>职务</th><th>党内职务</th><th>联系电话</th><th>入党时间</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>陈默</td><td>书记</td><td>党支部书记</td><td>138****5678</td><td>2019-06-15</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text text-danger">⊖</button></td></tr>
+            <tr><td>李建国</td><td>副书记</td><td>党支部副书记</td><td>139****1234</td><td>2015-09-21</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text text-danger">⊖</button></td></tr>
+            <tr><td>王秀英</td><td>组织委员</td><td>党支部委员</td><td>136****9876</td><td>2017-03-08</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text text-danger">⊖</button></td></tr>
+            <tr><td>赵建斌</td><td>纪检委员</td><td>党支部委员</td><td>135****4321</td><td>2018-11-30</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text text-danger">⊖</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📎 上传附件</div>
+        <div class="upload-area">
+          <div class="icon">⬆</div>
+          <div class="txt">点击或拖拽文件到这里上传</div>
+          <div class="hint">支持 PDF / JPG / PNG · 单文件 ≤ 10MB · 上级党组织批复文件 / 选举材料 / 制度文件</div>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:#F7F8FA;border-radius:6px;font-size:12px;color:#4E5969"><span>📄</span><span style="flex:1">上级党组织批复函.pdf</span><span class="text-muted">1.2 MB</span><span class="tag tag-green">已上传</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:#F7F8FA;border-radius:6px;font-size:12px;color:#4E5969"><span>📄</span><span style="flex:1">第一届支部委员会选举办法.pdf</span><span class="text-muted">680 KB</span><span class="tag tag-green">已上传</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+        <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-lg">↩ 上一步</button>
+        <button onclick="gbToast('保存成功');" class="btn btn-default btn-lg">💾 暂存草稿</button>
+        <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary btn-lg">下一步 →</button>
+      </div>
+    </section>
+
+    <!-- ============ B-2-L 党员列表 ============ -->
+    <section class="page" id="page-B-2-L">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">党员总数</div><div class="value">9,432</div><div class="sub">含流动党员 384</div></div>
+        <div class="kpi-card success"><div class="label">35 岁以下</div><div class="value">2,156 <small>22.9%</small></div><div class="sub">青年党员比例</div></div>
+        <div class="kpi-card"><div class="label">女性党员</div><div class="value">3,872 <small>41.1%</small></div><div class="sub">比例 ↑ 1.2%</div></div>
+        <div class="kpi-card warn"><div class="label">流动党员</div><div class="value">384</div><div class="sub">需重点管理</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <span class="filter-label">党员姓名:</span><input type="text" placeholder="如:陈默" value="陈默">
+          <span class="filter-label">所属党组织:</span><select><option>全部</option><option selected>万科物业西安分公司党支部</option></select>
+          <span class="filter-label">党员状态:</span><select><option>全部</option><option>正式党员</option><option>预备党员</option><option>流动党员</option></select>
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+        </div>
+        <table class="data">
+          <thead><tr><th width="36"><input type="checkbox"></th><th>姓名</th><th>性别</th><th>所属党组织</th><th>党内职务</th><th>入党时间</th><th>党龄</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#165DFF;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">陈</div><div><strong>陈默</strong><div class="text-muted f12">610**********1234</div></div></div></td><td>男</td><td>万科物业西安分公司党支部</td><td>书记</td><td>2019-06-15</td><td>5 年</td><td><span class="tag tag-green">正式党员</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#00B42A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">李</div><strong>李建国</strong></div></td><td>男</td><td>中海物业西安党支部</td><td>副书记</td><td>2015-09-21</td><td>9 年</td><td><span class="tag tag-green">正式党员</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#FF7D00;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">王</div><strong>王秀英</strong></div></td><td>女</td><td>保利陕西物业联合党支部</td><td>组织委员</td><td>2017-03-08</td><td>7 年</td><td><span class="tag tag-green">正式党员</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#534AB7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">赵</div><strong>赵建斌</strong></div></td><td>男</td><td>咸阳物业行业联合党支部 <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-4-L" class="cross-link">业委会备案</a></td><td>纪检委员</td><td>2018-11-30</td><td>6 年</td><td><span class="tag tag-blue">流动党员</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#E9353A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">张</div><strong>张博文</strong></div></td><td>男</td><td>西安曲江物业服务党支部</td><td>宣传委员</td><td>2020-04-22</td><td>4 年</td><td><span class="tag tag-orange">预备党员</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:#165DFF;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">孙</div><strong>孙卫东</strong></div></td><td>男</td><td>宝鸡物业协会党支部</td><td>书记</td><td>2012-07-01</td><td>12 年</td><td><span class="tag tag-green">正式党员 · 优秀</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><div class="info">共 9,432 条 · 当前 1-6 条</div><div class="pages"><button onclick="gbToast('翻页操作');">‹</button><button onclick="gbToast('已跳转至第 1 页');" class="active">1</button><button onclick="gbToast('已跳转至第 2 页');">2</button><button onclick="gbToast('已跳转至第 3 页');">3</button><button onclick="gbToast('翻页操作');">…</button><button onclick="gbToast('已跳转至第 1572 页');">1572</button><button onclick="gbToast('翻页操作');">›</button></div></div>
+      </div>
+    </section>
+
+    <!-- ============ B-3-L 党群服务中心地图 ============ -->
+    <section class="page" id="page-B-3-L">
+<div style="background:#E8F1FF;border-radius:8px;padding:10px 14px;font-size:12px;color:#165DFF;margin:10px 0">ℹ R9 补:党群服务中心分布通过在线地图可视化呈现,移动端同步向物业服务企业及业主开放信息查询。</div>
+
+      <div class="card">
+        <div class="filter-bar">
+          <span class="filter-label">类型:</span><select><option>全部</option><option>省级示范点</option><option>市级示范点</option><option>普通服务点</option></select>
+          <span class="filter-label">服务功能:</span><select><option>全部</option><option>党员活动</option><option>议事协商</option><option>便民服务</option></select>
+          <span class="filter-label">所属物业区域:</span><select><option>全部</option><option>中海寰宇天下</option></select>
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+        </div>
+
+        <div class="geo-map">
+          <svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="cityGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF7D00" stop-opacity=".7"/><stop offset="100%" stop-color="#F53F3F" stop-opacity=".7"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+            <path d="M120 80 L220 60 L320 90 L420 70 L520 100 L600 150 L610 230 L580 320 L540 400 L460 450 L380 460 L280 470 L180 440 L100 380 L80 280 L90 180 Z" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="1.5"/>
+            <path d="M30 60 L120 80 L80 280 L30 240 Z M600 150 L680 130 L670 250 L580 320 Z" fill="#F7F8FA" stroke="#E5E6EB" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="40" y="180" font-size="12" fill="#86909C" transform="rotate(-20 40 180)">甘肃省</text>
+            <text x="630" y="220" font-size="12" fill="#86909C">山西省</text>
+            <text x="280" y="500" font-size="12" fill="#86909C">四川省</text>
+            <text x="540" y="490" font-size="12" fill="#86909C">湖北省</text>
+            <text x="630" y="380" font-size="12" fill="#86909C">河南省</text>
+            <path d="M150 200 Q220 240 290 260 T450 320 T580 360" fill="none" stroke="#A0CFFF" stroke-width="2" opacity=".6"/>
+            <path d="M250 350 Q310 400 380 420 T500 440" fill="none" stroke="#A0CFFF" stroke-width="1.5" opacity=".5"/>
+
+            <g filter="url(#glow)">
+              <g transform="translate(310,250)"><circle r="14" fill="#F53F3F"/><circle r="22" fill="#F53F3F" opacity=".25"/><text x="0" y="-22" text-anchor="middle" font-size="14" font-weight="700" fill="#F53F3F">西安</text><text x="0" y="38" text-anchor="middle" font-size="10" fill="#4E5969">38 个</text></g>
+              <g transform="translate(230,210)"><circle r="10" fill="#FF7D00"/><circle r="18" fill="#FF7D00" opacity=".2"/><text x="0" y="-18" text-anchor="middle" font-size="12" font-weight="600" fill="#FF7D00">宝鸡</text><text x="0" y="28" text-anchor="middle" font-size="10" fill="#4E5969">12 个</text></g>
+              <g transform="translate(340,250)"><circle r="9" fill="#FF7D00"/><circle r="16" fill="#FF7D00" opacity=".2"/><text x="20" y="0" font-size="12" font-weight="600" fill="#FF7D00">咸阳</text><text x="20" y="14" font-size="10" fill="#4E5969">15 个</text></g>
+              <g transform="translate(360,180)"><circle r="6" fill="#FFA940"/><text x="14" y="0" font-size="11" fill="#FF7D00">铜川</text><text x="14" y="12" font-size="9" fill="#86909C">4 个</text></g>
+              <g transform="translate(420,280)"><circle r="9" fill="#FF7D00"/><text x="0" y="-16" text-anchor="middle" font-size="12" font-weight="600" fill="#FF7D00">渭南</text><text x="0" y="26" text-anchor="middle" font-size="10" fill="#4E5969">11 个</text></g>
+              <g transform="translate(380,120)"><circle r="10" fill="#F53F3F"/><circle r="18" fill="#F53F3F" opacity=".2"/><text x="0" y="-18" text-anchor="middle" font-size="12" font-weight="600" fill="#F53F3F">延安</text><text x="0" y="28" text-anchor="middle" font-size="10" fill="#4E5969">9 个</text></g>
+              <g transform="translate(450,80)"><circle r="9" fill="#FF7D00"/><text x="0" y="-16" text-anchor="middle" font-size="12" font-weight="600" fill="#FF7D00">榆林</text><text x="0" y="26" text-anchor="middle" font-size="10" fill="#4E5969">8 个</text></g>
+              <g transform="translate(320,400)"><circle r="9" fill="#FF7D00"/><text x="0" y="26" text-anchor="middle" font-size="12" font-weight="600" fill="#FF7D00">汉中</text><text x="0" y="38" text-anchor="middle" font-size="10" fill="#4E5969">7 个</text></g>
+              <g transform="translate(420,430)"><circle r="7" fill="#FFA940"/><text x="14" y="0" font-size="11" fill="#FF7D00">安康</text><text x="14" y="12" font-size="9" fill="#86909C">5 个</text></g>
+              <g transform="translate(490,330)"><circle r="6" fill="#FFA940"/><text x="14" y="0" font-size="11" fill="#FF7D00">商洛</text><text x="14" y="12" font-size="9" fill="#86909C">5 个</text></g>
+            </g>
+
+            <g transform="translate(30,440)">
+              <rect width="200" height="60" fill="#fff" stroke="#E5E6EB" rx="6"/>
+              <g transform="translate(10,12)"><circle cx="8" cy="8" r="6" fill="#F53F3F"/><text x="22" y="12" font-size="11" fill="#4E5969">省级示范点 (32)</text></g>
+              <g transform="translate(10,28)"><circle cx="8" cy="8" r="5" fill="#FF7D00"/><text x="22" y="12" font-size="11" fill="#4E5969">市级示范点 (140)</text></g>
+              <g transform="translate(110,12)"><circle cx="8" cy="8" r="4" fill="#FFA940"/><text x="22" y="12" font-size="11" fill="#4E5969">普通服务点 (687)</text></g>
+              <g transform="translate(110,28)"><circle cx="8" cy="8" r="3" fill="#165DFF"/><text x="22" y="12" font-size="11" fill="#4E5969">在建 (45)</text></g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="text-muted f12 mt-12" style="display:flex;gap:14px;flex-wrap:wrap">
+          <div><span style="color:#F53F3F">●</span> 红色物业示范点(西安 · 延安 · 汉中)</div>
+          <div><span style="color:#FF7D00">●</span> 地市级中心(8 个)</div>
+          <div>↗ 跨文件跳转 → <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-2-D" class="cross-link">物业区域详情</a></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">📍 服务点清单(西安市·示范点)</span></div>
+        <table class="data">
+          <thead><tr><th>服务点名称</th><th>类型</th><th>地址</th><th>服务功能</th><th>覆盖户数</th><th>联系人</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>中海寰宇天下党群服务中心</td><td><span class="tag tag-red-strong">省级示范</span></td><td>雁塔区科技路 38 号</td><td>党员活动 / 议事协商 / 便民</td><td>2,486</td><td>陈默 138****5678</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>万科城红色物业服务中心</td><td><span class="tag tag-red-strong">省级示范</span></td><td>未央区凤城五路</td><td>党员活动 / 志愿服务</td><td>1,892</td><td>李建国 139****1234</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>曲江池党群服务站</td><td><span class="tag tag-orange">市级示范</span></td><td>曲江新区雁翔路</td><td>议事协商</td><td>968</td><td>王秀英 136****9876</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>延安红色物业党群之家</td><td><span class="tag tag-red-strong">省级示范</span></td><td>宝塔区圣地路</td><td>党员活动 / 红色教育</td><td>1,256</td><td>高志强 137****0001</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>汉中锦园党群服务点</td><td><span class="tag tag-orange">市级示范</span></td><td>汉台区兴汉路</td><td>便民服务</td><td>623</td><td>杨瑞华 135****4321</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ B-4-L 党建活动列表 ============ -->
+    <section class="page" id="page-B-4-L">
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <span class="filter-label">活动类型:</span><select><option>全部</option><option>三会一课</option><option>主题党日</option><option>志愿服务</option></select>
+          <span class="filter-label">组织:</span><select><option>全部</option><option selected>万科物业西安分公司党支部</option></select>
+          <span class="filter-label">时间:</span><input type="date" value="2026-10-01"> - <input type="date" value="2026-10-16">
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+        </div>
+        <table class="data">
+          <thead><tr><th width="36"><input type="checkbox"></th><th>活动名称</th><th>类型</th><th>所属党组织</th><th>时间</th><th>地点</th><th>应到/实到</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td><strong>"喜迎二十大·红色物业服务月"主题党日</strong></td><td><span class="tag tag-red-strong">主题党日</span></td><td>万科物业西安分公司党支部</td><td>2026-10-15 09:00</td><td>寰宇天下党群服务中心</td><td>42 / 39</td><td><span class="tag tag-green">已完成</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓ 总结</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>"我为群众办实事"小区义诊志愿服务</strong></td><td><span class="tag tag-purple">志愿服务</span></td><td>中海物业西安党支部</td><td>2026-10-14 14:00</td><td>中海寰宇天下小区</td><td>30 / 28</td><td><span class="tag tag-green">已完成</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓ 总结</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>党的二十届四中全会精神宣讲会</strong></td><td><span class="tag tag-blue">三会一课</span></td><td>保利陕西物业联合党支部</td><td>2026-10-20 10:00</td><td>保利心语花园党群服务站</td><td>68 / —</td><td><span class="tag tag-orange">报名中</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">+ 报名</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>"传承红色基因"延安红色教育</strong></td><td><span class="tag tag-red-strong">红色教育</span></td><td>延安红色物业党支部</td><td>2026-10-25 - 27</td><td>延安革命纪念馆</td><td>55 / 51</td><td><span class="tag tag-blue">筹备中</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">+ 报名</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><strong>第三季度支部党员大会</strong></td><td><span class="tag tag-blue">三会一课</span></td><td>西安曲江物业服务党支部</td><td>2026-09-28 15:00</td><td>曲江池党群服务站</td><td>24 / 24</td><td><span class="tag tag-green">已完成</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓ 总结</button></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><div class="info">共 486 条 · 当前 1-5 条</div><div class="pages"><button onclick="gbToast('翻页操作');">‹</button><button onclick="gbToast('已跳转至第 1 页');" class="active">1</button><button onclick="gbToast('已跳转至第 2 页');">2</button><button onclick="gbToast('翻页操作');">…</button><button onclick="gbToast('已跳转至第 98 页');">98</button><button onclick="gbToast('翻页操作');">›</button></div></div>
+      </div>
+    </section>
+
+    <!-- ============ B-5-L 党务公开 ============ -->
+    <section class="page" id="page-B-5-L">
+
+      <div class="card-grid card-grid-3">
+        <div class="card">
+          <div class="card-title">📋 组织决议公开</div>
+          <ul style="font-size:12px;line-height:2">
+            <li>· 中海物业党委换届选举结果公告 <span class="text-muted f12">10-12</span></li>
+            <li>· 万科物业党支部 2026 年度工作计划 <span class="text-muted f12">10-10</span></li>
+            <li>· 关于成立"红色物业"先锋队的决议 <span class="text-muted f12">10-08</span></li>
+            <li>· 保利物业联合支部党员民主评议结果 <span class="text-muted f12">10-05</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">💰 党费使用公开</div>
+          <div class="kpi-card success" style="box-shadow:none;border:1px solid #E5E6EB">
+            <div class="label">本季党费收缴</div>
+            <div class="value">¥128,460</div>
+            <div class="sub">实缴率 96.8%</div>
+          </div>
+          <div class="text-muted f13 mt-8">· 上缴上级党委 ¥64,230</div>
+          <div class="text-muted f13">· 留用支部活动 ¥38,538</div>
+          <div class="text-muted f13">· 慰问困难党员 ¥25,692</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗳️ 民主评议结果</div>
+          <div class="rating-grid">
+            <div class="rating-item ok"><div class="s">42</div><div class="l">优秀</div></div>
+            <div class="rating-item ok"><div class="s">256</div><div class="l">合格</div></div>
+            <div class="rating-item mid"><div class="s">18</div><div class="l">基本合格</div></div>
+            <div class="rating-item" style="background:#FFECE8"><div class="s" style="color:#F53F3F">2</div><div class="l">不合格</div></div>
+            <div class="rating-item"><div class="s">4.6</div><div class="l">平均分</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">📑 公开记录</span></div>
+        <table class="data">
+          <thead><tr><th>公开事项</th><th>公开类型</th><th>公开党组织</th><th>公开时间</th><th>浏览量</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><strong>中海物业党委 2026 年度党建工作计划</strong></td><td><span class="tag tag-blue">工作计划</span></td><td>中海物业西安党支部</td><td>2026-10-12</td><td>2,358</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+            <tr><td><strong>万科物业党支部第三季度党费使用情况</strong></td><td><span class="tag tag-orange">党费使用</span></td><td>万科物业西安分公司党支部</td><td>2026-10-10</td><td>1,892</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+            <tr><td><strong>保利物业联合支部民主评议党员结果公示</strong></td><td><span class="tag tag-purple">民主评议</span></td><td>保利陕西物业联合党支部</td><td>2026-10-05</td><td>986</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+            <tr><td><strong>"红色物业"先锋队成立公告</strong></td><td><span class="tag tag-red-strong">组织决议</span></td><td>西安市物业行业党委</td><td>2026-10-01</td><td>3,562</td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ B-6-L 党建动态 ============ -->
+    <section class="page" id="page-B-6-L">
+
+      <div class="card-grid card-grid-3">
+        <div class="card" style="grid-column:span 2">
+          <div class="card-title">📰 最新动态</div>
+          <div class="timeline">
+            <div class="timeline-item success">
+              <div class="time">2026-10-15 18:30 · 西安市物业行业党委</div>
+              <div class="title">"红色物业"三年行动收官 · 全省党组织覆盖率从 64% 提升至 76.6%</div>
+              <div class="content">10 月 15 日,省住建厅召开"红色物业"三年行动总结会议。三年累计新建党组织 412 个,联建物业企业 986 家,惠及业主 218 万户。</div>
+              <div class="meta">浏览 12,358 · 点赞 856 · 评论 124</div>
+            </div>
+            <div class="timeline-item">
+              <div class="time">2026-10-14 09:00 · 万科物业西安分公司党支部</div>
+              <div class="title">陈默同志获评"全省优秀党务工作者"</div>
+              <div class="content">在省住建厅庆祝建党 105 周年大会上,我支部书记陈默被授予"全省优秀党务工作者"荣誉称号。</div>
+              <div class="meta">浏览 4,628 · 点赞 392 · 评论 56</div>
+            </div>
+            <div class="timeline-item warn">
+              <div class="time">2026-10-12 14:30 · 中海物业西安党支部</div>
+              <div class="title">"我为群众办实事"小区义诊志愿服务活动纪实</div>
+              <div class="content">中海物业党委联合西安交大一附院,在中海寰宇天下小区开展义诊服务,惠及业主 380 余人次,发放健康宣传册 600 余份。</div>
+              <div class="meta">浏览 2,189 · 点赞 168 · 评论 32</div>
+            </div>
+            <div class="timeline-item">
+              <div class="time">2026-10-10 11:00 · 延安红色物业党支部</div>
+              <div class="title">延安红色物业党建示范点通过省级验收</div>
+              <div class="content">10 月 9 日,省住建厅专家组对延安红色物业党建示范点进行实地验收,获评"省级示范点"。</div>
+              <div class="meta">浏览 3,256 · 点赞 245 · 评论 38</div>
+            </div>
+            <div class="timeline-item">
+              <div class="time">2026-10-08 16:00 · 西安市住建局</div>
+              <div class="title">关于开展物业行业党建"百日提升"专项行动的通知</div>
+              <div class="content">决定在全市范围内开展物业行业党建"百日提升"专项行动,重点解决党组织应建未建、超期未换届等问题。<a href="../07-档案归档/web_d_archive_prototype.html#page-D-1-L" class="cross-link">档案归档</a></div>
+              <div class="meta">浏览 5,892 · 点赞 412 · 评论 78</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🏆 党建之星</div>
+          <ul style="font-size:12px;line-height:2">
+            <li>🥇 陈默 · 万科物业 · <span class="text-muted">优秀党务工作者</span></li>
+            <li>🥈 李建国 · 中海物业 · <span class="text-muted">优秀共产党员</span></li>
+            <li>🥉 高志强 · 延安物业 · <span class="text-muted">红色物业标兵</span></li>
+            <li>⭐ 王秀英 · 保利物业 · <span class="text-muted">巾帼建功标兵</span></li>
+            <li>⭐ 孙卫东 · 宝鸡协会 · <span class="text-muted">优秀共产党员</span></li>
+            <li>⭐ 杨瑞华 · 汉中锦园 · <span class="text-muted">优秀共产党员</span></li>
+          </ul>
+          <div class="divider"></div>
+          <div class="text-muted f13">📌 本月评选 6 名</div>
+          <button onclick="gbToast('打开详情视图');" class="btn btn-default btn-sm mt-8" style="width:100%">查看全部 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ B-7-L 党建评价 ============ -->
+    <section class="page" id="page-B-7-L">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card success"><div class="label">五星级党组织</div><div class="value">38</div><div class="sub">占总数 2.95%</div></div>
+        <div class="kpi-card"><div class="label">四星级</div><div class="value">256</div><div class="sub">占总数 19.9%</div></div>
+        <div class="kpi-card warn"><div class="label">三星级</div><div class="value">624</div><div class="sub">占总数 48.5%</div></div>
+        <div class="kpi-card danger"><div class="label">三星级以下</div><div class="value">369</div><div class="sub">需重点帮扶</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⭐ 评价打分卡 · 中共万科物业西安分公司党支部(参考)</div>
+        <div class="card-grid card-grid-2">
+          <div>
+            <div class="text-muted f13 mb-12">综合评分(满分 100)</div>
+            <div class="score-ring">
+              <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#F2F3F5" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="#165DFF" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="69" stroke-linecap="round"/></svg>
+              <div class="score-num">78<small>分</small></div>
+            </div>
+            <div class="center mt-12"><span class="tag tag-orange" style="font-size:14px;padding:5px 14px">⭐⭐⭐⭐ 四星级党组织</span></div>
+          </div>
+          <div>
+            <div class="text-muted f13 mb-12">五维度评分</div>
+            <table class="data" style="font-size:11px">
+              <thead><tr><th>评价维度</th><th>分值</th><th>得分</th><th>等级</th></tr></thead>
+              <tbody>
+                <tr><td>组织建设</td><td>20</td><td><strong>17.5</strong></td><td><span class="tag tag-green">优</span></td></tr>
+                <tr><td>党员管理</td><td>20</td><td><strong>16.0</strong></td><td><span class="tag tag-green">优</span></td></tr>
+                <tr><td>活动开展</td><td>20</td><td><strong>15.0</strong></td><td><span class="tag tag-orange">良</span></td></tr>
+                <tr><td>服务群众</td><td>20</td><td><strong>16.5</strong></td><td><span class="tag tag-green">优</span></td></tr>
+                <tr><td>联建机制</td><td>20</td><td><strong>13.0</strong></td><td><span class="tag tag-orange">良</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">📊 评价清单</span></div>
+        <table class="data">
+          <thead><tr><th>党组织</th><th>评价年度</th><th>综合得分</th><th>星级</th><th>评价人</th><th>评价时间</th><th>关联信用</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><strong>中共万科物业西安分公司党支部</strong></td><td>2026 年度</td><td><strong style="font-size:17px;color:#165DFF">78.0</strong></td><td><span class="tag tag-orange">⭐⭐⭐⭐</span></td><td>市住建局党委</td><td>2026-09-30</td><td><a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D" class="cross-link">AAA 信用档案</a></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></td></tr>
+            <tr><td><strong>中共中海物业西安党支部</strong></td><td>2026 年度</td><td><strong style="font-size:17px;color:#00B42A">86.5</strong></td><td><span class="tag tag-green">⭐⭐⭐⭐⭐</span></td><td>市住建局党委</td><td>2026-09-30</td><td><a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D" class="cross-link">AAA 信用档案</a></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></td></tr>
+            <tr><td><strong>中共保利陕西物业联合党支部</strong></td><td>2026 年度</td><td><strong style="font-size:17px;color:#FF7D00">72.0</strong></td><td><span class="tag tag-orange">⭐⭐⭐</span></td><td>市住建局党委</td><td>2026-09-30</td><td><a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D" class="cross-link">AA 信用档案</a></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button> <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text">⤓</button></td></tr>
+            <tr><td><strong>中共汉中锦园物业党支部</strong></td><td>2026 年度</td><td><strong style="font-size:17px;color:#F53F3F">58.0</strong></td><td><span class="tag tag-red">⭐⭐</span></td><td>汉中市住建局党委</td><td>2026-09-30</td><td><a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D" class="cross-link">B 信用档案</a></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ B-8-L 党组织应建覆盖率看板 ============ -->
+    <section class="page" id="page-B-8-L">
+
+      <div class="party-banner">
+        <div class="emblem">★</div>
+        <div style="flex:1">
+          <h3>全省党组织应建覆盖率看板</h3>
+          <p>数据更新:2026-10-16 14:30 · 统计周期:实时 · 覆盖物业企业 1,287 家 · 物业区域 3,562 个 · 在管项目 4,128 个</p>
+        </div>
+        <button onclick="gbToast('打开配置面板');" class="btn btn-default" style="background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4)">⚙ 看板配置</button>
+      </div>
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">总应建党组织</div><div class="value">2,486</div><div class="sub">物业企业 1,287 + 区域 893 + 项目 306</div></div>
+        <div class="kpi-card success"><div class="label">已建党组织</div><div class="value">1,287</div><div class="sub"><span class="up">↑ 12 本月新增</span></div></div>
+        <div class="kpi-card danger"><div class="label">应建未建数</div><div class="value">1,199</div><div class="sub"><span class="text-muted">需重点推动</span></div></div>
+        <div class="kpi-card success"><div class="label">应建覆盖率</div><div class="value">51.8<small>%</small></div><div class="sub"><span class="up">↑ 0.5% 较上月</span></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📐 三维度 Tab 切换</div>
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary btn-sm" style="flex:1;min-width:140px">🏢 按物业企业(1,287 家)</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm" style="flex:1;min-width:140px">⌐ 按物业区域(893 个)</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm" style="flex:1;min-width:140px">▤ 按在管项目(306 个)</button>
+        </div>
+
+        <div class="geo-map">
+          <svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="coverageGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00B42A" stop-opacity=".85"/><stop offset="100%" stop-color="#00B42A" stop-opacity=".55"/></linearGradient></defs>
+            <path d="M120 80 L220 60 L320 90 L420 70 L520 100 L600 150 L610 230 L580 320 L540 400 L460 450 L380 460 L280 470 L180 440 L100 380 L80 280 L90 180 Z" fill="#FFFFFF" stroke="#C9CDD4" stroke-width="1.5"/>
+            <g>
+              <g transform="translate(310,250)"><circle r="38" fill="url(#coverageGrad)"/><text x="0" y="-44" text-anchor="middle" font-size="13" font-weight="700" fill="#00B42A">西安 68%</text><text x="0" y="48" text-anchor="middle" font-size="10" fill="#1D2129">已建 386 / 应建 568</text></g>
+              <g transform="translate(230,210)"><circle r="22" fill="url(#coverageGrad)" opacity=".7"/><text x="0" y="-30" text-anchor="middle" font-size="11" font-weight="600" fill="#00B42A">宝鸡 56%</text></g>
+              <g transform="translate(340,250)"><circle r="24" fill="url(#coverageGrad)" opacity=".75"/><text x="32" y="0" font-size="11" font-weight="600" fill="#00B42A">咸阳 62%</text></g>
+              <g transform="translate(380,120)"><circle r="20" fill="url(#coverageGrad)" opacity=".6"/><text x="0" y="-26" text-anchor="middle" font-size="11" font-weight="600" fill="#FF7D00">延安 42%</text></g>
+              <g transform="translate(450,80)"><circle r="18" fill="url(#coverageGrad)" opacity=".5"/><text x="0" y="-24" text-anchor="middle" font-size="11" font-weight="600" fill="#FF7D00">榆林 38%</text></g>
+              <g transform="translate(420,280)"><circle r="20" fill="url(#coverageGrad)" opacity=".65"/><text x="0" y="-26" text-anchor="middle" font-size="11" font-weight="600" fill="#00B42A">渭南 55%</text></g>
+              <g transform="translate(320,400)"><circle r="18" fill="url(#coverageGrad)" opacity=".55"/><text x="0" y="26" text-anchor="middle" font-size="11" font-weight="600" fill="#FF7D00">汉中 45%</text></g>
+              <g transform="translate(420,430)"><circle r="16" fill="url(#coverageGrad)" opacity=".5"/><text x="22" y="0" font-size="11" font-weight="600" fill="#F53F3F">安康 32%</text></g>
+              <g transform="translate(490,330)"><circle r="14" fill="url(#coverageGrad)" opacity=".45"/><text x="22" y="0" font-size="11" font-weight="600" fill="#F53F3F">商洛 28%</text></g>
+              <g transform="translate(360,180)"><circle r="12" fill="url(#coverageGrad)" opacity=".6"/><text x="20" y="0" font-size="10" font-weight="600" fill="#00B42A">铜川 52%</text></g>
+            </g>
+            <g transform="translate(30,440)">
+              <rect width="280" height="60" fill="#fff" stroke="#E5E6EB" rx="6"/>
+              <text x="10" y="18" font-size="11" font-weight="600" fill="#4E5969">覆盖率热力图</text>
+              <g transform="translate(10,28)"><circle cx="8" cy="8" r="6" fill="#00B42A" opacity=".85"/><text x="22" y="12" font-size="10" fill="#4E5969">≥ 60%</text></g>
+              <g transform="translate(80,28)"><circle cx="8" cy="8" r="6" fill="#FF7D00" opacity=".65"/><text x="22" y="12" font-size="10" fill="#4E5969">40-60%</text></g>
+              <g transform="translate(160,28)"><circle cx="8" cy="8" r="6" fill="#F53F3F" opacity=".5"/><text x="22" y="12" font-size="10" fill="#4E5969">< 40%</text></g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">🥧 应建未建原因分类</div>
+          <table class="data">
+            <thead><tr><th>未建原因</th><th>数量</th><th>占比</th><th>占比图</th></tr></thead>
+            <tbody>
+              <tr><td>党员人数不足 3 人</td><td>586</td><td>48.9%</td><td><div class="progress" style="width:110px"><div class="bar" style="width:49%"></div></div></td></tr>
+              <tr><td>待筹备 / 条件不成熟</td><td>328</td><td>27.4%</td><td><div class="progress" style="width:110px"><div class="bar orange" style="width:27%"></div></div></td></tr>
+              <tr><td>暂不具备条件(规模小)</td><td>192</td><td>16.0%</td><td><div class="progress" style="width:110px"><div class="bar orange" style="width:16%"></div></div></td></tr>
+              <tr><td>业主/企业不支持</td><td>62</td><td>5.2%</td><td><div class="progress" style="width:110px"><div class="bar red" style="width:5%"></div></div></td></tr>
+              <tr><td>其他原因</td><td>31</td><td>2.6%</td><td><div class="progress" style="width:110px"><div class="bar red" style="width:3%"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 推动记录追踪</div>
+          <div class="timeline">
+            <div class="timeline-item success">
+              <div class="time">2026-10-15 16:30 · 西安市住建局</div>
+              <div class="title">向"中海物业(西安)"等 12 家企业下发推动通知</div>
+              <div class="content">已通过短信 + 系统通知下发 12 份推动通知,要求 30 天内反馈推动方案。</div>
+              <div class="meta">承办人:张涛 · 关联物业企业 <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">查看</a></div>
+            </div>
+            <div class="timeline-item warn">
+              <div class="time">2026-10-12 10:00 · 雁塔区住建局</div>
+              <div class="title">约谈 3 家应建未建物业企业负责人</div>
+              <div class="content">对中海锦园、锦庭物业等 3 家企业负责人进行约谈,要求 15 天内提交筹建方案。</div>
+              <div class="meta">承办人:刘主任</div>
+            </div>
+            <div class="timeline-item">
+              <div class="time">2026-10-08 14:20 · 莲湖区住建局</div>
+              <div class="title">协调莲湖区物业协会组建联合党支部</div>
+              <div class="content">经协调,莲湖区 8 家小微物业企业同意联合组建党支部,目前已上报上级党委审批。</div>
+              <div class="meta">承办人:王科长</div>
+            </div>
+            <div class="timeline-item danger">
+              <div class="time">2026-10-05 09:00 · 商洛市住建局</div>
+              <div class="title">商洛某物业企业拒绝推动</div>
+              <div class="content">商洛某物业企业以"效益不好"为由拒绝组建党组织,已上报市住建局党委研究处理。</div>
+              <div class="meta">承办人:赵主任 · 待跟进</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">📋 应建未建明细(可推动) · 物业企业维度</span></div>
+        <table class="data">
+          <thead><tr><th>物业企业</th><th>应建</th><th>已建</th><th>未建</th><th>覆盖率</th><th>未建原因</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">中海锦园物业(西安)</a></td><td>1</td><td>0</td><td>1</td><td><span class="tag tag-red">0%</span></td><td>党员不足 3 人</td><td><span class="tag tag-orange">推动中</span></td><td><button onclick="gbToast('打开新增表单');" class="btn btn-text">⊕ 推动</button></td></tr>
+            <tr><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">咸阳新兴物业管理公司</a></td><td>1</td><td>0</td><td>1</td><td><span class="tag tag-red">0%</span></td><td>待筹备</td><td><span class="tag tag-blue">待启动</span></td><td><button onclick="gbToast('打开新增表单');" class="btn btn-text">⊕ 启动</button></td></tr>
+            <tr><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">宝鸡市恒泰物业</a></td><td>1</td><td>0</td><td>1</td><td><span class="tag tag-red">0%</span></td><td>规模小</td><td><span class="tag tag-blue">待启动</span></td><td><button onclick="gbToast('打开新增表单');" class="btn btn-text">⊕ 启动</button></td></tr>
+            <tr><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">延安枣园红色物业</a></td><td>1</td><td>0</td><td>1</td><td><span class="tag tag-red">0%</span></td><td>业主不支持</td><td><span class="tag tag-red">企业拒绝</span></td><td><button onclick="gbToast('打开新增表单');" class="btn btn-text">⊕ 上报</button></td></tr>
+            <tr><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">安康汉滨物业服务公司</a></td><td>1</td><td>0</td><td>1</td><td><span class="tag tag-red">0%</span></td><td>其他</td><td><span class="tag tag-orange">推动中</span></td><td><button onclick="gbToast('打开新增表单');" class="btn btn-text">⊕ 推动</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    </div>
+    </main>
+</div>
+
+<script>
+
+
+/* R14 侧栏折叠交互 */
+function toggleGrp(el){
+  el.classList.toggle('collapsed');
+  var body = el.nextElementSibling;
+  if(body && body.classList.contains('grp-body')){ body.classList.toggle('grp-hidden'); }
+}
+(function(){
+  function initGrp(){
+    document.querySelectorAll('.grp-body').forEach(function(b){
+      var hasCur = b.querySelector('.cur');
+      if(!hasCur){
+        b.classList.add('grp-hidden');
+        var h = b.previousElementSibling;
+        if(h && h.classList.contains('sider-grp-toggle')) h.classList.add('collapsed');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', initGrp); } else { initGrp(); }
+})();
+/* R12 通用按钮交互反馈 */
+function gbToast(msg){var el=document.getElementById('gbToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},1800);}
+/* ============ 页面元数据:面包屑 / 标题 / 描述 / 操作按钮(9 个 page,R7:Z 系统管理 11 页已拆出至 web_z) ============ */
+const titles = {
+  'B-1-L':{crumb:'党组织列表',title:'党组织列表 · B-1-L',desc:'物业服务企业 / 物业区域 / 业主委员会党组织的统一管理 · 共 <strong>1,287</strong> 个党组织',
+    actions:`<button class="btn btn-sm">⤓ 导出报表</button><button class="btn btn-sm" onclick="switchPage('B-8-L')">⚑ 应建覆盖率</button><button class="btn btn-primary btn-sm" onclick="switchPage('B-1-F')">⊕ 新增党组织</button>`},
+  'B-1-F':{crumb:'党组织新增',title:'党组织新增 · B-1-F',desc:'录入党组织基础信息 + 联建物业企业 / 物业区域(跨表关联) + 班子成员',
+    actions:`<button class="btn btn-sm" onclick="switchPage('B-1-L')">← 返回列表</button>`},
+  'B-2-L':{crumb:'党员管理',title:'党员列表 · B-2-L',desc:'全省物业行业 <strong>9,432</strong> 名党员档案 · 支持在线缴纳党费 / 三会一课记录',
+    actions:`<button class="btn btn-sm">⤓ 导出名册</button><button class="btn btn-sm">📊 党员结构</button><button class="btn btn-primary btn-sm">⊕ 录入党员</button>`},
+  'B-3-L':{crumb:'服务中心地图',title:'党群服务中心地图 · B-3-L',desc:'陕西 10 市党群服务中心分布 · 红色物业示范点 <strong>172</strong> 个 · 普通服务点 <strong>687</strong> 个',
+    actions:`<button class="btn btn-sm">⤓ 导出清单</button><button class="btn btn-sm" onclick="switchPage('B-5-L')">📢 党务公开</button><button class="btn btn-primary btn-sm">⊕ 新增服务中心</button>`},
+  'B-4-L':{crumb:'党建活动',title:'党建活动列表 · B-4-L',desc:'三会一课 / 主题党日 / 志愿服务 · 本月已开展 <strong>486</strong> 场',
+    actions:`<button class="btn btn-sm">📅 日历视图</button><button class="btn btn-primary btn-sm">⊕ 发起活动</button>`},
+  'B-5-L':{crumb:'党务公开',title:'党务公开 · B-5-L',desc:'党组织决议 / 党费使用 / 民主评议 · 面向业主和党员公开',
+    actions:`<button class="btn btn-sm">⤓ 导出</button><button class="btn btn-primary btn-sm">⊕ 发布公开</button>`},
+  'B-6-L':{crumb:'党建动态',title:'党建动态 · B-6-L',desc:'党建新闻 / 经验交流 / 先进事迹 · 滚动发布',
+    actions:`<button class="btn btn-sm">📢 推送业主端</button><button class="btn btn-primary btn-sm">⊕ 发布动态</button>`},
+  'B-7-L':{crumb:'党建评价',title:'党建评价 · B-7-L',desc:'星级评定(五星 / 五档)· 评价结果关联物业企业<a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D" class="cross-link">信用档案</a>',
+    actions:`<button class="btn btn-sm">⤓ 评价报告</button><button class="btn btn-sm">📊 历年趋势</button><button class="btn btn-primary btn-sm">⊕ 发起评价</button>`},
+  'B-8-L':{crumb:'应建覆盖率',title:'党组织应建覆盖率看板 · B-8-L · P0-2',desc:'应建 / 已建 / 应建未建实时统计 · 物业企业 / 区域 / 项目 3 维度 · 自动推动',
+    actions:`<button class="btn btn-sm">⤓ 导出报表</button><button class="btn btn-sm" onclick="switchPage('B-1-L')">党组织列表</button><button class="btn btn-warn btn-sm">📢 批量推动通知</button>`},
+};
+
+/* ====== 页面切换(web_d 统一:page + tabbar + 侧栏 + 面包屑 + hash) ====== */
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('cur'));
+  const target=document.getElementById('page-'+id);
+  if(target) target.classList.add('cur');
+  document.querySelectorAll('#tabbar a').forEach(a=>a.classList.toggle('cur',a.dataset.tab===id));
+  document.querySelectorAll('.sider .s-item').forEach(a=>a.classList.toggle('cur',a.getAttribute('href')==='#page-'+id));
+  const t=titles[id]||titles['B-1-L'];
+  document.getElementById('crumb-3').textContent=t.crumb;
+  document.getElementById('page-title-text').textContent=t.title;
+  document.getElementById('page-desc-text').innerHTML=t.desc;
+  document.getElementById('page-actions-box').innerHTML=t.actions||'';
+  history.replaceState(null,'','#page-'+id);
+  document.querySelector('.page-bd').scrollTop=0;
+  window.scrollTo(0,0);
+}
+
+/* ====== 兼容旧 onclick="go(...)" 调用 ====== */
+function go(id){switchPage(id)}
+
+/* ====== 侧栏折叠 ====== */
+function toggleSider(){
+  document.getElementById('sider').classList.toggle('collapsed');
+}
+
+/* ====== 启动时:从 hash 自动定位 ====== */
+window.addEventListener('DOMContentLoaded',function(){
+  const hash=location.hash.replace('#','').replace('page-','');
+  if(hash && document.getElementById('page-'+hash)){
+    switchPage(hash);
+  }else{
+    switchPage('B-1-L');
+  }
+});
+
+/* ====== 大屏事件流动画(Z-DASHBOARD 已拆出至 web_z,此处保留兜底) ====== */
+const esList=document.querySelector('.event-stream .list');
+if(esList){esList.style.animationDuration='40s'}
+
+console.log('R7 web_b 社区物业党建联建 · 9 个 page · 默认 B-1-L · 纯党建瘦身 · Z 系统管理 11 页已拆出至 ../09-系统管理/web_z_system_prototype.html');
+</script>
+
+<div class="gb-toast" id="gbToast"></div>
+</body>
+</html>

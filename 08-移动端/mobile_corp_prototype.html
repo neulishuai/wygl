@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>物业企业端 · 陕西数字住建</title>
+<style>
+:root{
+  --primary:#534AB7;--primary-light:#7B6FE0;--primary-pale:#E8E7FA;
+  --accent:#E9353A;
+  --bg:#F4F5F7;--card:#FFFFFF;--txt:#1D2129;--txt2:#4E5969;--txt3:#86909C;
+  --line:#E5E6EB;
+  --ok:#00B42A;--ok-bg:#E8FFEA;
+  --warn:#FF7D00;--warn-bg:#FFF3E0;
+  --danger:#F53F3F;--danger-bg:#FFECE8;
+  --info:#165DFF;--info-bg:#E8F1FF;
+  --shadow-card:0 2px 8px rgba(0,0,0,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#EEF0F5 0%,#E5E7ED 100%);min-height:100vh;color:var(--txt);font-size:15px;-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+.phone-frame{max-width:414px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;box-shadow:0 0 40px rgba(0,0,0,.08);padding-bottom:80px;}
+
+.immersive-header{
+  background:linear-gradient(135deg,#534AB7 0%,#7B6FE0 100%);
+  color:#fff;
+  padding-top:20px;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 16px rgba(83,74,183,.35);
+}
+.status-bar{height:20px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:11px;opacity:.95;}
+.status-bar .right{display:flex;gap:6px;align-items:center;}
+.header-main{padding:8px 20px 18px;}
+.hello-row{display:flex;justify-content:space-between;align-items:center;}
+.hello-left{display:flex;align-items:center;gap:10px;}
+.corp-logo{width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.corp-info .name{font-size:16px;font-weight:600;}
+.corp-info .role{font-size:11px;opacity:.85;margin-top:2px;}
+.hello-right{display:flex;gap:10px;}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;}
+.icon-btn .badge{position:absolute;top:6px;right:18px;background:var(--accent);color:#fff;font-size:9px;border-radius:8px;padding:1px 4px;font-weight:600;}
+.sub-row{margin-top:12px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.14);border-radius:10px;padding:10px 14px;}
+.sub-info{display:flex;align-items:center;gap:8px;font-size:13px;}
+.sub-info small{display:block;font-size:11px;opacity:.7;margin-bottom:1px;}
+.sub-info b{font-weight:500;font-size:13px;}
+.switch-btn{font-size:12px;background:rgba(255,255,255,.22);padding:5px 10px;border-radius:14px;}
+
+.tab-content{display:none;padding:14px 14px 0;animation:fadeIn .25s;}
+.tab-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.sub-header{padding:14px 4px 10px;display:flex;justify-content:space-between;align-items:center;}
+.sub-header .title{font-size:18px;font-weight:600;}
+.sub-header .title small{font-size:12px;color:var(--txt3);font-weight:400;display:block;margin-top:2px;}
+.back-btn{width:32px;height:32px;border-radius:50%;background:#fff;color:var(--txt2);box-shadow:var(--shadow-card);display:flex;align-items:center;justify-content:center;font-size:18px;}
+
+.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow-card);}
+.card-flat{background:var(--card);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-card);}
+.card-title{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 8px;}
+.card-title h3{font-size:15px;font-weight:600;}
+.card-title .more{font-size:12px;color:var(--primary);}
+
+.gradient-card{
+  border-radius:16px;
+  padding:18px;
+  color:#fff;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,.18);
+}
+.gradient-card::before{content:"";position:absolute;top:-30%;right:-20%;width:160px;height:160px;background:radial-gradient(circle,rgba(255,255,255,.18) 0%,transparent 60%);}
+.gradient-card.purple{background:linear-gradient(135deg,#534AB7 0%,#7B6FE0 100%);box-shadow:0 6px 20px rgba(83,74,183,.32);}
+.gradient-card.red{background:linear-gradient(135deg,#E9353A 0%,#FF5E5E 100%);box-shadow:0 6px 20px rgba(233,53,58,.32);}
+.gradient-card.blue{background:linear-gradient(135deg,#165DFF 0%,#4584FF 100%);box-shadow:0 6px 20px rgba(22,93,255,.32);}
+.gradient-card.orange{background:linear-gradient(135deg,#FF7D00 0%,#FFA033 100%);box-shadow:0 6px 20px rgba(255,125,0,.32);}
+.gradient-card.green{background:linear-gradient(135deg,#00B42A 0%,#4ECB4D 100%);box-shadow:0 6px 20px rgba(0,180,42,.32);}
+
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.kpi-box{padding:12px 14px;border-radius:10px;background:#fff;box-shadow:var(--shadow-card);}
+.kpi-box .num{font-size:20px;font-weight:600;color:var(--txt);font-variant-numeric:tabular-nums;}
+.kpi-box .lbl{font-size:11px;color:var(--txt3);margin-top:2px;}
+.kpi-box.purple .num{color:var(--primary);}
+.kpi-box.red .num{color:var(--danger);}
+.kpi-box.orange .num{color:var(--warn);}
+.kpi-box.green .num{color:var(--ok);}
+.kpi-box.blue .num{color:var(--info);}
+.kpi-row.cols4{grid-template-columns:repeat(4,1fr);}
+.kpi-row.cols4 .kpi-box{padding:10px 6px;text-align:center;}
+.kpi-row.cols4 .kpi-box .num{font-size:18px;}
+
+.list-card{padding:0;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card);}
+.list-row{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;cursor:pointer;}
+.list-row:last-child{border-bottom:none;}
+.list-row:active{background:#F7F7FB;}
+.list-row .icowrap{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.list-row .icowrap.purple{background:linear-gradient(135deg,#E8E7FA,#D5D2F5);color:#534AB7;}
+.list-row .icowrap.red{background:linear-gradient(135deg,#FFECE8,#FFD2CE);color:#E9353A;}
+.list-row .icowrap.blue{background:linear-gradient(135deg,#E8F1FF,#CDDFFF);color:#165DFF;}
+.list-row .icowrap.orange{background:linear-gradient(135deg,#FFF3E0,#FFE0BD);color:#FF7D00;}
+.list-row .icowrap.green{background:linear-gradient(135deg,#E8FFEA,#C2F5C8);color:#00B42A;}
+.list-row .icowrap.gray{background:linear-gradient(135deg,#F2F3F5,#E0E2E6);color:#4E5969;}
+.list-row .body{flex:1;min-width:0;}
+.list-row .body .t{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-row .body .m{font-size:12px;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-row .body .m .dot{margin:0 6px;color:var(--line);}
+.list-row .right{text-align:right;flex-shrink:0;}
+.list-row .right .time{font-size:11px;color:var(--txt3);margin-bottom:4px;}
+.list-row .right .arrow{color:var(--txt3);font-size:14px;}
+
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;}
+.tag.purple{background:#E8E7FA;color:#534AB7;}
+.tag.red{background:var(--danger-bg);color:var(--danger);}
+.tag.green{background:var(--ok-bg);color:var(--ok);}
+.tag.orange{background:var(--warn-bg);color:var(--warn);}
+.tag.blue{background:var(--info-bg);color:var(--info);}
+.tag.gray{background:#F7F8FA;color:var(--txt3);}
+
+.section-title{display:flex;justify-content:space-between;align-items:center;padding:12px 4px 8px;}
+.section-title h3{font-size:15px;font-weight:600;}
+.section-title .more{color:var(--primary);font-size:12px;}
+
+.form-group{background:#fff;border-radius:12px;padding:6px 16px;margin-bottom:12px;box-shadow:var(--shadow-card);}
+.form-item{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);}
+.form-item:last-child{border-bottom:none;}
+.form-item .lbl{font-size:13px;color:var(--txt2);width:84px;flex-shrink:0;}
+.form-item .ctrl{flex:1;font-size:14px;color:var(--txt);display:flex;justify-content:flex-end;align-items:center;gap:6px;text-align:right;}
+.form-item .ctrl input,.form-item .ctrl select,.form-item .ctrl textarea{flex:1;border:none;outline:none;background:none;text-align:right;font-family:inherit;font-size:14px;color:var(--txt);}
+.form-item .ctrl textarea{text-align:left;min-height:60px;padding:6px 0;}
+.form-item .ctrl .arrow{color:var(--txt3);}
+
+.btn{padding:12px 18px;border-radius:10px;font-size:15px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s;}
+.btn:active{transform:scale(.97);}
+.btn.primary{background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;box-shadow:0 3px 10px rgba(83,74,183,.3);}
+.btn.danger{background:linear-gradient(135deg,#E9353A,#FF5E5E);color:#fff;}
+.btn.success{background:linear-gradient(135deg,#00B42A,#4ECB4D);color:#fff;}
+.btn.ghost{background:#fff;color:var(--primary);border:1.5px solid var(--primary);}
+.btn-block{display:flex;width:100%;}
+.btn.small{padding:7px 14px;font-size:13px;border-radius:8px;}
+.btn-bar{padding:14px 16px;background:#fff;border-top:1px solid var(--line);display:flex;gap:10px;position:sticky;bottom:68px;z-index:9;}
+.btn-bar .btn{flex:1;}
+
+.radio-pill{padding:6px 14px;border-radius:18px;background:#F2F3F5;color:var(--txt2);font-size:13px;}
+.radio-pill.on{background:#E8E7FA;color:var(--primary);font-weight:500;}
+
+.timeline{padding:6px 14px;}
+.tl-row{display:flex;gap:12px;padding:10px 0;}
+.tl-dot{width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:2px;}
+.tl-dot.done{background:var(--ok);}
+.tl-dot.cur{background:var(--warn);box-shadow:0 0 0 4px #FFF3E0;}
+.tl-dot.fail{background:var(--danger);}
+.tl-body{flex:1;font-size:13px;}
+.tl-body .when{color:var(--txt3);font-size:11px;margin-bottom:2px;}
+.tl-body .what{color:var(--txt);}
+.tl-body .who{color:var(--txt2);font-size:12px;margin-top:2px;}
+
+.progress{height:6px;background:#F0F0F4;border-radius:3px;overflow:hidden;margin:6px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#534AB7,#7B6FE0);border-radius:3px;}
+.progress-fill.warn{background:linear-gradient(90deg,#FF7D00,#FFA94D);}
+.progress-fill.green{background:linear-gradient(90deg,#00B42A,#4ECB4D);}
+
+.divider{margin:14px 0;display:flex;align-items:center;gap:10px;color:var(--txt3);font-size:12px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+
+.up-zone{padding:16px;border:2px dashed var(--line);border-radius:12px;text-align:center;background:#FAFAFE;margin-bottom:12px;color:var(--txt3);}
+.up-zone .up-ico{font-size:32px;display:block;margin-bottom:6px;color:var(--primary);}
+
+.tabbar{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:414px;
+  background:#fff;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  padding:8px 0 16px;
+  box-shadow:0 -2px 16px rgba(0,0,0,.06);
+  z-index:50;
+  border-top:1px solid var(--line);
+}
+.tabbar-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--txt3);padding:4px 0;cursor:pointer;position:relative;}
+.tabbar-item.active{color:var(--primary);}
+.tabbar-item.active::before{content:"";position:absolute;top:0;width:18px;height:3px;background:var(--primary);border-radius:0 0 3px 3px;}
+.tabbar-item .ico{font-size:22px;line-height:1;}
+
+.empty{padding:40px 0;text-align:center;color:var(--txt3);font-size:13px;}
+.empty .em{font-size:48px;display:block;margin-bottom:10px;opacity:.5;}
+
+.detail-hero{padding:18px 16px;background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;border-radius:14px;margin-bottom:14px;position:relative;overflow:hidden;}
+.detail-hero h2{font-size:18px;font-weight:600;margin-bottom:8px;position:relative;}
+.detail-hero .meta{font-size:12px;opacity:.85;position:relative;}
+.detail-hero .meta span{margin-right:14px;}
+.detail-body{padding:16px;font-size:14px;color:var(--txt);line-height:1.75;}
+
+.banner-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:4px 0 14px;}
+.bg-item{padding:12px 8px;border-radius:12px;text-align:center;color:#fff;}
+.bg-item.purple{background:linear-gradient(135deg,#534AB7,#7B6FE0);}
+.bg-item.orange{background:linear-gradient(135deg,#FF7D00,#FFA94D);}
+.bg-item.blue{background:linear-gradient(135deg,#165DFF,#4584FF);}
+.bg-item.red{background:linear-gradient(135deg,#E9353A,#FF5E5E);}
+.bg-item .ic{font-size:24px;display:block;margin-bottom:4px;}
+.bg-item .lb{font-size:11px;}
+
+.assignee-pick{padding:14px;background:#fff;border-radius:12px;box-shadow:var(--shadow-card);display:flex;align-items:center;gap:10px;}
+.assignee-pick .pic{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#FFD580,#FF9248);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.assignee-pick .info{flex:1;}
+.assignee-pick .info .nm{font-size:14px;font-weight:500;}
+.assignee-pick .info .mt{font-size:11px;color:var(--txt3);}
+.assignee-pick .badge-star{font-size:11px;color:var(--warn);}
+
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.78);color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;display:none;}
+
+.board-stat{padding:14px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;border-bottom:1px solid var(--line);}
+.board-stat .num{font-size:18px;font-weight:600;color:var(--primary);font-variant-numeric:tabular-nums;}
+.board-stat .lbl{font-size:11px;color:var(--txt3);}
+
+/* ===== R7 内容补齐 · 新增组件样式 ===== */
+.m-table{width:100%;border-collapse:collapse;font-size:12px;}
+.m-table th{background:#F2F3F7;color:var(--txt2);font-weight:500;padding:9px 6px;text-align:center;white-space:nowrap;}
+.m-table td{padding:10px 6px;text-align:center;border-top:1px solid var(--line);color:var(--txt);font-variant-numeric:tabular-nums;}
+.m-table tr.cur-cat td{background:#F5F4FE;font-weight:600;color:var(--primary);}
+.m-table tr.sum-row td{background:#F7F6FE;font-weight:600;border-top:2px solid #D5D2F5;}
+.worker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;}
+.worker-chip{border:1.5px solid var(--line);border-radius:10px;padding:9px 4px;text-align:center;font-size:11px;cursor:pointer;background:#fff;position:relative;transition:.15s;}
+.worker-chip:active{transform:scale(.97);}
+.worker-chip .wnm{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:2px;}
+.worker-chip .wspec{color:var(--txt2);}
+.worker-chip .wstat{margin-top:4px;font-size:10px;line-height:1.5;}
+.worker-chip.on{border-color:var(--primary);background:#F5F4FE;box-shadow:0 0 0 2px rgba(83,74,183,.12);}
+.worker-chip.on::after{content:"✓";position:absolute;top:-7px;right:-5px;background:var(--primary);color:#fff;width:17px;height:17px;border-radius:50%;font-size:10px;line-height:17px;font-weight:600;}
+.seg-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;-webkit-overflow-scrolling:touch;}
+.seg-tabs::-webkit-scrollbar{display:none;}
+.seg-tabs .seg{flex-shrink:0;padding:7px 15px;border-radius:16px;background:#fff;color:var(--txt2);font-size:13px;box-shadow:var(--shadow-card);border:1px solid var(--line);}
+.seg-tabs .seg.on{background:linear-gradient(135deg,#534AB7,#7B6FE0);color:#fff;border-color:transparent;font-weight:500;}
+.lock-tip{display:none;align-items:flex-start;gap:8px;background:#FFF7E6;border:1px solid #FFD666;border-radius:10px;padding:11px 12px;font-size:12px;color:#874D00;line-height:1.6;margin-bottom:12px;}
+.overdue-card{border-left:4px solid var(--danger);background:linear-gradient(90deg,#FFECE8,#FFFBFA);}
+.info-line{font-size:12px;color:var(--txt2);display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);gap:10px;}
+.info-line:last-child{border-bottom:none;}
+.info-line b{color:var(--txt);font-weight:500;font-variant-numeric:tabular-nums;text-align:right;}
+.photo-cell{width:64px;height:64px;border-radius:8px;background:#F0F0F4;display:flex;align-items:center;justify-content:center;font-size:26px;position:relative;flex-shrink:0;}
+.photo-cell .del{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--danger);color:#fff;font-size:11px;line-height:18px;text-align:center;font-style:normal;}
+</style>
+</head>
+<body>
+<div class="phone-frame" id="app">
+
+  <!-- ==================== 沉浸 Header ==================== -->
+  <div class="immersive-header">
+    <div class="status-bar">
+      <span>10:26</span>
+      <span class="right"><span>5G</span><span>▣ 86%</span></span>
+    </div>
+    <div class="header-main">
+      <div class="hello-row">
+        <div class="hello-left">
+          <div class="corp-logo">🏢</div>
+          <div class="corp-info">
+            <div class="name">西安万科物业服务</div>
+            <div class="role">王建军 · 项目经理(万科花园项目)</div>
+          </div>
+        </div>
+        <div class="hello-right">
+          <div class="icon-btn" style="position:relative;" onclick="showToast('待办提醒:4 项待办待处理')">⌮<span class="badge">4</span></div>
+          <div class="icon-btn" onclick="showToast('个人中心(原型演示)')">⌹</div>
+        </div>
+      </div>
+      <div class="sub-row">
+        <div class="sub-info">
+          <div style="font-size:22px;">⌬</div>
+          <div>
+            <small>在管项目 · 信用评级 A</small>
+            <b>西安·万科花园(38万㎡ · 1,826户)</b>
+          </div>
+        </div>
+        <a onclick="gbToast('视图已切换')" href="javascript:showToast('切换在管项目(原型演示)')" class="switch-btn">⇄ 切换</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Tab 1: 项目 (M-8-PROJ-HOME) ============ -->
+  <div class="tab-content active" id="tab-M-8">
+    <div class="page" id="page-M-8-PROJ-HOME">
+      <div class="sub-header">
+        <div class="title">⌬ 项目经理首页<small>2026年10月19日 星期一 · 万科花园物业服务中心</small></div>
+      </div>
+
+      <!-- 项目概要卡 -->
+      <div class="gradient-card purple">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">📍 在管项目</span>
+          <span style="font-size:11px;opacity:.85;">服务合同期:2025-07-01 ~ 2028-06-30</span>
+        </div>
+        <h3 style="font-size:19px;font-weight:600;position:relative;">西安·万科花园</h3>
+        <div style="font-size:12px;opacity:.9;margin-top:5px;position:relative;">雁塔区科技路 255 号 · 住宅小区 · 12 栋 / 26 个单元 · 2012 年交付</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px;text-align:center;position:relative;">
+          <div><div style="font-size:19px;font-weight:600;">38万㎡</div><div style="font-size:10px;opacity:.8;">服务面积</div></div>
+          <div><div style="font-size:19px;font-weight:600;">1,826</div><div style="font-size:10px;opacity:.8;">住户(户)</div></div>
+          <div><div style="font-size:19px;font-weight:600;">42</div><div style="font-size:10px;opacity:.8;">员工(人)</div></div>
+          <div><div style="font-size:19px;font-weight:600;">A</div><div style="font-size:10px;opacity:.8;">信用评级</div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:13px;flex-wrap:wrap;position:relative;">
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">物业服务一级资质</span>
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">党建引领示范项目</span>
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">收缴率 94.1%</span>
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">12 月信用复评</span>
+        </div>
+      </div>
+
+      <!-- 今日待办 4 项 -->
+      <div class="section-title"><h3>📋 今日待办(4 项)</h3><span style="font-size:11px;color:var(--txt3);">更新于 10:26</span></div>
+      <div class="kpi-row cols4">
+        <div class="kpi-box red"><div class="num">3</div><div class="lbl">待派工单</div></div>
+        <div class="kpi-box orange"><div class="num">2</div><div class="lbl">待回复投诉</div></div>
+        <div class="kpi-box blue"><div class="num">1</div><div class="lbl">查验任务</div></div>
+        <div class="kpi-box purple"><div class="num">待办</div><div class="lbl">月度上报</div></div>
+      </div>
+
+      <!-- 待办列表(可点击切换 page) -->
+      <div class="list-card">
+        <a href="#page-M-8-WO-ASSIGN" onclick="switchTab('M-8b');showPage('M-8-WO-ASSIGN');return false;" class="list-row">
+          <div class="icowrap red">⌫</div>
+          <div class="body">
+            <div class="t">待派报修工单 3 件</div>
+            <div class="m">含非常紧急 1 件(3 号梯异响)· 最早 09:41 进单</div>
+          </div>
+          <div class="right"><div class="time">2 小时未派</div><span class="tag red">去分派</span></div>
+        </a>
+        <a href="#page-M-8-CMP-PROC" onclick="switchTab('M-8c');showPage('M-8-CMP-PROC');return false;" class="list-row">
+          <div class="icowrap orange">⌨</div>
+          <div class="body">
+            <div class="t">待回复投诉 2 件</div>
+            <div class="m">其中 1 件为区住建局督办件 · 限 10-21 18:00 前处置</div>
+          </div>
+          <div class="right"><div class="time">剩 2 天</div><span class="tag orange">去处置</span></div>
+        </a>
+        <a href="#page-M-8-CHECK" onclick="switchTab('M-8d');showPage('M-8-CHECK');return false;" class="list-row">
+          <div class="icowrap blue">✓</div>
+          <div class="body">
+            <div class="t">承接查验任务 1 项</div>
+            <div class="m">翡翠天地二期 · 二轮现场查验 10-20 启动 · 待查验 14 项</div>
+          </div>
+          <div class="right"><div class="time">明日启动</div><span class="tag blue">去查看</span></div>
+        </a>
+        <a href="#page-M-8-WO-MONTH" onclick="switchTab('M-8e');showPage('M-8-WO-MONTH');return false;" class="list-row">
+          <div class="icowrap purple">⌧</div>
+          <div class="body">
+            <div class="t">月度报修汇总上报(2026-09 期)</div>
+            <div class="m">填报截止 10-25 24:00 · 当前状态:草稿(未提交)</div>
+          </div>
+          <div class="right"><div class="time">剩 6 天</div><span class="tag purple">去填报</span></div>
+        </a>
+      </div>
+
+      <!-- 本月服务数据 -->
+      <div class="section-title"><h3>📊 本月服务数据(2026-10)</h3><span style="font-size:11px;color:var(--txt3);">统计周期 10-01 ~ 10-19</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;">
+          <span>🔧 报修完成率</span><b style="color:var(--ok);">96.2%</b>
+        </div>
+        <div class="progress"><div class="progress-fill green" style="width:96.2%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-bottom:12px;">
+          <span>受理 131 件 · 完成 126 件</span><span style="color:var(--ok);">↑ 环比 +0.8pp</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;">
+          <span>⌨ 投诉处置率</span><b style="color:var(--ok);">100%</b>
+        </div>
+        <div class="progress"><div class="progress-fill green" style="width:100%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);margin-bottom:12px;">
+          <span>受理 18 件 · 已处置 18 件</span><span style="color:var(--ok);">继续保持</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;">
+          <span>🚶 巡检完成率</span><b style="color:var(--warn);">88%</b>
+        </div>
+        <div class="progress"><div class="progress-fill warn" style="width:88%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);">
+          <span>计划 75 次 · 已完成 66 次</span><span style="color:var(--warn);">9 次顺延,需月底前补齐</span>
+        </div>
+      </div>
+
+      <!-- 快捷入口 -->
+      <div class="section-title"><h3>⚡ 快捷入口</h3></div>
+      <div style="padding:0 4px;">
+        <div class="banner-grid">
+          <a href="#page-M-8-WO-ASSIGN" onclick="switchTab('M-8b');showPage('M-8-WO-ASSIGN');return false;" class="bg-item blue"><span class="ic">⌫</span><div class="lb">报修分派</div></a>
+          <a href="#page-M-8-CMP-PROC" onclick="switchTab('M-8c');showPage('M-8-CMP-PROC');return false;" class="bg-item red"><span class="ic">⌨</span><div class="lb">投诉处置</div></a>
+          <a href="#page-M-8-CHECK" onclick="switchTab('M-8d');showPage('M-8-CHECK');return false;" class="bg-item orange"><span class="ic">✓</span><div class="lb">承接查验</div></a>
+          <a href="#page-M-8-WO-MONTH" onclick="switchTab('M-8e');showPage('M-8-WO-MONTH');return false;" class="bg-item purple"><span class="ic">⌧</span><div class="lb">月度上报</div></a>
+        </div>
+      </div>
+
+      <!-- 今日值班信息 -->
+      <div class="section-title"><h3>🧰 今日值班(10-19)</h3><span style="font-size:11px;color:var(--txt3);">白班 08:00-20:00</span></div>
+      <div class="card">
+        <div class="info-line"><span>值班经理</span><b>王建军 139****2210</b></div>
+        <div class="info-line"><span>维修值班(水电/综合)</span><b>张建国、王敏 · 在岗</b></div>
+        <div class="info-line"><span>电梯维保(驻场)</span><b>李强 · 在岗</b></div>
+        <div class="info-line"><span>安保/秩序</span><b>6 人 · 两班倒</b></div>
+        <div class="info-line"><span>客服前台</span><b>3 人 · 08:30-20:30</b></div>
+        <div class="info-line"><span>夜间应急电话</span><b style="color:var(--danger);">029-8866**** 转 9</b></div>
+      </div>
+
+      <!-- 最新工单动态 -->
+      <div class="section-title"><h3>🔄 最新工单动态</h3><span style="font-size:11px;color:var(--txt3);">近 24 小时</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap red">🛗</div>
+          <div class="body">
+            <div class="t">WO-20261019-0032 · 3 号梯 5~7 层异响</div>
+            <div class="m">9-1-0802 刘先生 <span class="dot">·</span> 09:41 报修 <span class="dot">·</span> 待分派</div>
+          </div>
+          <div class="right"><span class="tag red">非常紧急</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap blue">🚿</div>
+          <div class="body">
+            <div class="t">WO-20261019-0025 · 厨房下水缓慢疏通</div>
+            <div class="m">2-1-1204 吴女士 <span class="dot">·</span> 张建国处理中 <span class="dot">·</span> 预计 11:30 完成</div>
+          </div>
+          <div class="right"><span class="tag blue">处理中</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap orange">🧒</div>
+          <div class="body">
+            <div class="t">CMP-20261018-0009 · 儿童滑梯扶手松动</div>
+            <div class="m">3-1-0702 李先生 <span class="dot">·</span> 街道办转办 <span class="dot">·</span> 待处置</div>
+          </div>
+          <div class="right"><span class="tag orange">待处置</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">💡</div>
+          <div class="body">
+            <div class="t">WO-20261019-0023 · 电梯厅照明灯故障</div>
+            <div class="m">6-2-0901 郑先生 <span class="dot">·</span> 李强已修复 <span class="dot">·</span> 待业主确认</div>
+          </div>
+          <div class="right"><span class="tag green">已完成</span></div>
+        </div>
+      </div>
+
+      <!-- 主管部门通知 -->
+      <div class="section-title"><h3>📢 主管部门通知</h3><span style="font-size:11px;color:var(--primary);">3 条未读</span></div>
+      <div class="list-card">
+        <div class="list-row" onclick="showToast('通知详情(原型演示)')">
+          <div class="icowrap purple">📄</div>
+          <div class="body">
+            <div class="t">关于开展 2026 年三季度物业服务质量检查的通知</div>
+            <div class="m">雁塔区住建局 <span class="dot">·</span> 10-18 发文 <span class="dot">·</span> 10-28 前反馈自查表</div>
+          </div>
+          <div class="right"><span class="tag purple">需反馈</span></div>
+        </div>
+        <div class="list-row" onclick="showToast('通知详情(原型演示)')">
+          <div class="icowrap red">⚠</div>
+          <div class="body">
+            <div class="t">督办提醒:CMP-20261019-0012 逾期将扣信用分</div>
+            <div class="m">雁塔区住建局物业科 <span class="dot">·</span> 10-19 09:00</div>
+          </div>
+          <div class="right"><span class="tag red">督办</span></div>
+        </div>
+        <div class="list-row" onclick="showToast('通知详情(原型演示)')">
+          <div class="icowrap blue">📋</div>
+          <div class="body">
+            <div class="t">2026-09 期月度报修汇总填报通知</div>
+            <div class="m">省住建厅统一部署 <span class="dot">·</span> 截止 10-25 24:00</div>
+          </div>
+          <div class="right"><span class="tag blue">待办</span></div>
+        </div>
+      </div>
+
+      <!-- 巡检任务进度 -->
+      <div class="section-title"><h3>🚶 巡检任务进度(本月)</h3><span style="font-size:11px;color:var(--warn);">9 次顺延</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;">
+          <span>公共区域日巡检</span><b style="color:var(--ok);">28 / 31 次</b>
+        </div>
+        <div class="progress"><div class="progress-fill green" style="width:90%;"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;margin-top:10px;">
+          <span>电梯机房周巡检</span><b style="color:var(--ok);">4 / 4 次</b>
+        </div>
+        <div class="progress"><div class="progress-fill green" style="width:100%;"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;margin-top:10px;">
+          <span>消防设施月检</span><b style="color:var(--warn);">12 / 18 次</b>
+        </div>
+        <div class="progress"><div class="progress-fill warn" style="width:67%;"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:2px;margin-top:10px;">
+          <span>屋面 / 外立面专项巡查</span><b style="color:var(--warn);">22 / 22 次 · 已完成</b>
+        </div>
+        <div class="progress"><div class="progress-fill green" style="width:100%;"></div></div>
+        <div style="font-size:11px;color:var(--txt3);margin-top:8px;">消防月检 6 次因维保单位进场延误顺延,已约定 10-28 前补齐,由工程主管赵鹏盯办。</div>
+      </div>
+
+      <!-- 业主表扬 -->
+      <div class="section-title"><h3>😊 业主评价(本月)</h3><span style="font-size:12px;color:var(--warn);">⭐ 4.8 / 5.0</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;color:var(--txt2);">收到评价 <b style="color:var(--txt);">86</b> 条 · 表扬 <b style="color:var(--ok);">71</b> 条 · 投诉 <b style="color:var(--danger);">2</b> 条</div>
+        </div>
+        <div class="info-line"><span>⭐⭐⭐⭐⭐ "张师傅上门很快,漏水当天就修好了" — 7-1-0502</span><b style="color:var(--txt3);font-size:11px;">10-17</b></div>
+        <div class="info-line"><span>⭐⭐⭐⭐⭐ "电梯异响反馈后维保当天到场" — 9-1-0802</span><b style="color:var(--txt3);font-size:11px;">10-12</b></div>
+        <div class="info-line"><span>⭐⭐⭐⭐ "希望地库垃圾清运再及时一些" — 7-2-1102</span><b style="color:var(--txt3);font-size:11px;">10-16</b></div>
+      </div>
+
+      <div style="height:26px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ Tab 2: 报修 (M-8-WO-ASSIGN) ============ -->
+  <div class="tab-content" id="tab-M-8b">
+    <div class="page" id="page-M-8-WO-ASSIGN">
+      <div class="sub-header">
+        <div class="title">⌫ 报修任务分派<small>待分派 4 · 已分派 3 · 今日完成 9</small></div>
+        <a onclick="gbToast('翻页操作')" href="javascript:switchTab('M-8');showPage('M-8-PROJ-HOME');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on" onclick="pill(this)">全部 7</div>
+        <div class="radio-pill" onclick="pill(this);showToast('已筛选:待分派 4 件')">待分派 4</div>
+        <div class="radio-pill" onclick="pill(this);showToast('已筛选:已分派 3 件')">已分派 3</div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box red"><div class="num">4</div><div class="lbl">待分派</div></div>
+        <div class="kpi-box blue"><div class="num">3</div><div class="lbl">已分派</div></div>
+        <div class="kpi-box green"><div class="num">9</div><div class="lbl">今日完成</div></div>
+        <div class="kpi-box purple"><div class="num">26<span style="font-size:11px;">min</span></div><div class="lbl">平均响应</div></div>
+      </div>
+
+      <!-- 待分派工单 1(非常紧急) -->
+      <div class="section-title"><h3>🔥 待分派工单(4)</h3><span style="font-size:11px;color:var(--danger);">含非常紧急 1 件</span></div>
+
+      <div class="card-flat wo-card">
+        <div class="list-row" style="cursor:default;background:linear-gradient(90deg,#FFECE8,#FFFBFA);">
+          <div class="icowrap red">🛗</div>
+          <div class="body">
+            <div class="t">WO-20261019-0032</div>
+            <div class="m">9-1-0802 刘先生 <span class="dot">·</span> 今天 09:41 报修 <span class="dot">·</span> 电梯设备</div>
+          </div>
+          <div class="right"><span class="tag red">非常紧急</span></div>
+        </div>
+        <div style="padding:13px 16px;border-top:1px solid var(--line);">
+          <div style="font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px;">3 号梯运行至 5~7 层区间有明显异响,今早 09:20 出现 1 次自动平层停梯,轿厢内 3 名乘客被困约 2 分钟后自动恢复,业主担心存在安全隐患。</div>
+          <div class="info-line"><span>报修类型</span><b>电梯设备</b></div>
+          <div class="info-line"><span>联系电话</span><b>138****6721</b></div>
+          <div class="info-line"><span>期望上门</span><b style="color:var(--danger);">今天 15:00 前</b></div>
+          <div class="info-line"><span>派单时限</span><b style="color:var(--danger);">紧急工单 30 分钟内(剩 12 分钟)</b></div>
+          <div style="font-size:12.5px;font-weight:600;margin:11px 0 2px;">🛠 选择维修人员</div>
+          <div class="worker-grid">
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="张建国">
+              <div class="wnm">张建国</div>
+              <div class="wspec">水电专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 2</div>
+            </div>
+            <div class="worker-chip on" onclick="selectWorker(this)" data-name="李强">
+              <div class="wnm">李强</div>
+              <div class="wspec">电梯专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 1</div>
+            </div>
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="王敏">
+              <div class="wnm">王敏</div>
+              <div class="wspec">综合维修</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 0</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('工单已挂起:待曳引机配件到位后处理')">挂起</button>
+            <button class="btn primary small" style="flex:2;" onclick="doAssign(this)">✓ 派单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待分派工单 2 -->
+      <div class="card-flat wo-card" style="margin-top:12px;">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap orange">🚿</div>
+          <div class="body">
+            <div class="t">WO-20261019-0031</div>
+            <div class="m">3-2-1501 陈女士 <span class="dot">·</span> 今天 10:02 报修 <span class="dot">·</span> 水电</div>
+          </div>
+          <div class="right"><span class="tag orange">紧急</span></div>
+        </div>
+        <div style="padding:13px 16px;border-top:1px solid var(--line);">
+          <div style="font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px;">主卫水龙头根部渗水,已自行关闭角阀仍缓慢滴水,担心渗入柜体,家中下午有人,希望尽快上门。</div>
+          <div class="info-line"><span>报修类型</span><b>水电维修</b></div>
+          <div class="info-line"><span>联系电话</span><b>187****0354</b></div>
+          <div class="info-line"><span>期望上门</span><b style="color:var(--warn);">今天 16:00 前</b></div>
+          <div style="font-size:12.5px;font-weight:600;margin:11px 0 2px;">🛠 选择维修人员</div>
+          <div class="worker-grid">
+            <div class="worker-chip on" onclick="selectWorker(this)" data-name="张建国">
+              <div class="wnm">张建国</div>
+              <div class="wspec">水电专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 2</div>
+            </div>
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="李强">
+              <div class="wnm">李强</div>
+              <div class="wspec">电梯专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 1</div>
+            </div>
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="王敏">
+              <div class="wnm">王敏</div>
+              <div class="wspec">综合维修</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 0</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('工单已挂起')">挂起</button>
+            <button class="btn primary small" style="flex:2;" onclick="doAssign(this)">✓ 派单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待分派工单 3 -->
+      <div class="card-flat wo-card" style="margin-top:12px;">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap blue">🚪</div>
+          <div class="body">
+            <div class="t">WO-20261018-0028</div>
+            <div class="m">5-3-201 王女士 <span class="dot">·</span> 昨天 16:47 报修 <span class="dot">·</span> 公共设施</div>
+          </div>
+          <div class="right"><span class="tag blue">普通</span></div>
+        </div>
+        <div style="padding:13px 16px;border-top:1px solid var(--line);">
+          <div style="font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px;">5 号楼 3 单元门禁读卡器失灵,业主刷卡无反应,夜间只能等尾随进入,存在安全隐患,多位业主在群里反映。</div>
+          <div class="info-line"><span>报修类型</span><b>公共设施(门禁)</b></div>
+          <div class="info-line"><span>联系电话</span><b>135****8817</b></div>
+          <div class="info-line"><span>期望上门</span><b>明天 10:00 前</b></div>
+          <div style="font-size:12.5px;font-weight:600;margin:11px 0 2px;">🛠 选择维修人员</div>
+          <div class="worker-grid">
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="张建国">
+              <div class="wnm">张建国</div>
+              <div class="wspec">水电专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 2</div>
+            </div>
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="李强">
+              <div class="wnm">李强</div>
+              <div class="wspec">电梯专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 1</div>
+            </div>
+            <div class="worker-chip on" onclick="selectWorker(this)" data-name="王敏">
+              <div class="wnm">王敏</div>
+              <div class="wspec">综合维修</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 0</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('工单已挂起')">挂起</button>
+            <button class="btn primary small" style="flex:2;" onclick="doAssign(this)">✓ 派单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待分派工单 4 -->
+      <div class="card-flat wo-card" style="margin-top:12px;">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap gray">🪟</div>
+          <div class="body">
+            <div class="t">WO-20261018-0027</div>
+            <div class="m">12-1-603 赵先生 <span class="dot">·</span> 昨天 15:20 报修 <span class="dot">·</span> 其他(门窗五金)</div>
+          </div>
+          <div class="right"><span class="tag gray">普通</span></div>
+        </div>
+        <div style="padding:13px 16px;border-top:1px solid var(--line);">
+          <div style="font-size:13px;color:var(--txt);line-height:1.65;margin-bottom:8px;">主卧窗把手固定座脱落,窗扇无法锁闭,夜间风大有异响;家有幼儿,担心攀爬,希望尽快固定或更换把手。</div>
+          <div class="info-line"><span>报修类型</span><b>其他(门窗五金)</b></div>
+          <div class="info-line"><span>联系电话</span><b>150****9926</b></div>
+          <div class="info-line"><span>期望上门</span><b>明天 14:00 前</b></div>
+          <div style="font-size:12.5px;font-weight:600;margin:11px 0 2px;">🛠 选择维修人员</div>
+          <div class="worker-grid">
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="张建国">
+              <div class="wnm">张建国</div>
+              <div class="wspec">水电专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 2</div>
+            </div>
+            <div class="worker-chip" onclick="selectWorker(this)" data-name="李强">
+              <div class="wnm">李强</div>
+              <div class="wspec">电梯专业</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 1</div>
+            </div>
+            <div class="worker-chip on" onclick="selectWorker(this)" data-name="王敏">
+              <div class="wnm">王敏</div>
+              <div class="wspec">综合维修</div>
+              <div class="wstat" style="color:var(--ok);">● 在岗<br>当前任务 0</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('工单已挂起')">挂起</button>
+            <button class="btn primary small" style="flex:2;" onclick="doAssign(this)">✓ 派单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 已分派列表 -->
+      <div class="section-title"><h3>✓ 已分派(3)</h3><span style="font-size:11px;color:var(--txt3);">维修人已短信接单</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap blue">🚿</div>
+          <div class="body">
+            <div class="t">WO-20261019-0025 · 2-1-1204 厨房下水缓慢</div>
+            <div class="m">维修人:张建国(水电)<span class="dot">·</span> 接单时间:今天 10:12</div>
+          </div>
+          <div class="right"><div class="time">处理中</div><span class="tag blue">处理中</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">💡</div>
+          <div class="body">
+            <div class="t">WO-20261019-0023 · 6-2-0901 电梯厅照明故障</div>
+            <div class="m">维修人:李强(电梯)<span class="dot">·</span> 接单时间:今天 09:05</div>
+          </div>
+          <div class="right"><div class="time">待业主确认</div><span class="tag green">已完成</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">🛣</div>
+          <div class="body">
+            <div class="t">WO-20261018-0021 · 11-3-0502 单元门口地面破损</div>
+            <div class="m">维修人:王敏(综合)<span class="dot">·</span> 接单时间:昨天 16:45</div>
+          </div>
+          <div class="right"><div class="time">已验收</div><span class="tag green">已关闭</span></div>
+        </div>
+      </div>
+
+      <!-- 维修班组在岗总览 -->
+      <div class="section-title"><h3>👷 维修班组在岗总览</h3><span style="font-size:11px;color:var(--txt3);">今日白班</span></div>
+      <div class="card">
+        <div class="info-line">
+          <span>👨‍🔧 张建国 · 水电专业(8 年)</span>
+          <b><span style="color:var(--ok);">● 在岗</span> · 任务 2 · 今日完成 4</b>
+        </div>
+        <div class="info-line">
+          <span>👨‍🔧 李强 · 电梯专业(6 年,持证)</span>
+          <b><span style="color:var(--ok);">● 在岗</span> · 任务 1 · 今日完成 3</b>
+        </div>
+        <div class="info-line">
+          <span>👩‍🔧 王敏 · 综合维修(5 年)</span>
+          <b><span style="color:var(--ok);">● 在岗</span> · 任务 0 · 今日完成 2</b>
+        </div>
+        <div class="info-line">
+          <span>📞 外协:电梯厂驻场维保</span>
+          <b>西子奥的斯 · 2 小时到场承诺</b>
+        </div>
+      </div>
+
+      <!-- 今日已完成工单 -->
+      <div class="section-title"><h3>🏁 今日已完成(9)</h3><span style="font-size:11px;color:var(--txt3);">全部按时闭环</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">🚿</div>
+          <div class="body">
+            <div class="t">WO-20261019-0019 · 8-1-0302 马桶进水阀更换</div>
+            <div class="m">张建国 <span class="dot">·</span> 09:12 接单 <span class="dot">·</span> 10:05 完成 · 业主已签字确认</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">🛝</div>
+          <div class="body">
+            <div class="t">WO-20261019-0016 · 中心花园秋千链条润滑</div>
+            <div class="m">王敏 <span class="dot">·</span> 08:30 接单 <span class="dot">·</span> 09:40 完成 · 业主群反馈良好</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">🛗</div>
+          <div class="body">
+            <div class="t">WO-20261019-0011 · 5 号楼 2 单元电梯厅地坎清渣</div>
+            <div class="m">李强 <span class="dot">·</span> 08:05 接单 <span class="dot">·</span> 08:50 完成 · 已同步维保记录</div>
+          </div>
+          <div class="right"><span class="tag green">已验收</span></div>
+        </div>
+      </div>
+
+      <!-- 分派规则提示 -->
+      <div class="card" style="background:#F7F6FE;border:1px dashed #D5D2F5;">
+        <div style="font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:6px;">📌 分派规则提示</div>
+        <div style="font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:6px;">📌 分派规则提示</div>
+        <div style="font-size:12px;color:var(--txt2);line-height:1.8;">
+          ① 非常紧急工单须 30 分钟内派单,系统自动升级提醒项目经理;<br>
+          ② 紧急工单 2 小时内派单,普通工单当日 20:00 前派单;<br>
+          ③ 派单后系统短信 + APP 双通道通知维修人,维修人 15 分钟内接单;<br>
+          ④ 超时未接单自动转派备选人员并通知工程主管。
+        </div>
+      </div>
+
+      <div style="height:26px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ Tab 3: 投诉 (M-8-CMP-PROC) ============ -->
+  <div class="tab-content" id="tab-M-8c">
+    <div class="page" id="page-M-8-CMP-PROC">
+      <div class="sub-header">
+        <div class="title">⌨ 投诉处置回复<small>待处置 3 · 本月已处置 26 · 按时率 100%</small></div>
+        <a onclick="gbToast('翻页操作')" href="javascript:switchTab('M-8');showPage('M-8-PROJ-HOME');return false;" class="back-btn">‹</a>
+      </div>
+
+      <div style="display:flex;gap:8px;padding:0 0 12px;">
+        <div class="radio-pill on" onclick="pill(this)">全部 29</div>
+        <div class="radio-pill" onclick="pill(this);showToast('已筛选:待处置 3 件')">待处置 3</div>
+        <div class="radio-pill" onclick="pill(this);showToast('已筛选:本月已处置 26 件')">已处置 26</div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box orange"><div class="num">3</div><div class="lbl">待处置</div></div>
+        <div class="kpi-box green"><div class="num">26</div><div class="lbl">本月已处置</div></div>
+        <div class="kpi-box green"><div class="num">100%</div><div class="lbl">按时处置率</div></div>
+        <div class="kpi-box blue"><div class="num">1.6<span style="font-size:11px;">天</span></div><div class="lbl">平均处置时长</div></div>
+      </div>
+
+      <!-- 处置时限提醒 -->
+      <div class="gradient-card orange">
+        <div style="display:flex;align-items:center;gap:10px;position:relative;">
+          <span style="font-size:30px;">⏰</span>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;">处置时限提醒</div>
+            <div style="font-size:12px;opacity:.92;margin-top:3px;line-height:1.6;">督办件 CMP-20261019-0012 须于 10-21 18:00 前提交处置,逾期将自动上报区住建局并计入企业信用扣分。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待处置投诉列表 -->
+      <div class="section-title"><h3>⌨ 待处置投诉(3)</h3><span style="font-size:11px;color:var(--danger);">主管部门督办 2 件</span></div>
+
+      <!-- 投诉 1:展开处置表单 -->
+      <div class="card-flat">
+        <div class="list-row" style="cursor:default;background:linear-gradient(90deg,#FFECE8,#FFFBFA);">
+          <div class="icowrap red">⚠</div>
+          <div class="body">
+            <div class="t">CMP-20261019-0012</div>
+            <div class="m">7-2-1102 刘女士 <span class="dot">·</span> 昨天 21:14 <span class="dot">·</span> 环境卫生</div>
+          </div>
+          <div class="right"><div class="time">剩 2 天 8 小时</div><span class="tag red">紧急 · 督办</span></div>
+        </div>
+        <div style="padding:13px 16px;border-top:1px solid var(--line);">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;">
+            <span class="tag red">🏛 雁塔区住建局督办</span>
+            <span class="tag gray">来源:12345 转办</span>
+            <span class="tag orange">处置时限:10-21 18:00</span>
+          </div>
+          <div style="font-size:13px;color:var(--txt);line-height:1.7;background:#F7F8FA;padding:10px 12px;border-radius:8px;margin-bottom:10px;">
+            <b>投诉内容:</b>地库 B2 负一层垃圾清运不及时,近一周多次超过 12 小时未清运,异味明显,垃圾桶数量不足且未分类摆放,多次向物业前台反映未改善,希望主管部门督促整改。
+          </div>
+
+          <div style="font-size:12.5px;font-weight:600;margin:12px 0 6px;">✍ 处置表单</div>
+          <div class="form-group" style="margin:0 0 10px;padding:12px 14px;">
+            <div class="form-item" style="display:block;">
+              <div class="lbl" style="width:auto;margin-bottom:6px;color:var(--txt);font-weight:500;">处理措施</div>
+              <textarea style="width:100%;border:none;outline:none;min-height:88px;font-size:13px;line-height:1.7;resize:none;font-family:inherit;">1. 已约谈保洁外包班组,清运频次由每日 2 次调整为每日 3 次(07:00 / 13:00 / 19:00);
+2. B2 增设 240L 分类垃圾桶 2 组,并在 10-20 前完成标识张贴;
+3. 已于 10-19 15:00 完成第一轮全面清理与消杀,附整改前后对比照片;
+4. 纳入项目经理日巡检清单,连续跟踪 15 天。</textarea>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin:0 0 10px;">
+            <div class="form-item"><div class="lbl">责任班组</div><div class="ctrl"><input value="保洁组(外包·宏达保洁)" readonly></div></div>
+            <div class="form-item"><div class="lbl">责任人</div><div class="ctrl"><input value="马晓丽(保洁主管)" readonly></div></div>
+            <div class="form-item"><div class="lbl">完成时间</div><div class="ctrl"><input type="text" value="2026-10-20 12:00"></div></div>
+          </div>
+
+          <div style="font-size:12.5px;font-weight:600;margin:12px 0 6px;">📷 整改凭证(拍照上传)</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;">
+            <div class="photo-cell">🗑<i class="del" onclick="showToast('已删除照片(原型演示)')">×</i></div>
+            <div class="photo-cell">🧹<i class="del" onclick="showToast('已删除照片(原型演示)')">×</i></div>
+            <div class="photo-cell" style="background:#F5F4FE;color:var(--primary);" onclick="showToast('已调用相机拍照(原型演示)')">📷</div>
+          </div>
+          <div class="up-zone" style="margin-bottom:0;padding:13px;" onclick="showToast('已调用相机 / 相册(原型演示)')">
+            <span class="up-ico">📷</span>
+            <div style="font-size:12px;">拍照上传整改现场照片(至少 2 张,整改前后各 1 张)</div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('处置草稿已暂存')">暂存</button>
+            <button class="btn primary small" style="flex:2;" onclick="showToast('处置结果已提交,待雁塔区住建局核验,核验通过后自动回复业主')">✓ 提交核验</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 投诉 2 -->
+      <div class="card-flat" style="margin-top:12px;">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap orange">🧒</div>
+          <div class="body">
+            <div class="t">CMP-20261018-0009 · 儿童滑梯扶手松动</div>
+            <div class="m">3-1-0702 李先生 <span class="dot">·</span> 设施损坏 <span class="dot">·</span> 昨天 17:32</div>
+          </div>
+          <div class="right"><span class="tag orange">普通 · 街道转办</span></div>
+        </div>
+        <div style="padding:12px 16px;border-top:1px solid var(--line);">
+          <div style="font-size:12.5px;color:var(--txt2);line-height:1.7;margin-bottom:10px;">中心花园儿童游乐区滑梯二层扶手螺栓松动,扶手晃动明显,周末儿童较多,存在跌落风险,已临时拉设警示带。</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('已查看投诉全文(原型演示)')">查看全文</button>
+            <button class="btn primary small" style="flex:1;" onclick="showToast('已定位到处置表单(原型演示)')">填写处置</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 投诉 3 -->
+      <div class="card-flat" style="margin-top:12px;">
+        <div class="list-row" style="cursor:default;background:linear-gradient(90deg,#FFECE8,#FFFBFA);">
+          <div class="icowrap red">🚗</div>
+          <div class="body">
+            <div class="t">CMP-20261017-0007 · 车库出入口无凸面镜</div>
+            <div class="m">10-2-1503 周女士 <span class="dot">·</span> 安全隐患 <span class="dot">·</span> 10-17 19:05</div>
+          </div>
+          <div class="right"><div class="time">剩 3 天</div><span class="tag red">紧急 · 督办</span></div>
+        </div>
+        <div style="padding:12px 16px;border-top:1px solid var(--line);">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;">
+            <span class="tag red">🏛 电子城街道办督办</span>
+            <span class="tag orange">处置时限:10-22 18:00</span>
+          </div>
+          <div style="font-size:12.5px;color:var(--txt2);line-height:1.7;margin-bottom:10px;">地下车库 B1 出入口转角无凸面反光镜,近一个月发生 2 次电动自行车剐蹭事故,业主要求加装反光镜并施划减速标线。</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('已查看投诉全文(原型演示)')">查看全文</button>
+            <button class="btn primary small" style="flex:1;" onclick="showToast('已定位到处置表单(原型演示)')">填写处置</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 常用整改模板 -->
+      <div class="section-title"><h3>📑 常用整改模板</h3><span style="font-size:11px;color:var(--txt3);">点击快速预填</span></div>
+      <div class="card">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="radio-pill" onclick="showToast('已预填「清运保洁类」整改模板')">🧹 清运保洁类</span>
+          <span class="radio-pill" onclick="showToast('已预填「设施加固类」整改模板')">🔧 设施加固类</span>
+          <span class="radio-pill" onclick="showToast('已预填「秩序安全类」整改模板')">🚸 秩序安全类</span>
+        </div>
+      </div>
+
+      <!-- 已处置历史 -->
+      <div class="section-title"><h3>✅ 已处置历史(核验通过)</h3><span style="font-size:11px;color:var(--txt3);">近 30 天</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">💡</div>
+          <div class="body">
+            <div class="t">CMP-20261012-0003 · 电梯轿厢照明闪烁</div>
+            <div class="m">处置:更换 LED 灯带 4 套并排查线路 <span class="dot">·</span> 核验通过 10-14</div>
+          </div>
+          <div class="right"><span class="tag green">核验通过</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">🌱</div>
+          <div class="body">
+            <div class="t">CMP-20261008-0001 · 绿化带踩踏缺失</div>
+            <div class="m">处置:补栽麦冬 36㎡ + 加装防护矮栏 28m <span class="dot">·</span> 核验通过 10-11</div>
+          </div>
+          <div class="right"><span class="tag green">核验通过</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#F7F6FE;border:1px dashed #D5D2F5;">
+        <div style="font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:6px;">📌 处置流程说明</div>
+        <div style="font-size:12px;color:var(--txt2);line-height:1.8;">
+          ① 企业提交处置措施 + 整改凭证 + 完成时间;<br>
+          ② 系统推送主管部门(区住建局 / 街道办)核验;<br>
+          ③ 核验通过后自动短信回复业主,投诉单关闭并归档;<br>
+          ④ 核验驳回退回企业重新处置,同一工单驳回 2 次将触发信用扣分预警。
+        </div>
+      </div>
+
+      <div style="height:26px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ Tab 4: 查验 (M-8-CHECK) ============ -->
+  <div class="tab-content" id="tab-M-8d">
+    <div class="page" id="page-M-8-CHECK">
+      <div class="sub-header">
+        <div class="title">✓ 承接查验任务接收<small>进行中 1 项 · 二轮现场查验明日启动</small></div>
+        <a onclick="gbToast('翻页操作')" href="javascript:switchTab('M-8');showPage('M-8-PROJ-HOME');return false;" class="back-btn">‹</a>
+      </div>
+
+      <!-- 当前查验任务卡 -->
+      <div class="detail-hero">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;position:relative;">
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">查验任务 · 进行中</span>
+          <span style="font-size:11px;opacity:.85;">任务编号 CH-2026-Q3-018</span>
+        </div>
+        <h2>万科花园·翡翠天地二期 承接查验</h2>
+        <div class="meta" style="line-height:2;">
+          <div>🏗 查验类型:<b>新建物业承接查验</b></div>
+          <div>👥 查验小组:第三查验小组(组长 李建国 · 成员 5 人)</div>
+          <div>📅 计划日期:2026-10-12 ~ 2026-11-05</div>
+          <div>🏢 建设单位:西安万科致远置业 · 施工:陕建三公司</div>
+        </div>
+        <div style="margin-top:12px;position:relative;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+            <span>查验清单进度</span><b>38 / 52 项(73%)</b>
+          </div>
+          <div class="progress" style="background:rgba(255,255,255,.3);margin:0;">
+            <div class="progress-fill" style="width:73%;background:#fff;"></div>
+          </div>
+          <div style="font-size:11px;opacity:.85;margin-top:6px;">剩余 14 项:电梯 6 · 消防 5 · 智能化 3(二轮查验 10-20 ~ 10-25 完成)</div>
+        </div>
+      </div>
+
+      <div class="kpi-row cols4">
+        <div class="kpi-box green"><div class="num">38</div><div class="lbl">已查验</div></div>
+        <div class="kpi-box orange"><div class="num">14</div><div class="lbl">待查验</div></div>
+        <div class="kpi-box red"><div class="num">9</div><div class="lbl">发现问题</div></div>
+        <div class="kpi-box blue"><div class="num">6</div><div class="lbl">已整改</div></div>
+      </div>
+
+      <!-- 资料移交待办 -->
+      <div class="section-title"><h3>📂 资料移交待办(3)</h3><span style="font-size:11px;color:var(--danger);">未交 2 项</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">📄</div>
+          <div class="body">
+            <div class="t">竣工总平面图 · 产权清册 · 分户验收表</div>
+            <div class="m">移交单位:万科致远置业 <span class="dot">·</span> 已交 10-08(纸质+电子)</div>
+          </div>
+          <div class="right"><span class="tag green">已交</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;background:linear-gradient(90deg,#FFECE8,#FFFBFA);">
+          <div class="icowrap red">⚙</div>
+          <div class="body">
+            <div class="t">机电设备清单及质保书(电梯/风机/水泵)</div>
+            <div class="m">移交单位:万科致远置业 <span class="dot">·</span> 限 10-23 前移交 <span class="dot">·</span> 已催办 2 次</div>
+          </div>
+          <div class="right"><span class="tag red">未交</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap orange">🔥</div>
+          <div class="body">
+            <div class="t">供水 / 供电 / 供暖协议及验收文件</div>
+            <div class="m">移交单位:市政配套单位 <span class="dot">·</span> 供暖部分待 11 月试运行后补充</div>
+          </div>
+          <div class="right"><span class="tag orange">部分未交</span></div>
+        </div>
+      </div>
+
+      <!-- 问题整改跟踪 -->
+      <div class="section-title"><h3>⚠ 问题整改跟踪(2)</h3><span style="font-size:11px;color:var(--danger);">超期 2 条</span></div>
+      <div class="card-flat overdue-card">
+        <div style="padding:13px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <span style="font-size:13px;font-weight:600;">CH-2026-011 · B2 顶板局部渗水</span>
+            <span class="tag red">超期 4 天</span>
+          </div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.7;margin-bottom:8px;">地下车库 B2 区 3 处顶板施工缝渗水,雨后加重,影响 12 个车位使用。</div>
+          <div class="info-line"><span>责任单位</span><b>陕建三公司</b></div>
+          <div class="info-line"><span>整改时限</span><b style="color:var(--danger);">2026-10-15(已超期 4 天)</b></div>
+          <div class="info-line"><span>整改状态</span><b style="color:var(--danger);">注浆材料已进场,承诺 10-22 完成</b></div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn danger small" style="flex:1;" onclick="showToast('已发起催办:短信+公函通知责任单位及建设单位')">⛔ 催办</button>
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('已上报组长,超期 5 天将自动升级至区住建局')">⬆ 上报升级</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-flat overdue-card" style="margin-top:10px;">
+        <div style="padding:13px 16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+            <span style="font-size:13px;font-weight:600;">CH-2026-008 · 消防连廊防火门闭门器失效</span>
+            <span class="tag red">超期 2 天</span>
+          </div>
+          <div style="font-size:12px;color:var(--txt2);line-height:1.7;margin-bottom:8px;">2 / 3 / 5 号楼消防连廊常闭防火门闭门器失效共 6 处,无法保证自动关闭。</div>
+          <div class="info-line"><span>责任单位</span><b>消防专业分包(陕消集团)</b></div>
+          <div class="info-line"><span>整改时限</span><b style="color:var(--danger);">2026-10-17(已超期 2 天)</b></div>
+          <div class="info-line"><span>整改状态</span><b style="color:var(--danger);">已到货 4 个,余 2 个在途</b></div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn danger small" style="flex:1;" onclick="showToast('已发起催办:短信+公函通知责任单位及建设单位')">⛔ 催办</button>
+            <button class="btn ghost small" style="flex:1;" onclick="showToast('已上报组长,超期 5 天将自动升级至区住建局')">⬆ 上报升级</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 查验清单分类进度 -->
+      <div class="section-title"><h3>📋 查验清单分类进度</h3><span style="font-size:11px;color:var(--txt3);">52 项 · 已完成 38</span></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;"><span>🏗 主体结构</span><b style="color:var(--ok);">12 / 12 · 100%</b></div>
+        <div class="progress"><div class="progress-fill green" style="width:100%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;margin-top:10px;"><span>🚿 给排水</span><b style="color:var(--ok);">8 / 8 · 100%</b></div>
+        <div class="progress"><div class="progress-fill green" style="width:100%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;margin-top:10px;"><span>⚡ 强弱电</span><b style="color:var(--primary);">9 / 10 · 90%</b></div>
+        <div class="progress"><div class="progress-fill" style="width:90%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;margin-top:10px;"><span>🛗 电梯设备</span><b style="color:var(--warn);">3 / 9 · 33%</b></div>
+        <div class="progress"><div class="progress-fill warn" style="width:33%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;margin-top:10px;"><span>🔥 消防设施</span><b style="color:var(--warn);">2 / 7 · 29%</b></div>
+        <div class="progress"><div class="progress-fill warn" style="width:29%;"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px;margin-top:10px;"><span>📡 智能化</span><b style="color:var(--primary);">4 / 6 · 67%</b></div>
+        <div class="progress"><div class="progress-fill" style="width:67%;"></div></div>
+      </div>
+
+      <!-- 查验计划时间轴 -->
+      <div class="section-title"><h3>🗓 查验计划</h3><span style="font-size:11px;color:var(--txt3);">共 5 个节点</span></div>
+      <div class="card" style="padding:8px 6px;">
+        <div class="timeline">
+          <div class="tl-row"><div class="tl-dot done">✓</div><div class="tl-body"><div class="when">10-09</div><div class="what">查验任务接收与小组组建</div><div class="who">系统分配 · 已确认接收(王建军)</div></div></div>
+          <div class="tl-row"><div class="tl-dot done">✓</div><div class="tl-body"><div class="when">10-12 ~ 10-18</div><div class="what">首轮现场查验(土建 / 给排水 / 强弱电)</div><div class="who">第三查验小组 · 完成 38 项,登记问题 9 项</div></div></div>
+          <div class="tl-row"><div class="tl-dot cur">●</div><div class="tl-body"><div class="when">10-20 ~ 10-25</div><div class="what">二轮现场查验(电梯 / 消防 / 智能化)</div><div class="who">待查验 14 项 · 需维保单位与消防分包配合</div></div></div>
+          <div class="tl-row"><div class="tl-dot">4</div><div class="tl-body"><div class="when">10-26 ~ 11-01</div><div class="what">问题整改复核(复验)</div><div class="who">责任单位整改 · 小组复验销项</div></div></div>
+          <div class="tl-row"><div class="tl-dot">5</div><div class="tl-body"><div class="when">11-02 ~ 11-05</div><div class="what">查验成果确认 · 备案申请</div><div class="who">出具查验报告 · 移交区住建局备案</div></div></div>
+        </div>
+      </div>
+
+      <!-- 查验小组成员 -->
+      <div class="section-title"><h3>👥 查验小组成员(6)</h3></div>
+      <div class="card" style="padding:0;">
+        <div class="list-row" style="cursor:default;"><div class="icowrap purple">👨‍🔧</div><div class="body"><div class="t">李建国 · 组长 / 土建</div><div class="m">⭐ 4.9 · 累计查验 156 项</div></div><div class="right"><span class="tag green">在组</span></div></div>
+        <div class="list-row" style="cursor:default;"><div class="icowrap blue">👨‍🔧</div><div class="body"><div class="t">王志远 · 强弱电</div><div class="m">⭐ 4.8 · 持证电工 · 89 项</div></div><div class="right"><span class="tag green">在组</span></div></div>
+        <div class="list-row" style="cursor:default;"><div class="icowrap blue">👨‍🔧</div><div class="body"><div class="t">赵鹏 · 电梯设备</div><div class="m">⭐ 4.7 · 电梯维保证 · 112 项</div></div><div class="right"><span class="tag green">在组</span></div></div>
+        <div class="list-row" style="cursor:default;"><div class="icowrap blue">👩‍🔧</div><div class="body"><div class="t">陈晓 · 消防</div><div class="m">⭐ 4.6 · 注册消防工程师 · 76 项</div></div><div class="right"><span class="tag green">在组</span></div></div>
+        <div class="list-row" style="cursor:default;"><div class="icowrap blue">👩‍🔧</div><div class="body"><div class="t">周文娟 · 资料 / 智能化</div><div class="m">⭐ 4.8 · 档案管理师 · 62 项</div></div><div class="right"><span class="tag green">在组</span></div></div>
+        <div class="list-row" style="cursor:default;"><div class="icowrap gray">🏢</div><div class="body"><div class="t">王建军 · 项目经理(企业侧)</div><div class="m">负责资料移交督促与整改跟踪</div></div><div class="right"><span class="tag purple">对接人</span></div></div>
+      </div>
+
+      <div style="height:26px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ Tab 5: 我的 (M-8-WO-MONTH 月度报修汇总上报) ============ -->
+  <div class="tab-content" id="tab-M-8e">
+    <div class="page" id="page-M-8-WO-MONTH">
+      <div class="sub-header">
+        <div class="title">⌧ 月度报修汇总上报<small>报期 2026-09 · 项目:西安·万科花园</small></div>
+        <a onclick="gbToast('翻页操作')" href="javascript:switchTab('M-8');showPage('M-8-PROJ-HOME');return false;" class="back-btn">‹</a>
+      </div>
+
+      <!-- 报期提示卡 -->
+      <div class="gradient-card orange">
+        <div style="display:flex;align-items:center;gap:10px;position:relative;">
+          <span style="font-size:30px;">⌧</span>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;">2026 年 9 月报修汇总</div>
+            <div style="font-size:12px;opacity:.92;margin-top:3px;">填报截止 2026-10-25 24:00 · 剩余 6 天</div>
+          </div>
+          <span class="tag" style="background:rgba(255,255,255,.25);color:#fff;">状态:草稿</span>
+        </div>
+      </div>
+
+      <!-- 6 类报修 Tab -->
+      <div class="section-title"><h3>📑 六类报修数据</h3><span style="font-size:11px;color:var(--txt3);">点击类别查看明细</span></div>
+      <div class="seg-tabs">
+        <div class="seg on" onclick="monthCat(this,'elevator')">🛗 电梯</div>
+        <div class="seg" onclick="monthCat(this,'water')">🚿 水电</div>
+        <div class="seg" onclick="monthCat(this,'public')">🛝 公共设施</div>
+        <div class="seg" onclick="monthCat(this,'fire')">🔥 消防</div>
+        <div class="seg" onclick="monthCat(this,'roof')">🏠 屋面</div>
+        <div class="seg" onclick="monthCat(this,'other')">⋯ 其他</div>
+      </div>
+
+      <!-- 汇总表格(6 类 × 4 指标) -->
+      <div class="card" style="padding:0;overflow-x:auto;">
+        <table class="m-table">
+          <thead>
+            <tr><th>报修类别</th><th>受理量(件)</th><th>完成量(件)</th><th>处理率</th><th>平均耗时</th></tr>
+          </thead>
+          <tbody>
+            <tr data-cat="elevator" class="cur-cat"><td>电梯</td><td>46</td><td>44</td><td>95.7%</td><td>3.2h</td></tr>
+            <tr data-cat="water"><td>水电</td><td>58</td><td>57</td><td>98.3%</td><td>1.8h</td></tr>
+            <tr data-cat="public"><td>公共设施</td><td>31</td><td>28</td><td>90.3%</td><td>4.5h</td></tr>
+            <tr data-cat="fire"><td>消防</td><td>12</td><td>11</td><td>91.7%</td><td>6.0h</td></tr>
+            <tr data-cat="roof"><td>屋面</td><td>9</td><td>7</td><td>77.8%</td><td>12.5h</td></tr>
+            <tr data-cat="other"><td>其他</td><td>15</td><td>15</td><td>100%</td><td>2.0h</td></tr>
+            <tr class="sum-row"><td>合计</td><td>171</td><td>162</td><td>94.7%</td><td>3.5h</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 电梯明细 -->
+      <div class="card month-detail" id="md-elevator">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">🛗 电梯类 · 明细</div>
+          <span class="tag purple">处理率 95.7%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">46</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">44</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">95.7%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">3.2h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>轿厢异响 / 振动</span><b>12 件 · 完成 12</b></div>
+        <div class="info-line"><span>呼梯按钮 / 显示故障</span><b>9 件 · 完成 9</b></div>
+        <div class="info-line"><span>平层误差 / 开关门异常</span><b>8 件 · 完成 7</b></div>
+        <div class="info-line"><span>困人救援(含 1 次外委)</span><b>3 件 · 完成 3 · 均在 18 分钟内解困</b></div>
+        <div class="info-line"><span>年检配合 / 保养伴检</span><b>14 件 · 完成 13</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">未完成 2 件:9-28 进单的 3 号梯曳引轮磨损更换,厂配件在途,已于 10-02 完成并跨期计入 10 月完成量。</div>
+      </div>
+
+      <!-- 水电明细 -->
+      <div class="card month-detail" id="md-water" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">🚿 水电类 · 明细</div>
+          <span class="tag purple">处理率 98.3%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">58</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">57</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">98.3%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">1.8h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>灯具 / 开关面板更换</span><b>21 件 · 完成 21</b></div>
+        <div class="info-line"><span>水管渗漏 / 阀门龙头</span><b>14 件 · 完成 14</b></div>
+        <div class="info-line"><span>户内跳闸 / 线路排查</span><b>11 件 · 完成 11</b></div>
+        <div class="info-line"><span>暗管漏水探测(外委)</span><b>12 件 · 完成 11</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">未完成 1 件:9-30 深夜报修的 8 号楼暗管漏水,探测定位后于 10-01 上午修复完成,跨期计入 10 月。</div>
+      </div>
+
+      <!-- 公共设施明细 -->
+      <div class="card month-detail" id="md-public" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">🛝 公共设施类 · 明细</div>
+          <span class="tag purple">处理率 90.3%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">31</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">28</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">90.3%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">4.5h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>园区路灯 / 楼道照明</span><b>9 件 · 完成 9</b></div>
+        <div class="info-line"><span>门禁 / 可视对讲</span><b>8 件 · 完成 7</b></div>
+        <div class="info-line"><span>道闸 / 车位锁</span><b>6 件 · 完成 5</b></div>
+        <div class="info-line"><span>健身器材 / 儿童设施</span><b>5 件 · 完成 5</b></div>
+        <div class="info-line"><span>座椅 / 围栏 / 标识</span><b>3 件 · 完成 2</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">未完成 3 件:南门道闸主板进水损坏返厂维修(1 件),2 件围栏补漆因连续降雨顺延,均已列入 10 月首周计划。</div>
+      </div>
+
+      <!-- 消防明细 -->
+      <div class="card month-detail" id="md-fire" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">🔥 消防类 · 明细</div>
+          <span class="tag purple">处理率 91.7%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">12</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">11</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">91.7%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">6.0h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>烟感误报排查复位</span><b>6 件 · 完成 6</b></div>
+        <div class="info-line"><span>消火栓箱 / 水带修补</span><b>4 件 · 完成 4</b></div>
+        <div class="info-line"><span>疏散指示 / 应急照明</span><b>2 件 · 完成 1</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">未完成 1 件:3 号楼防火门闭门器批量更换(共 6 处),闭门器 9-29 到货 4 个、在途 2 个,10-03 全部完成并经消防维保单位复验。</div>
+      </div>
+
+      <!-- 屋面明细 -->
+      <div class="card month-detail" id="md-roof" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">🏠 屋面类 · 明细</div>
+          <span class="tag orange">处理率 77.8%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">9</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">7</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">77.8%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">12.5h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>屋面防水补漏(6 处漏点)</span><b>6 件 · 完成 5</b></div>
+        <div class="info-line"><span>落水管疏通 / 更换</span><b>3 件 · 完成 2</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">未完成 2 件:9 月下旬连续秋雨,2 处屋面 SBS 卷材施工需连续 2 个晴天作业窗口,顺延至 10 月上旬完成;已对顶层住户做好临时导流与登记安抚。</div>
+      </div>
+
+      <!-- 其他明细 -->
+      <div class="card month-detail" id="md-other" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:14px;font-weight:600;">⋯ 其他类 · 明细</div>
+          <span class="tag green">处理率 100%</span>
+        </div>
+        <div class="kpi-row cols4" style="margin-bottom:10px;">
+          <div class="kpi-box purple"><div class="num">15</div><div class="lbl">受理量</div></div>
+          <div class="kpi-box green"><div class="num">15</div><div class="lbl">完成量</div></div>
+          <div class="kpi-box blue"><div class="num">100%</div><div class="lbl">处理率</div></div>
+          <div class="kpi-box orange"><div class="num">2.0h</div><div class="lbl">平均耗时</div></div>
+        </div>
+        <div class="info-line"><span>门窗五金维修</span><b>7 件 · 完成 7</b></div>
+        <div class="info-line"><span>重物搬运 / 入户协助</span><b>5 件 · 完成 5</b></div>
+        <div class="info-line"><span>其他综合事项</span><b>3 件 · 完成 3</b></div>
+        <div style="font-size:11.5px;color:var(--txt3);line-height:1.7;margin-top:8px;">本类全部按期完成,收到业主表扬 3 条(均已同步至客服台账)。</div>
+      </div>
+
+      <!-- 合计卡 -->
+      <div class="section-title"><h3>Σ 本期合计</h3><span style="font-size:11px;color:var(--txt3);">2026-09-01 ~ 09-30</span></div>
+      <div class="kpi-row cols4">
+        <div class="kpi-box purple"><div class="num">171</div><div class="lbl">受理量(件)</div></div>
+        <div class="kpi-box green"><div class="num">162</div><div class="lbl">完成量(件)</div></div>
+        <div class="kpi-box blue"><div class="num">94.7%</div><div class="lbl">综合处理率</div></div>
+        <div class="kpi-box orange"><div class="num">3.5h</div><div class="lbl">平均耗时</div></div>
+      </div>
+
+      <!-- 月度备注 -->
+      <div class="section-title"><h3>📝 月度备注</h3></div>
+      <div class="form-group">
+        <div class="form-item" style="display:block;">
+          <div class="lbl" style="width:auto;margin-bottom:6px;color:var(--txt);font-weight:500;">本月工作亮点 / 问题说明</div>
+          <textarea style="width:100%;border:none;outline:none;min-height:84px;font-size:13px;line-height:1.7;resize:none;font-family:inherit;">1. 9 月秋雨较多,屋面防水类工单集中,2 件因天气顺延至 10 月上旬完成;
+2. 电梯年检配合 13 件全部按期完成,年检合格率 100%;
+3. 困人救援 3 起均在 18 分钟内解困,未发生安全责任事件;
+4. 9-12 组织防汛应急演练 1 次,覆盖全员 42 人。</textarea>
+        </div>
+      </div>
+
+      <!-- 锁定提示(提交后显示) -->
+      <div class="lock-tip" id="month-lock">
+        <span style="font-size:18px;">🔒</span>
+        <div>2026-09 期数据已提交并锁定,接收单位:雁塔区住建局物业科。如需更正,请在 PC 端「月度报修汇总」中发起数据更正备案流程,经主管部门审核后生效。</div>
+      </div>
+
+      <!-- 提交按钮 -->
+      <div class="btn-bar">
+        <button class="btn ghost" onclick="showToast('月度上报草稿已暂存')">暂存草稿</button>
+        <button class="btn primary" id="month-submit-btn" onclick="submitMonth(this)">📤 提交上报</button>
+      </div>
+
+      <!-- 历史期次 -->
+      <div class="section-title"><h3>🗂 历史期次</h3><span style="font-size:11px;color:var(--txt3);">近 3 期均已被接收</span></div>
+      <div class="list-card">
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">2026-08 期(8 月)</div>
+            <div class="m">受理 158 · 完成 151 · 处理率 95.6% · 平均 3.2h</div>
+          </div>
+          <div class="right"><div class="time">09-02 提交</div><span class="tag green">已接收</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">2026-07 期(7 月)</div>
+            <div class="m">受理 143 · 完成 138 · 处理率 96.5% · 平均 3.0h</div>
+          </div>
+          <div class="right"><div class="time">08-01 提交</div><span class="tag green">已接收</span></div>
+        </div>
+        <div class="list-row" style="cursor:default;">
+          <div class="icowrap green">✓</div>
+          <div class="body">
+            <div class="t">2026-06 期(6 月)</div>
+            <div class="m">受理 165 · 完成 157 · 处理率 95.2% · 平均 3.4h</div>
+          </div>
+          <div class="right"><div class="time">07-03 提交</div><span class="tag green">已接收</span></div>
+        </div>
+      </div>
+
+      <!-- 上报说明 -->
+      <div class="card" style="background:#F7F6FE;border:1px dashed #D5D2F5;">
+        <div style="font-size:12.5px;font-weight:600;color:var(--primary);margin-bottom:6px;">📌 上报说明</div>
+        <div style="font-size:12px;color:var(--txt2);line-height:1.8;">
+          ① 依据《陕西省物业服务事项报告管理有关规定》,项目经理应于每月 5 日前(遇节假日顺延)报送上月六类报修数据;<br>
+          ② 数据来源于系统工单台账,自动汇算,处理率 = 完成量 ÷ 受理量;<br>
+          ③ 跨期完成工单计入实际完成月份,当期未完成量自动结转;<br>
+          ④ 逾期未报或虚报将记入企业信用档案,并影响季度信用评价。
+        </div>
+      </div>
+
+      <div style="height:26px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ Toast ============ -->
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<!-- ============ 底部 TabBar(5 项真实可点击) ============ -->
+<div class="tabbar">
+  <div class="tabbar-item active" data-tab="M-8" onclick="switchTab('M-8')">
+    <span class="ico">⌬</span><span>项目</span>
+  </div>
+  <div class="tabbar-item" data-tab="M-8b" onclick="switchTab('M-8b')">
+    <span class="ico">⌫</span><span>报修</span>
+  </div>
+  <div class="tabbar-item" data-tab="M-8c" onclick="switchTab('M-8c')">
+    <span class="ico">⌨</span><span>投诉</span>
+  </div>
+  <div class="tabbar-item" data-tab="M-8d" onclick="switchTab('M-8d')">
+    <span class="ico">✓</span><span>查验</span>
+  </div>
+  <div class="tabbar-item" data-tab="M-8e" onclick="switchTab('M-8e')">
+    <span class="ico">⌧</span><span>我的</span>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash) {
+    var map = { 'M-8-PROJ-HOME':'M-8','M-8-WO-ASSIGN':'M-8b','M-8-CMP-PROC':'M-8c','M-8-CHECK':'M-8d','M-8-WO-MONTH':'M-8e' };
+    var tab = map[hash] || 'M-8';
+    switchTab(tab);
+    showPage(hash);
+  } else {
+    switchTab('M-8');
+  }
+});
+
+function switchTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.tabbar-item').forEach(function(el){el.classList.remove('active');});
+  var t = document.getElementById('tab-' + tabId);
+  if(t) t.classList.add('active');
+  var b = document.querySelector('.tabbar-item[data-tab="' + tabId + '"]');
+  if(b) b.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showPage(pageId){
+  document.querySelectorAll('.tab-content.active .page').forEach(function(p){p.style.display='none';});
+  var target = document.getElementById('page-' + pageId);
+  if(target){ target.style.display = 'block'; window.scrollTo({top:0, behavior:'smooth'}); }
+}
+
+function gbToast(msg){showToast(msg);}
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 2000);
+}
+
+/* ===== R7 内容补齐 · 交互扩展 ===== */
+// 过滤 pill 选中切换
+function pill(el){
+  el.parentElement.querySelectorAll('.radio-pill,.seg').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+}
+// 维修人员选择
+function selectWorker(el){
+  el.parentElement.querySelectorAll('.worker-chip').forEach(function(w){w.classList.remove('on');});
+  el.classList.add('on');
+}
+// 派单
+function doAssign(btn){
+  var card = btn.closest('.wo-card');
+  var sel = card ? card.querySelector('.worker-chip.on') : null;
+  if(!sel){ showToast('请先选择维修人员'); return; }
+  var name = sel.getAttribute('data-name');
+  btn.disabled = true;
+  btn.innerText = '✓ 已派单 · ' + name;
+  btn.classList.remove('primary');
+  btn.classList.add('success');
+  showToast('派单成功:已短信 + APP 通知 ' + name + ',请在 15 分钟内接单');
+}
+// 月度上报 6 类 Tab 切换
+function monthCat(el, cat){
+  pill(el);
+  document.querySelectorAll('.month-detail').forEach(function(d){ d.style.display = 'none'; });
+  var t = document.getElementById('md-' + cat);
+  if(t) t.style.display = 'block';
+  document.querySelectorAll('.m-table tbody tr').forEach(function(r){
+    r.classList.toggle('cur-cat', r.getAttribute('data-cat') === cat);
+  });
+}
+// 月度上报提交 + 锁定
+function submitMonth(btn){
+  btn.disabled = true;
+  btn.innerText = '🔒 已提交 · 数据已锁定';
+  btn.classList.remove('primary');
+  var lock = document.getElementById('month-lock');
+  if(lock) lock.style.display = 'flex';
+  showToast('2026-09 期月度报修汇总已提交雁塔区住建局,数据锁定');
+}
+
+window.addEventListener('hashchange', function(){
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash) showPage(hash);
+});
+</script>
+</body>
+</html>

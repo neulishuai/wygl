@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陕西数字住建 · 物业服务管理子系统 · 工作台</title>
+<style>
+/* ============ Arco Design 设计规范 CSS 变量(与 web_d 档案归档完全一致,R4 基线)============ */
+:root{
+  --primary:#165DFF; --primary-hover:#4080FF; --primary-active:#003CB3;
+  --primary-1:#E8F1FF; --primary-2:#BEDAFF; --primary-6:#003CB3;
+  --success:#00B42A; --success-bg:#E8FFEA; --success-border:#ABF2BC;
+  --warning:#FF7D00; --warning-bg:#FFF3E0; --warning-border:#FFD199;
+  --danger:#F53F3F; --danger-bg:#FFECE8; --danger-border:#FDBDB5;
+  --info:#165DFF; --info-bg:#E8F1FF;
+  --text-1:#1D2129; --text-2:#4E5969; --text-3:#86909C; --text-4:#C9CDD4;
+  --border:#E5E6EB; --border-2:#F2F3F5; --fill:#F7F8FA; --fill-2:#F2F3F5;
+  --bg:#FFFFFF; --bg-page:#F7F8FA; --bg-elevated:#FFFFFF;
+  --bg-spotlight:rgba(0,0,0,.45);
+  --red-cn:#E9353A; --purple:#722ED1;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:16px; --fs-lg:20px; --fs-xl:24px; --fs-xxl:32px;
+  --r-sm:4px; --r:8px; --r-lg:12px; --r-xl:16px;
+  --p-xs:8px; --p-sm:12px; --p-md:16px; --p-lg:24px; --p-xl:32px;
+  --sh-sm:0 2px 8px rgba(0,0,0,.06); --sh-md:0 4px 16px rgba(0,0,0,.10); --sh-lg:0 8px 24px rgba(0,0,0,.12);
+  --top-h:56px; --sider-w:208px; --sider-c:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font);font-size:var(--fs-base);color:var(--text-1);background:var(--bg-page);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:var(--fs-sm)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#d4d6d9;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 顶栏(与 web_d 完全一致:深蓝渐变 + 陕徽标 + 全局导航 + 搜索 + 图标 + 头像) ============ */
+.topbar{height:var(--top-h);background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);color:#fff;display:flex;align-items:center;padding:0 var(--p-lg);position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-size:var(--fs-md);font-weight:600;padding-right:18px;border-right:1px solid rgba(255,255,255,.18);margin-right:18px;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#69b1ff,#fff);color:#165DFF;display:flex;align-items:center;justify-content:center;font-weight:700}
+.global-nav{display:flex;gap:4px;flex:1}
+.global-nav a{display:flex;align-items:center;gap:6px;padding:0 16px;height:56px;font-size:14px;color:rgba(255,255,255,.85);font-weight:500;position:relative;transition:color .2s}
+.global-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.global-nav a.cur{color:#fff;font-weight:600}
+.global-nav a.cur::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:28px;height:3px;background:#fff;border-radius:2px}
+.topbar-right{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.9);font-size:13px}
+.top-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 14px;border-radius:18px;font-size:13px;color:rgba(255,255,255,.85)}
+.top-search input{background:transparent;border:none;outline:none;color:#fff;width:200px;font-size:13px}
+.top-search input::placeholder{color:rgba(255,255,255,.6)}
+.top-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;font-size:15px}
+.top-icon:hover{background:rgba(255,255,255,.12)}
+.top-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#E9353A;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #003a8c}
+.top-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FFB84D,#E9353A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer}
+.top-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:8px;cursor:pointer;position:relative}
+.top-user:hover{background:rgba(255,255,255,.12)}
+.top-caret{font-size:10px;opacity:.85;transition:transform .2s}
+.top-user.open .top-caret{transform:rotate(180deg)}
+/* 头像下拉菜单(R7:含退出登录 → login.html) */
+.user-menu{position:absolute;right:0;top:46px;width:232px;background:#fff;border-radius:var(--r-lg);box-shadow:var(--sh-lg);border:1px solid var(--border-2);color:var(--text-1);display:none;z-index:120;padding:6px;font-size:13px}
+.top-user.open .user-menu{display:block;animation:fadeIn .2s}
+.um-hd{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border-2);margin-bottom:6px}
+.um-name{font-size:14px;font-weight:600;color:var(--text-1)}
+.um-role{font-size:11px;color:var(--text-3);margin-top:2px}
+.um-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--r);font-size:13px;color:var(--text-2);cursor:pointer;transition:all .15s}
+.um-item:hover{background:var(--primary-1);color:var(--primary)}
+.um-item.logout{color:var(--danger)}
+.um-item.logout:hover{background:var(--danger-bg);color:var(--danger)}
+.um-divider{height:1px;background:var(--border-2);margin:6px 4px}
+
+/* ============ 主体布局(与 web_d 一致:侧栏 + 内容区) ============ */
+.layout{display:flex;min-height:calc(100vh - var(--top-h))}
+.sider{width:var(--sider-w);min-width:var(--sider-w);background:#FFFFFF;color:#1D2129;border-right:1px solid #E5E6EB;transition:width .25s;display:flex;flex-direction:column}
+.sider.collapsed{width:var(--sider-c);min-width:var(--sider-c)}
+.sider-hd{padding:14px 18px;font-size:12px;color:#86909C;letter-spacing:1px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:8px}
+.sider.collapsed .sider-hd-label{display:none}
+.sider-bd{flex:1;overflow-y:auto;padding:8px 0}
+.sider-grp{padding:10px 18px 4px;font-size:11px;color:#86909C;font-weight:500;letter-spacing:1px}
+.sider.collapsed .sider-grp{display:none}
+.sider a.s-item{display:flex;align-items:center;gap:10px;padding:9px 18px;margin:2px 8px;border-radius:var(--r);font-size:13px;color:#4E5969;cursor:pointer;transition:all .2s;position:relative}
+.sider a.s-item:hover{background:#F2F3F5;color:#165DFF}
+.sider a.s-item.cur{background:#E8F1FF;color:#165DFF;font-weight:600}
+.sider a.s-item.cur::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--primary);border-radius:0 2px 2px 0}
+.sider a.s-item .s-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sider a.s-item .s-tag{margin-left:auto;background:#F2F3F5;color:#4E5969;font-size:10px;padding:1px 6px;border-radius:8px}
+.sider a.s-item.cur .s-tag{background:#165DFF;color:#fff}
+.sider.collapsed .s-label,.sider.collapsed .s-arrow,.sider.collapsed .sider-grp,.sider.collapsed .s-tag{display:none}
+.sider.collapsed a.s-item{justify-content:center;padding:10px 0;margin:2px 6px}
+.sider-ft{padding:10px;border-top:1px solid #F2F3F5;font-size:12px;color:#86909C;display:flex;align-items:center;gap:6px;cursor:pointer}
+.sider-ft:hover{background:#F2F3F5;color:#165DFF}
+.sider.collapsed .sider-ft{justify-content:center;padding:10px 0}
+
+/* ============ 内容区(与 web_d 一致:page-hd 面包屑/蓝条标题/actions + tabbar) ============ */
+.main{flex:1;min-width:0;background:var(--bg-page);overflow:hidden}
+.page-hd{background:#fff;padding:18px 24px 0;border-bottom:1px solid var(--border-2)}
+.page-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.page-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}
+.page-title-bar{width:4px;height:20px;background:var(--primary);border-radius:2px}
+.page-desc{font-size:13px;color:var(--text-2);margin-left:14px}
+.page-actions{display:flex;align-items:center;gap:8px}
+.breadcrumb{font-size:13px;color:var(--text-2);display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.breadcrumb span:not(:last-child)::after{content:"/";margin-left:6px;color:var(--text-4)}
+.breadcrumb span:last-child{color:var(--text-1);font-weight:500}
+.tabbar{display:flex;gap:0;align-items:center;height:42px}
+.tabbar a{padding:0 18px;height:42px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);border-bottom:2px solid transparent;font-weight:500;cursor:pointer;transition:all .2s}
+.tabbar a:hover{color:var(--primary)}
+.tabbar a.cur{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.tabbar a .tab-tag{background:var(--primary-1);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:600}
+.page-bd{padding:18px 24px;overflow-y:auto}
+
+/* ============ 基础 KPI(web_d 标准)============ */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:var(--r-lg);padding:18px 20px;border:1px solid var(--border-2);position:relative;overflow:hidden}
+.kpi-label{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.kpi-val{font-size:30px;font-weight:600;color:var(--text-1);margin-top:8px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.kpi-val .unit{font-size:14px;color:var(--text-2);margin-left:4px;font-weight:400}
+.kpi-trend{margin-top:6px;font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:4px}
+.kpi-trend.up{color:var(--success)}
+.kpi-trend.down{color:var(--danger)}
+.kpi-icon{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* ============ 卡片(web_d 标准:白卡片 12px 圆角 + 浅阴影 + 蓝条标题) ============ */
+.card{background:#fff;border-radius:var(--r-lg);border:1px solid var(--border-2);margin-bottom:14px;box-shadow:var(--sh-sm);overflow:hidden}
+.card-hd{padding:14px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-title-bar{width:3px;height:14px;background:var(--primary);border-radius:2px}
+.card-title-extra{font-size:12px;color:var(--text-3);font-weight:400;margin-left:8px}
+.card-extra{display:flex;align-items:center;gap:8px}
+.card-bd{padding:18px 20px}
+.card-bd.pt{padding:0}
+
+/* ============ 按钮(web_d 标准) ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:32px;padding:0 16px;font-size:13px;border-radius:var(--r);border:1px solid var(--border);background:#fff;color:var(--text-1);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;font-weight:500}
+.btn:hover{color:var(--primary);border-color:var(--primary)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);color:#fff}
+.btn-success{background:var(--success);border-color:var(--success);color:#fff}
+.btn-success:hover{background:#23c343;border-color:#23c343;color:#fff}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);border-color:var(--warning);color:#fff}
+.btn-link{border-color:transparent;background:transparent;color:var(--primary);padding:0 4px;height:32px}
+.btn-link:hover{background:var(--primary-1);border-color:transparent}
+.btn-text{border-color:transparent;background:transparent;color:var(--primary);padding:0 8px;height:32px}
+.btn-text:hover{background:var(--primary-1);border-color:transparent}
+.btn-sm{height:26px;padding:0 10px;font-size:12px}
+.btn-lg{height:40px;padding:0 22px;font-size:14px}
+.btn-icon{width:32px;padding:0}
+.btn-red{background:var(--red-cn);border-color:var(--red-cn);color:#fff}
+.btn-red:hover{background:#f25d5d;border-color:#f25d5d;color:#fff}
+.btn-orange{background:var(--warning);border-color:var(--warning);color:#fff}
+.btn-orange:hover{background:#ff9a40;border-color:#ff9a40;color:#fff}
+.btn-purple{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn-purple:hover{background:#8b4fe0;border-color:#8b4fe0;color:#fff}
+
+/* ============ 标签(web_d 标准) ============ */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;font-size:12px;border-radius:var(--r-sm);border:1px solid;line-height:18px;background:#fff;font-weight:500}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag-blue{color:var(--primary);border-color:var(--primary-2);background:var(--primary-1)}
+.tag-blue::before{background:var(--primary)}
+.tag-green{color:var(--success);border-color:var(--success-border);background:var(--success-bg)}
+.tag-green::before{background:var(--success)}
+.tag-orange{color:var(--warning);border-color:var(--warning-border);background:var(--warning-bg)}
+.tag-orange::before{background:var(--warning)}
+.tag-red{color:var(--danger);border-color:var(--danger-border);background:var(--danger-bg)}
+.tag-red::before{background:var(--danger)}
+.tag-gray{color:var(--text-2);border-color:var(--border);background:var(--fill-2)}
+.tag-gray::before{background:var(--text-3)}
+.tag-purple{color:#722ED1;border-color:#D3ADF7;background:#F9F0FF}
+.tag-purple::before{background:#722ED1}
+.tag-cyan{color:#0FC6C2;border-color:#5CDBD3;background:#E6FFFB}
+.tag-cyan::before{background:#0FC6C2}
+.tag-sm{padding:0 6px;font-size:11px;line-height:16px}
+
+/* ============ 页面切换(web_d 标准) ============ */
+.page{display:none}
+.page.cur{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ 时间线(web_d 标准) ============ */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border-2)}
+.tl-item{position:relative;padding-bottom:18px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-22px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.tl-dot.green{border-color:var(--success)}
+.tl-dot.red{border-color:var(--danger)}
+.tl-dot.gray{border-color:var(--text-4)}
+.tl-dot.orange{border-color:var(--warning)}
+.tl-dot.purple{border-color:#722ED1}
+.tl-head{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tl-time{font-size:12px;color:var(--text-3);margin-left:auto;font-weight:400}
+.tl-body{font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.6}
+.tl-link{font-size:12px;color:var(--primary);cursor:pointer;display:inline-block;margin-top:2px}
+.tl-link:hover{color:var(--primary-active)}
+
+/* ============ 进度条(web_d 标准) ============ */
+.bar{height:6px;background:var(--fill-2);border-radius:3px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:var(--primary);border-radius:3px;transition:width .5s}
+.bar-fill.green{background:var(--success)}
+.bar-fill.red{background:var(--danger)}
+.bar-fill.orange{background:var(--warning)}
+.bar-text{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--text-2)}
+
+/* ============ 弹窗(web_d 标准) ============ */
+.modal-mask{position:fixed;inset:0;background:var(--bg-spotlight);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-mask.show{display:flex;animation:fadeIn .2s}
+.modal{background:#fff;border-radius:var(--r-xl);width:720px;max-width:92vw;max-height:90vh;overflow:hidden;box-shadow:var(--sh-lg);display:flex;flex-direction:column}
+.modal-hd{padding:16px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between;font-weight:600}
+.modal-close{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:18px}
+.modal-close:hover{background:var(--fill-2);color:var(--text-1)}
+.modal-bd{padding:18px 20px;overflow-y:auto;flex:1}
+.modal-ft{padding:12px 20px;border-top:1px solid var(--border-2);display:flex;justify-content:flex-end;gap:8px}
+
+/* ============ 欢迎横幅(深蓝渐变,与顶栏呼应) ============ */
+.welcome-banner{background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);border-radius:var(--r-lg);padding:28px 32px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:var(--sh-md)}
+.welcome-banner::before{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.06)}
+.welcome-banner::after{content:"";position:absolute;right:60px;bottom:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.04)}
+.welcome-left{position:relative;z-index:1;max-width:760px}
+.welcome-greeting{font-size:12px;opacity:.75;letter-spacing:2px;margin-bottom:6px;font-family:var(--mono)}
+.welcome-title{font-size:26px;font-weight:600;margin-bottom:12px}
+.welcome-meta{display:flex;gap:24px;font-size:13px;opacity:.9;flex-wrap:wrap}
+.welcome-meta-item{display:flex;align-items:center;gap:6px}
+.welcome-meta-item .meta-icon{width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px}
+.welcome-actions{position:absolute;right:36px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:1}
+.welcome-action{display:flex;align-items:center;gap:10px;padding:10px 18px;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);border-radius:22px;color:#fff;font-size:13px;cursor:pointer;transition:all .2s;min-width:150px}
+.welcome-action:hover{background:rgba(255,255,255,.28);transform:translateX(-4px);color:#fff}
+.welcome-action.primary{background:#fff;color:var(--primary);font-weight:600}
+.welcome-action.primary:hover{background:#E8F1FF}
+
+/* ============ 模块级 KPI 区块(物业监管 / 党建联建 / 业主决策 / 档案归档) ============ */
+.kpix-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpix{background:#fff;border-radius:var(--r-lg);border:1px solid var(--border-2);box-shadow:var(--sh-sm);padding:18px 20px;position:relative;overflow:hidden;transition:all .2s}
+.kpix:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.kpix::before{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;opacity:.07}
+.kpix.kx-a::before{background:var(--primary)}
+.kpix.kx-b::before{background:var(--red-cn)}
+.kpix.kx-c::before{background:var(--warning)}
+.kpix.kx-d::before{background:var(--purple)}
+.kpix-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.kpix-title{font-size:13px;color:var(--text-2);font-weight:500}
+.kpix-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.kpix-ico.a{background:linear-gradient(135deg,#165DFF,#4080FF)}
+.kpix-ico.b{background:linear-gradient(135deg,#E9353A,#FF6B6B)}
+.kpix-ico.c{background:linear-gradient(135deg,#FF7D00,#FFB84D)}
+.kpix-ico.d{background:linear-gradient(135deg,#722ED1,#B36BFF)}
+.kpix-main{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px}
+.kpix-val{font-size:32px;font-weight:600;letter-spacing:-.5px;font-variant-numeric:tabular-nums;line-height:1}
+.kpix-unit{font-size:14px;color:var(--text-2);margin-left:4px;font-weight:400}
+.kpix-delta{font-size:12px;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:2px}
+.kpix-delta.up{color:var(--success);background:var(--success-bg)}
+.kpix-delta.down{color:var(--danger);background:var(--danger-bg)}
+.kpix-sub{font-size:12px;color:var(--text-3)}
+.kpix-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)}
+.kpix-grid a{font-size:12px;border-radius:var(--r-sm);transition:all .15s}
+.kpix-grid a:hover .kv{color:var(--primary)}
+.kpix-grid .kl{color:var(--text-3);display:block;margin-bottom:2px}
+.kpix-grid .kv{font-size:17px;font-weight:600;color:var(--text-1);font-variant-numeric:tabular-nums;transition:color .15s}
+.kpix-grid .kv.green{color:var(--success)}
+.kpix-grid .kv.red{color:var(--danger)}
+.kpix-grid .kv.orange{color:var(--warning)}
+.kpix-bar{height:4px;background:var(--fill-2);border-radius:2px;margin-top:12px;overflow:hidden}
+.kpix-bar>div{height:100%;border-radius:2px}
+.kpix-foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-3);margin-top:10px}
+.kpix-foot a{color:var(--primary)}
+.kpix-foot a:hover{color:var(--primary-active)}
+
+/* ============ 业务待办提示 ============ */
+.nt-card{background:linear-gradient(135deg,var(--warning-bg),#FFEEDB);border:1px solid var(--warning-border);border-left:4px solid var(--warning);border-radius:var(--r-lg);padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.nt-ico{width:40px;height:40px;border-radius:10px;background:rgba(255,125,0,.20);color:var(--warning);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.nt-body{flex:1}
+.nt-title{font-size:14px;font-weight:600;margin-bottom:2px}
+.nt-text{font-size:12px;color:var(--text-2);line-height:1.6}
+.nt-actions{display:flex;gap:8px;flex-shrink:0}
+
+/* ============ 5 大板块入口大卡(R7:A/B/C/D/Z 五板块 + A 内数据监测子入口) ============ */
+.mod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mod-card{background:#fff;border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:20px;display:flex;flex-direction:column;transition:all .2s;position:relative;overflow:hidden}
+.mod-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.mod-card::before{content:"";position:absolute;right:-36px;top:-36px;width:130px;height:130px;border-radius:50%;opacity:.07}
+.mod-card.m-a::before{background:var(--primary)}
+.mod-card.m-b::before{background:var(--red-cn)}
+.mod-card.m-c::before{background:var(--warning)}
+.mod-card.m-d::before{background:var(--purple)}
+.mod-card.m-z::before{background:#0FC6C2}
+.mod-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mod-ico{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;flex-shrink:0;box-shadow:var(--sh-sm)}
+.mod-ico.a{background:linear-gradient(135deg,#165DFF,#4080FF)}
+.mod-ico.b{background:linear-gradient(135deg,#E9353A,#FF6B6B)}
+.mod-ico.c{background:linear-gradient(135deg,#FF7D00,#FFB84D)}
+.mod-ico.d{background:linear-gradient(135deg,#722ED1,#B36BFF)}
+.mod-ico.z{background:linear-gradient(135deg,#0FC6C2,#5CDBD3)}
+.mod-ico.a2{background:linear-gradient(135deg,#003a8c,#165DFF)}
+.mod-name{font-size:17px;font-weight:600;color:var(--text-1)}
+.mod-tag{display:inline-block;padding:2px 8px;border-radius:var(--r-sm);font-size:11px;color:var(--text-3);background:var(--fill);margin-top:4px}
+.mod-desc{font-size:13px;color:var(--text-2);line-height:1.6;flex:1;min-height:66px;margin-bottom:12px}
+.mod-stats{display:flex;gap:12px;font-size:12px;color:var(--text-3);margin-bottom:14px;flex-wrap:wrap}
+.mod-stats b{color:var(--text-1);font-weight:600;font-variant-numeric:tabular-nums}
+.mod-stats b.green{color:var(--success)}
+.mod-stats b.red{color:var(--danger)}
+.mod-stats b.orange{color:var(--warning)}
+.mod-actions{display:flex;gap:8px}
+.mod-actions .btn{flex:1}
+
+/* ============ 二级模块快捷入口 ============ */
+.sub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.sub-grp{background:#fff;border:1px solid var(--border-2);border-radius:var(--r-lg);padding:16px 18px}
+.sub-grp-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border-2)}
+.sub-grp-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;color:var(--text-1)}
+.sub-grp-count{font-size:11px;background:var(--fill);color:var(--text-3);padding:2px 8px;border-radius:8px}
+.sub-grp-more{font-size:12px;color:var(--primary)}
+.sub-grp-more:hover{color:var(--primary-active)}
+.sub-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--r);font-size:13px;color:var(--text-2);transition:all .15s}
+.sub-item:hover{background:var(--primary-1);color:var(--primary)}
+.sub-ico{width:28px;height:28px;border-radius:6px;background:var(--fill-2);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-2);flex-shrink:0}
+.sub-item:hover .sub-ico{background:#fff;color:var(--primary)}
+.sub-txt{flex:1}
+.sub-num{font-size:11px;color:var(--text-3);background:var(--fill);padding:1px 6px;border-radius:8px;font-variant-numeric:tabular-nums}
+.sub-num.red{color:var(--danger)}
+.sub-item:hover .sub-num{background:#fff}
+.sub-arrow{font-size:12px;color:var(--text-4);opacity:0;transition:opacity .15s}
+.sub-item:hover .sub-arrow{opacity:1}
+
+/* ============ 端类型切换 ============ */
+.dev-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.dev-card{background:#fff;border:1px solid var(--border-2);border-radius:var(--r-lg);box-shadow:var(--sh-sm);padding:22px;text-align:center;transition:all .2s;display:block}
+.dev-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);border-color:var(--primary)}
+.dev-frame{margin:0 auto 12px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:44px;box-shadow:0 6px 16px rgba(0,0,0,.10)}
+.dev-frame.desktop{width:120px;height:76px;border-radius:10px;font-size:30px;background:linear-gradient(135deg,#165DFF,#4080FF)}
+.dev-frame.owner{width:84px;height:120px;background:linear-gradient(135deg,#722ED1,#B36BFF)}
+.dev-frame.corp{width:84px;height:120px;background:linear-gradient(135deg,#FF7D00,#FFB84D)}
+.dev-frame.gov{width:84px;height:120px;background:linear-gradient(135deg,#E9353A,#FF6B6B)}
+.dev-name{font-size:14px;font-weight:600;color:var(--text-1);margin-bottom:4px}
+.dev-sub{font-size:12px;color:var(--text-3)}
+.dev-tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:8px;background:var(--primary-1);color:var(--primary);margin-top:8px}
+
+/* ============ 最近活动 + 快捷功能 双栏 ============ */
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.grid-2 .card{margin-bottom:0}
+.qc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.qc-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);background:var(--fill);font-size:13px;color:var(--text-2);border:1px solid transparent;transition:all .15s}
+.qc-btn:hover{background:var(--primary-1);color:var(--primary);border-color:var(--primary-2)}
+.qc-ico{width:30px;height:30px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--primary);flex-shrink:0;box-shadow:var(--sh-sm)}
+.sys-hd{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--border-2)}
+.sys-hd::before{content:"";width:3px;height:12px;background:var(--primary);border-radius:2px}
+.sys-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);padding:5px 0}
+.sys-row .ok{color:var(--success)}
+.sys-row .warn{color:var(--warning)}
+
+/* ============ 角色切换弹窗(web_d modal 风格) ============ */
+.mode-opts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.mode-opt{border:2px solid var(--border);border-radius:var(--r-lg);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.mode-opt:hover{border-color:var(--primary)}
+.mode-opt.active{border-color:var(--primary);background:var(--primary-1)}
+.mode-opt .mo-ico{font-size:24px;margin-bottom:6px;font-weight:600}
+.mode-opt .mo-name{font-size:13px;font-weight:600;color:var(--text-1)}
+.mode-opt .mo-desc{font-size:11px;color:var(--text-3);margin-top:4px;line-height:1.4}
+.mode-desc{font-size:13px;color:var(--text-3);margin-bottom:16px;line-height:1.6}
+
+/* ============ 底部 Footer ============ */
+.footer{background:#1D2129;color:#C9CDD4;padding:28px 24px 20px;margin-top:16px}
+.ft-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;max-width:1400px;margin:0 auto}
+.ft-grid h4{color:#fff;font-size:13px;margin-bottom:12px;font-weight:600}
+.ft-grid ul li{font-size:12px;margin-bottom:7px;color:#C9CDD4;cursor:pointer;list-style:none}
+.ft-grid ul li:hover{color:#fff}
+.ft-bottom{max-width:1400px;margin:20px auto 0;padding-top:16px;border-top:1px solid #4E5969;display:flex;justify-content:space-between;font-size:12px;color:#86909C;flex-wrap:wrap;gap:8px}
+.ft-bottom .ok{color:var(--success)}
+
+/* ============ 杂项(web_d 标准) ============ */
+.flex{display:flex}
+.flex-1{flex:1}
+.gap-4{gap:4px}.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}.gap-16{gap:16px}
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+.aic{align-items:center}.jcb{justify-content:space-between}.jce{justify-content:center}.jef{justify-content:flex-end}
+.text-c{text-align:center}.text-r{text-align:right}
+.fs-xs{font-size:12px}.fs-sm{font-size:13px}.fs-md{font-size:15px}.fs-lg{font-size:18px}.fs-xl{font-size:22px}
+.fw-5{font-weight:500}.fw-6{font-weight:600}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-3)}
+.danger{color:var(--danger)}
+.success{color:var(--success)}
+.warning{color:var(--warning)}
+.primary{color:var(--primary)}
+.center{text-align:center}
+.divider{height:1px;background:var(--border-2);margin:14px 0}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#165DFF,#69b1ff);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.empty{padding:36px 20px;text-align:center;color:var(--text-3);font-size:13px}
+
+/* ============ 响应式 ============ */
+@media (max-width:1280px){
+  .kpix-grid,.mod-grid,.sub-grid,.dev-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .welcome-actions{position:static;transform:none;flex-direction:row;margin-top:16px}
+  .ft-grid{grid-template-columns:repeat(2,1fr)}
+  .mode-opts{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:768px){
+  .kpix-grid,.mod-grid,.sub-grid,.dev-grid,.qc-grid{grid-template-columns:1fr}
+  .sider{display:none}
+  .top-search input{width:110px}
+}
+
+/* R12 通用按钮交互反馈 */
+.gb-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(29,33,41,.92);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.gb-toast.show{opacity:1}
+
+/* R14 侧栏折叠交互 */
+.sider-grp.sider-grp-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.sider-grp.sider-grp-toggle:hover{color:#165DFF}
+.grp-arrow{font-size:10px;transition:transform .2s;display:inline-block}
+.sider-grp-toggle.collapsed .grp-arrow{transform:rotate(-90deg)}
+.grp-body{overflow:hidden;max-height:3000px;transition:max-height .25s ease}
+.grp-body.grp-hidden{max-height:0}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶栏(与 web_d 档案归档完全一致,R7 规范 1.1:6 项全局导航,当前项:主页) ============ -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">陕</div>
+    <span>陕西数字住建</span>
+  </div>
+  <nav class="global-nav">
+    <a class="cur" href="#page-MAIN-O" onclick="switchPage('MAIN-O');return false;">⌂ 主页</a>
+    <a href="../01-物业监管-备案/web_a1_filing_prototype.html">▤ 物业监管</a>
+    <a href="../05-党建联建/web_b_general_prototype.html">⌬ 社区物业党建联建</a>
+    <a href="../06-业主决策/web_c_decision_prototype.html">⌧ 业主决策</a>
+    <a href="../07-档案归档/web_d_archive_prototype.html">▤ 档案归档</a>
+    <a href="../09-系统管理/web_z_system_prototype.html">⚙ 系统管理</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="top-search">⌕ <input id="globalSearchInput" placeholder="搜索企业 / 项目 / 业委会 / 投票 / 档案 / 工单…"></div>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-PWD" class="top-icon" title="设置">⚙</a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-NOTI" class="top-icon" title="通知">⌭<span class="top-badge">12</span></a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG" class="top-icon" title="消息">✉<span class="top-badge">5</span></a>
+    <div class="top-user" id="topUser" onclick="toggleUserMenu(event)">
+      <div class="top-avatar">陈</div>
+      <span>陈默</span>
+      <span class="top-caret">▾</span>
+      <div class="user-menu" onclick="event.stopPropagation()">
+        <div class="um-hd">
+          <div class="top-avatar" style="width:36px;height:36px;font-size:14px;">陈</div>
+          <div>
+            <div class="um-name">陈默</div>
+            <div class="um-role">省级物业主管 · 陕西省住建厅</div>
+          </div>
+        </div>
+        <a class="um-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-SET">⚙ 个人设置</a>
+        <a class="um-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-PWD">🔒 修改密码 / 安全</a>
+        <a class="um-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-LOG">⏱ 登录日志</a>
+        <div class="um-divider"></div>
+        <a class="um-item logout" href="../login.html">⏏ 退出登录</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 布局 ============ -->
+<div class="layout">
+
+  <!-- 左侧导航(与 web_d 同构) -->
+  <aside class="sider" id="sider">
+    <div class="sider-hd">⌂ <span class="sider-hd-label">综合工作台</span></div>
+    <div class="sider-bd">
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>本页导航</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item cur" href="#page-MAIN-O" onclick="switchPage('MAIN-O');return false;">
+        <span class="s-ico">⌂</span><span class="s-label">工作台总览</span>
+      </a>
+      <a class="s-item" href="#page-MAIN-M" onclick="switchPage('MAIN-M');return false;">
+        <span class="s-ico">▤</span><span class="s-label">业务板块入口</span><span class="s-tag">5</span>
+      </a>
+      <a class="s-item" href="#page-MAIN-X" onclick="switchPage('MAIN-X');return false;">
+        <span class="s-ico">▦</span><span class="s-label">端类型切换</span>
+      </a>
+      <a class="s-item" href="#page-MAIN-A" onclick="switchPage('MAIN-A');return false;">
+        <span class="s-ico">⏱</span><span class="s-label">最近活动</span>
+      </a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>业务子系统</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="../01-物业监管-备案/web_a1_filing_prototype.html">
+        <span class="s-ico">⌂</span><span class="s-label">物业监管 · 备案</span>
+      </a>
+      <a class="s-item" href="../02-物业监管-资金/web_a2_fund_prototype.html">
+        <span class="s-ico">$</span><span class="s-label">维修资金监管</span>
+      </a>
+      <a class="s-item" href="../03-物业监管-监测/web_a3_insight_prototype.html">
+        <span class="s-ico">▤</span><span class="s-label">数据监测分析</span>
+      </a>
+      <a class="s-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html">
+        <span class="s-ico">⌯</span><span class="s-label">评价 · 查验 · 进出</span>
+      </a>
+      <a class="s-item" href="../05-党建联建/web_b_general_prototype.html">
+        <span class="s-ico">✦</span><span class="s-label">社区物业党建联建</span>
+      </a>
+      <a class="s-item" href="../06-业主决策/web_c_decision_prototype.html">
+        <span class="s-ico">⌧</span><span class="s-label">业主决策</span>
+      </a>
+      <a class="s-item" href="../07-档案归档/web_d_archive_prototype.html">
+        <span class="s-ico">▤</span><span class="s-label">档案归档</span>
+      </a>
+      <a class="s-item" href="../09-系统管理/web_z_system_prototype.html">
+        <span class="s-ico">⚙</span><span class="s-label">系统管理</span>
+      </a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>系统入口</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="../login.html">
+        <span class="s-ico">⏏</span><span class="s-label">返回登录页</span>
+      </a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>移动端</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="../08-移动端/mobile_owner_prototype.html#page-M-1-HOME">
+        <span class="s-ico">⌂</span><span class="s-label">业主端(秦务员)</span>
+      </a>
+      <a class="s-item" href="../08-移动端/mobile_corp_prototype.html#page-M-8-PROJ-HOME">
+        <span class="s-ico">⚙</span><span class="s-label">物业企业端</span>
+      </a>
+      <a class="s-item" href="../08-移动端/mobile_gov_prototype.html#page-M-9-AUDIT">
+        <span class="s-ico">✓</span><span class="s-label">主管部门端</span>
+      </a>
+      </div>
+      </div>
+    <div class="sider-ft" onclick="toggleSider()">⇆ <span class="sider-hd-label">收起菜单</span></div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main">
+
+    <!-- ============ 页面头(与 web_d 同构:面包屑 + 蓝条标题 + actions + tabbar) ============ -->
+    <div class="page-hd">
+      <div class="page-hd-row">
+        <div>
+          <div class="breadcrumb">
+            <span>首页</span>
+            <span>工作台</span>
+            <span id="crumb-3">工作台总览</span>
+          </div>
+          <div class="page-title">
+            <span class="page-title-bar"></span>
+            <span id="page-title-text">综合工作台 · 总览</span>
+            <span class="page-desc" id="page-desc-text">欢迎横幅 · 核心 KPI 看板 · 紧急待办 · 5 大业务板块 · 跨端协同</span>
+          </div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="refreshKPI()">↻ 刷新数据</button>
+          <a onclick="gbToast('操作已受理(演示环境)')" class="btn btn-sm" href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG">✉ 站内消息</a>
+          <a onclick="gbToast('操作已受理(演示环境)')" class="btn btn-sm" href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT">⏱ 操作审计</a>
+          <button class="btn btn-primary btn-sm" onclick="openModal('modal-role')">⌂ 切换角色视角</button>
+        </div>
+      </div>
+
+      <!-- Tab 切换 -->
+      <nav class="tabbar" id="tabbar">
+        <a href="#page-MAIN-O" data-tab="MAIN-O" class="cur" onclick="switchPage('MAIN-O');return false;">⌂ 工作台总览</a>
+        <a href="#page-MAIN-M" data-tab="MAIN-M" onclick="switchPage('MAIN-M');return false;">▤ 业务板块入口 <span class="tab-tag">5</span></a>
+        <a href="#page-MAIN-X" data-tab="MAIN-X" onclick="switchPage('MAIN-X');return false;">▦ 端类型切换 · 系统配置</a>
+        <a href="#page-MAIN-A" data-tab="MAIN-A" onclick="switchPage('MAIN-A');return false;">⏱ 最近活动 · 快捷功能</a>
+      </nav>
+    </div>
+
+    <!-- ============ 页面内容 ============ -->
+    <div class="page-bd">
+
+      <!-- ========== MAIN-O 工作台总览 ========== -->
+      <section class="page cur" id="page-MAIN-O">
+
+        <!-- 欢迎横幅(深蓝渐变,与顶栏呼应) -->
+        <div class="welcome-banner">
+          <div class="welcome-left">
+            <div class="welcome-greeting">WELCOME TO SHAANXI DIGITAL HOUSING</div>
+            <div class="welcome-title">您好,陈默 — <span id="roleWelcome">省级物业主管</span></div>
+            <div class="welcome-meta">
+              <div class="welcome-meta-item">
+                <span class="meta-icon">⏰</span>
+                <span id="loginTime">2026-10-16 周五 09:08 登录</span>
+              </div>
+              <div class="welcome-meta-item">
+                <span class="meta-icon">⚐</span>
+                <span>辖区:陕西省 · 全境(10 个地市 + 107 个县区)</span>
+              </div>
+              <div class="welcome-meta-item">
+                <span class="meta-icon">⌂</span>
+                <span>本月办件量:<strong style="color:#fff;">1,820</strong> 件 · 待办 <strong style="color:#FFE082;">86</strong> 件</span>
+              </div>
+            </div>
+          </div>
+          <div class="welcome-actions">
+            <a class="welcome-action primary" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D">
+              <span class="act-icon">✓</span> 立即审批 · 23 件
+            </a>
+            <a class="welcome-action" href="../03-物业监管-监测/web_a3_insight_prototype.html">
+              <span class="act-icon">▤</span> 打开数据大屏
+            </a>
+          </div>
+        </div>
+
+        <!-- 核心 KPI 看板:4 大模块区块 -->
+        <div class="kpix-grid">
+          <!-- A. 物业监管 KPI -->
+          <div class="kpix kx-a">
+            <div class="kpix-hd">
+              <div class="kpix-title">物业监管</div>
+              <div class="kpix-ico a">⌂</div>
+            </div>
+            <div class="kpix-main">
+              <div><span class="kpix-val" id="kpiA1">1,284</span><span class="kpix-unit">家</span></div>
+              <span class="kpix-delta up">↑ 8.2%</span>
+            </div>
+            <div class="kpix-sub">物业服务企业(备案)</div>
+            <div class="kpix-grid">
+              <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-L">
+                <span class="kl">项目数</span><span class="kv">3,762</span>
+              </a>
+              <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-4-L">
+                <span class="kl">业委会</span><span class="kv">4,280</span>
+              </a>
+              <a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-L">
+                <span class="kl">信用 A 级</span><span class="kv green">182</span>
+              </a>
+              <a href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-11-G">
+                <span class="kl">查验中</span><span class="kv orange">87</span>
+              </a>
+            </div>
+            <div class="kpix-bar"><div style="width:78%;background:#165DFF;"></div></div>
+            <div class="kpix-foot">
+              <span>企业数同比 <span class="success">↑8.2%</span></span>
+              <a href="../03-物业监管-监测/web_a3_insight_prototype.html#page-A-3-1">查看趋势 →</a>
+            </div>
+          </div>
+
+          <!-- B. 党建联建 KPI -->
+          <div class="kpix kx-b">
+            <div class="kpix-hd">
+              <div class="kpix-title">社区物业党建联建</div>
+              <div class="kpix-ico b">✦</div>
+            </div>
+            <div class="kpix-main">
+              <div><span class="kpix-val">1,068</span><span class="kpix-unit">个</span></div>
+              <span class="kpix-delta up">↑ 5.6%</span>
+            </div>
+            <div class="kpix-sub">物业企业党组织</div>
+            <div class="kpix-grid">
+              <a href="../05-党建联建/web_b_general_prototype.html#page-B-2-L">
+                <span class="kl">党员总数</span><span class="kv">18,420</span>
+              </a>
+              <a href="../05-党建联建/web_b_general_prototype.html#page-B-3-L">
+                <span class="kl">党群中心</span><span class="kv">286</span>
+              </a>
+              <a href="../05-党建联建/web_b_general_prototype.html#page-B-4-L">
+                <span class="kl">本月活动</span><span class="kv">128</span>
+              </a>
+              <a href="../05-党建联建/web_b_general_prototype.html#page-B-8-L">
+                <span class="kl">应建覆盖率</span><span class="kv green">87.2%</span>
+              </a>
+            </div>
+            <div class="kpix-bar"><div style="width:87%;background:#E9353A;"></div></div>
+            <div class="kpix-foot">
+              <span>应建未建 <span class="danger">158</span> 个</span>
+              <a href="../05-党建联建/web_b_general_prototype.html#page-B-8-L">查看应建 →</a>
+            </div>
+          </div>
+
+          <!-- C. 业主决策 KPI -->
+          <div class="kpix kx-c">
+            <div class="kpix-hd">
+              <div class="kpix-title">业主决策</div>
+              <div class="kpix-ico c">⌧</div>
+            </div>
+            <div class="kpix-main">
+              <div><span class="kpix-val">156</span><span class="kpix-unit">件</span></div>
+              <span class="kpix-delta up">↑ 12.4%</span>
+            </div>
+            <div class="kpix-sub">本月业主投票事项</div>
+            <div class="kpix-grid">
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-5-PR">
+                <span class="kl">通过率</span><span class="kv green">89%</span>
+              </a>
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-1-L">
+                <span class="kl">业主投诉</span><span class="kv">218</span>
+              </a>
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L">
+                <span class="kl">报修工单</span><span class="kv">1,820</span>
+              </a>
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-4-L">
+                <span class="kl">业主大会</span><span class="kv">42</span>
+              </a>
+            </div>
+            <div class="kpix-bar"><div style="width:89%;background:#FF7D00;"></div></div>
+            <div class="kpix-foot">
+              <span>投诉解决率 <span class="success">94.2%</span></span>
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-5-L">投票详情 →</a>
+            </div>
+          </div>
+
+          <!-- D. 档案归档 KPI -->
+          <div class="kpix kx-d">
+            <div class="kpix-hd">
+              <div class="kpix-title">档案归档</div>
+              <div class="kpix-ico d">⚙</div>
+            </div>
+            <div class="kpix-main">
+              <div><span class="kpix-val">86,420</span><span class="kpix-unit">件</span></div>
+              <span class="kpix-delta up">↑ 3.8%</span>
+            </div>
+            <div class="kpix-sub">档案总数(本月新增 1,820)</div>
+            <div class="kpix-grid">
+              <a href="../07-档案归档/web_d_archive_prototype.html#page-D-1-L">
+                <span class="kl">归档成功率</span><span class="kv green">98.5%</span>
+              </a>
+              <a href="../07-档案归档/web_d_archive_prototype.html#page-D-2-T">
+                <span class="kl">四性检测</span><span class="kv">2,160</span>
+              </a>
+              <a href="../07-档案归档/web_d_archive_prototype.html#page-D-2-D">
+                <span class="kl">异常待处置</span><span class="kv red">38</span>
+              </a>
+              <a href="../07-档案归档/web_d_archive_prototype.html#page-D-2-R">
+                <span class="kl">通过</span><span class="kv green">2,122</span>
+              </a>
+            </div>
+            <div class="kpix-bar"><div style="width:98%;background:#722ED1;"></div></div>
+            <div class="kpix-foot">
+              <span>检测通过率 <span class="success">98.2%</span></span>
+              <a href="../07-档案归档/web_d_archive_prototype.html#page-D-2-D">处置异常 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 业务待办提示 -->
+        <div class="nt-card">
+          <div class="nt-ico">⚠</div>
+          <div class="nt-body">
+            <div class="nt-title">您有 23 件紧急待办 · A-1-D 审批 + B-8-L 应建推动提醒</div>
+            <div class="nt-text">
+              其中 <strong class="danger">5 件</strong> 即将超期(24h 内)、<strong class="warning">3 件</strong> 已超时、<strong class="primary">15 件</strong> 正常流转。建议立即处理。
+            </div>
+          </div>
+          <div class="nt-actions">
+            <a onclick="gbToast('操作已受理(演示环境)')" class="btn btn-sm" href="../06-业主决策/web_c_decision_prototype.html#page-C-1-L">看投诉处理</a>
+            <a onclick="switchPage('MAIN-A');" class="btn btn-orange btn-sm" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D">去审批</a>
+          </div>
+        </div>
+
+        <!-- 快捷功能 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>快捷功能
+              <span class="card-title-extra">贴近上午 9 点刚开机的真实工作节奏</span>
+            </div>
+            <div class="card-extra">
+              <span class="fs-xs muted">更新时间:<span id="updateTime">10:30</span></span>
+              <button class="btn btn-sm" onclick="refreshKPI()">↻ 刷新</button>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="qc-grid">
+              <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-F">
+                <div class="qc-ico">⊕</div><span>新增企业备案</span>
+              </a>
+              <a onclick="switchPage('MAIN-A');" class="qc-btn" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D">
+                <div class="qc-ico">✓</div><span>待审批 (23)</span>
+              </a>
+              <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-EX">
+                <div class="qc-ico">⌫</div><span>退出备案登记</span>
+              </a>
+              <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../06-业主决策/web_c_decision_prototype.html#page-C-5-F">
+                <div class="qc-ico">⌧</div><span>发起投票</span>
+              </a>
+              <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../05-党建联建/web_b_general_prototype.html#page-B-1-F">
+                <div class="qc-ico">✦</div><span>党组织录入</span>
+              </a>
+              <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../05-党建联建/web_b_general_prototype.html#page-B-4-L">
+                <div class="qc-ico">⊕</div><span>党建活动</span>
+              </a>
+              <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../03-物业监管-监测/web_a3_insight_prototype.html">
+                <div class="qc-ico">▤</div><span>数据监测</span>
+              </a>
+              <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-20-D">
+                <div class="qc-ico">▦</div><span>查验大屏</span>
+              </a>
+              <a onclick="gbToast('分派成功,已通知责任人')" class="qc-btn" href="../06-业主决策/web_c_decision_prototype.html#page-C-2-A">
+                <div class="qc-ico">⚙</div><span>报修分派</span>
+              </a>
+              <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-6-R1">
+                <div class="qc-ico">$</div><span>资金报表</span>
+              </a>
+              <a onclick="gbToast('正在生成导出文件,下载即将开始')" class="qc-btn" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-F">
+                <div class="qc-ico">⤓</div><span>档案上传</span>
+              </a>
+              <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-D">
+                <div class="qc-ico">⚠</div><span>异常处置</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== MAIN-M 业务模块入口 ========== -->
+      <section class="page" id="page-MAIN-M">
+
+        <!-- 5 大板块入口大卡(A/B/C/D/Z;数据监测为 A 板块子入口) -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>业务板块入口
+              <span class="card-title-extra">点击进入对应工作区 · 系统依据您的角色自动适配可见范围 · 数据监测分析已归入物业监管板块</span>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="mod-grid">
+              <!-- A. 物业监管 -->
+              <a class="mod-card m-a" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-L">
+                <div class="mod-hd">
+                  <div class="mod-ico a">⌂</div>
+                  <div>
+                    <div class="mod-name">物业监管</div>
+                    <span class="mod-tag">A · 备案 / 资金 / 监测 / 评价查验进出</span>
+                  </div>
+                </div>
+                <div class="mod-desc">
+                  覆盖物业企业、区域、招投标、业委会、维修资金、查验评价、进出管理全生命周期监管。数据监测分析(A-3)为本板块子模块,提供备案审批、动态评价、信用联动、应急指派能力。
+                </div>
+                <div class="mod-stats">
+                  <span>企业 <b>1,284</b></span>
+                  <span>·</span>
+                  <span>项目 <b>3,762</b></span>
+                  <span>·</span>
+                  <span>待办 <b class="orange">23</b></span>
+                </div>
+                <div class="mod-actions">
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary">进入工作区</button>
+                  <button class="btn" onclick="event.preventDefault();location.href='../03-物业监管-监测/web_a3_insight_prototype.html';">数据监测</button>
+                </div>
+              </a>
+
+              <!-- B. 党建联建 -->
+              <a class="mod-card m-b" href="../05-党建联建/web_b_general_prototype.html#page-B-1-L">
+                <div class="mod-hd">
+                  <div class="mod-ico b">✦</div>
+                  <div>
+                    <div class="mod-name">社区物业党建联建</div>
+                    <span class="mod-tag">B · 党组织联建</span>
+                  </div>
+                </div>
+                <div class="mod-desc">
+                  物业服务企业 / 区域 / 项目党组织应建尽建、党员管理、党群中心可视化、党建活动组织、公开评价一体化,推动"红色物业"落地。
+                </div>
+                <div class="mod-stats">
+                  <span>党组织 <b>1,068</b></span>
+                  <span>·</span>
+                  <span>党员 <b>18,420</b></span>
+                  <span>·</span>
+                  <span>应建率 <b class="green">87.2%</b></span>
+                </div>
+                <div class="mod-actions">
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-red">进入工作区</button>
+                  <button class="btn" onclick="event.preventDefault();location.href='../05-党建联建/web_b_general_prototype.html#page-B-8-L';">应建覆盖率</button>
+                </div>
+              </a>
+
+              <!-- C. 业主决策 -->
+              <a class="mod-card m-c" href="../06-业主决策/web_c_decision_prototype.html#page-C-1-L">
+                <div class="mod-hd">
+                  <div class="mod-ico c">⌧</div>
+                  <div>
+                    <div class="mod-name">业主决策</div>
+                    <span class="mod-tag">C · 业主自治管理</span>
+                  </div>
+                </div>
+                <div class="mod-desc">
+                  业主大会、物业投票、业委会/物管会组建、报修工单、投诉处置全链路管理,支持移动端表决、短信委托、电子签章、过程留痕。
+                </div>
+                <div class="mod-stats">
+                  <span>投票 <b>156</b></span>
+                  <span>·</span>
+                  <span>工单 <b>1,820</b></span>
+                  <span>·</span>
+                  <span>通过率 <b class="green">89%</b></span>
+                </div>
+                <div class="mod-actions">
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-orange">进入工作区</button>
+                  <button class="btn" onclick="event.preventDefault();location.href='../06-业主决策/web_c_decision_prototype.html#page-C-5-PR';">监控大屏</button>
+                </div>
+              </a>
+
+              <!-- D. 档案归档 -->
+              <a class="mod-card m-d" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-L">
+                <div class="mod-hd">
+                  <div class="mod-ico d">⚙</div>
+                  <div>
+                    <div class="mod-name">档案归档</div>
+                    <span class="mod-tag">D · 四性检测归档</span>
+                  </div>
+                </div>
+                <div class="mod-desc">
+                  物业事项全量业务档案集中归档,真实、完整、可用、安全四性自动检测,异常工单处置闭环,档案借阅/导出带操作审计与水印。
+                </div>
+                <div class="mod-stats">
+                  <span>档案 <b>86,420</b></span>
+                  <span>·</span>
+                  <span>检测 <b>2,160</b></span>
+                  <span>·</span>
+                  <span>异常 <b class="red">38</b></span>
+                </div>
+                <div class="mod-actions">
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-purple">进入工作区</button>
+                  <button class="btn" onclick="event.preventDefault();location.href='../07-档案归档/web_d_archive_prototype.html#page-D-2-D';">异常处置</button>
+                </div>
+              </a>
+
+              <!-- Z. 系统管理(R7 新拆分板块) -->
+              <a class="mod-card m-z" href="../09-系统管理/web_z_system_prototype.html#page-Z-LOG">
+                <div class="mod-hd">
+                  <div class="mod-ico z">⚙</div>
+                  <div>
+                    <div class="mod-name">系统管理</div>
+                    <span class="mod-tag">Z · 平台通用能力</span>
+                  </div>
+                </div>
+                <div class="mod-desc">
+                  登录日志、密码安全、通知消息、个人设置、操作审计、主数据字典、数字证书、工作流配置、短信频次与综合大屏等平台级功能统一入口(R7 从党建联建拆分独立)。
+                </div>
+                <div class="mod-stats">
+                  <span>功能 <b>11</b></span>
+                  <span>·</span>
+                  <span>字典 <b>328</b></span>
+                  <span>·</span>
+                  <span>审计 <b>100%</b></span>
+                </div>
+                <div class="mod-actions">
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary" style="background:#0FC6C2;border-color:#0FC6C2;">进入工作区</button>
+                  <button class="btn" onclick="event.preventDefault();location.href='../09-系统管理/web_z_system_prototype.html#page-Z-DASHBOARD';">综合大屏</button>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 二级模块快捷入口 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>常用二级模块 · 快速直达
+              <span class="card-title-extra">每个一级模块展开为 5-9 个常用子项</span>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="sub-grid">
+              <!-- 物业监管 A -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title">
+                    <span style="color:#165DFF;">●</span> 物业监管
+                    <span class="sub-grp-count">9 项</span>
+                  </div>
+                  <a class="sub-grp-more" href="../01-物业监管-备案/web_a1_filing_prototype.html">全部 →</a>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-L">
+                    <div class="sub-ico">⌂</div><div class="sub-txt">企业备案</div>
+                    <span class="sub-num">1,284</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-2-L">
+                    <div class="sub-ico">▦</div><div class="sub-txt">区域备案</div>
+                    <span class="sub-num">3,762</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../03-物业监管-监测/web_a3_insight_prototype.html#page-A-3-1">
+                    <div class="sub-ico">⌬</div><div class="sub-txt">招投标档案</div>
+                    <span class="sub-num">420</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-4-L">
+                    <div class="sub-ico">⌹</div><div class="sub-txt">业委会备案</div>
+                    <span class="sub-num">4,280</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-6-R1">
+                    <div class="sub-ico">$</div><div class="sub-txt">维修资金 · 报表</div>
+                    <span class="sub-num">3.8亿</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-7-FA">
+                    <div class="sub-ico">$</div><div class="sub-txt">维修资金申请</div>
+                    <span class="sub-num">52</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-L">
+                    <div class="sub-ico">⌯</div><div class="sub-txt">信用评级</div>
+                    <span class="sub-num">182</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-11-G">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">承接查验</div>
+                    <span class="sub-num">87</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-21-L">
+                    <div class="sub-ico">⌫</div><div class="sub-txt">进出管理</div>
+                    <span class="sub-num">36</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 党建联建 B -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title">
+                    <span style="color:#E9353A;">●</span> 党建联建
+                    <span class="sub-grp-count">8 项</span>
+                  </div>
+                  <a class="sub-grp-more" href="../05-党建联建/web_b_general_prototype.html">全部 →</a>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-1-L">
+                    <div class="sub-ico">✦</div><div class="sub-txt">党组织管理</div>
+                    <span class="sub-num">1,068</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-2-L">
+                    <div class="sub-ico">⌹</div><div class="sub-txt">党员管理</div>
+                    <span class="sub-num">18,420</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-3-L">
+                    <div class="sub-ico">◯</div><div class="sub-txt">党群服务中心</div>
+                    <span class="sub-num">286</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-4-L">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">党建活动</div>
+                    <span class="sub-num">128</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-5-L">
+                    <div class="sub-ico">▤</div><div class="sub-txt">党务公开</div>
+                    <span class="sub-num">820</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-6-L">
+                    <div class="sub-ico">⌮</div><div class="sub-txt">党建动态</div>
+                    <span class="sub-num">2,160</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-7-L">
+                    <div class="sub-ico">⌯</div><div class="sub-txt">党建评价</div>
+                    <span class="sub-num">95.6</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-8-L">
+                    <div class="sub-ico">▲</div><div class="sub-txt">应建覆盖率</div>
+                    <span class="sub-num">87.2%</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 业主决策 C -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title">
+                    <span style="color:#FF7D00;">●</span> 业主决策
+                    <span class="sub-grp-count">8 项</span>
+                  </div>
+                  <a class="sub-grp-more" href="../06-业主决策/web_c_decision_prototype.html">全部 →</a>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-1-L">
+                    <div class="sub-ico">⌨</div><div class="sub-txt">物业投诉</div>
+                    <span class="sub-num">218</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L">
+                    <div class="sub-ico">⌫</div><div class="sub-txt">报修工单</div>
+                    <span class="sub-num">1,820</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-3-L">
+                    <div class="sub-ico">⌹</div><div class="sub-txt">业主档案</div>
+                    <span class="sub-num">1.2M</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-4-L">
+                    <div class="sub-ico">◯</div><div class="sub-txt">业主大会</div>
+                    <span class="sub-num">42</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-5-L">
+                    <div class="sub-ico">⌧</div><div class="sub-txt">物业投票</div>
+                    <span class="sub-num">156</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-6-L">
+                    <div class="sub-ico">⌹</div><div class="sub-txt">业委会</div>
+                    <span class="sub-num">4,280</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-7-L">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">物管会</div>
+                    <span class="sub-num">820</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../06-业主决策/web_c_decision_prototype.html#page-C-8-MV">
+                    <div class="sub-ico">▤</div><div class="sub-txt">投票监控大屏</div>
+                    <span class="sub-num">实时</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 档案归档 D -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title">
+                    <span style="color:#722ED1;">●</span> 档案归档
+                    <span class="sub-grp-count">6 项</span>
+                  </div>
+                  <a class="sub-grp-more" href="../07-档案归档/web_d_archive_prototype.html">全部 →</a>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-L">
+                    <div class="sub-ico">▤</div><div class="sub-txt">档案列表</div>
+                    <span class="sub-num">86,420</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-F">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">档案上传归档</div>
+                    <span class="sub-num">新增</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-EX">
+                    <div class="sub-ico">⤓</div><div class="sub-txt">归档导出 / 报告</div>
+                    <span class="sub-num">86</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-T">
+                    <div class="sub-ico">⌕</div><div class="sub-txt">四性检测任务</div>
+                    <span class="sub-num">2,160</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-R">
+                    <div class="sub-ico">⌬</div><div class="sub-txt">检测结果详情</div>
+                    <span class="sub-num">PASS</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-D">
+                    <div class="sub-ico">⚠</div><div class="sub-txt">异常处置</div>
+                    <span class="sub-num red">38</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== MAIN-X 端类型切换 + 系统配置 ========== -->
+      <section class="page" id="page-MAIN-X">
+
+        <!-- 端类型切换 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>端类型切换 · 跨端协同
+              <span class="card-title-extra">桌面端、移动端业主端、移动端物业企业端、移动端主管部门端 — 一次登录,多端协同</span>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="dev-grid">
+              <a class="dev-card" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-L">
+                <div class="dev-frame desktop">▤</div>
+                <div class="dev-name">桌面端 · 物业主管部门</div>
+                <div class="dev-sub">当前端 · 省级物业主管视角</div>
+                <span class="dev-tag">Web</span>
+              </a>
+              <a class="dev-card" href="../08-移动端/mobile_owner_prototype.html#page-M-1-HOME">
+                <div class="dev-frame owner">⌂</div>
+                <div class="dev-name">移动端 · 业主(秦务员)</div>
+                <div class="dev-sub">公告 / 投票 / 报修 / 投诉 / 我的</div>
+                <span class="dev-tag">Mobile · 业主</span>
+              </a>
+              <a class="dev-card" href="../08-移动端/mobile_corp_prototype.html#page-M-8-PROJ-HOME">
+                <div class="dev-frame corp">⚙</div>
+                <div class="dev-name">移动端 · 物业企业</div>
+                <div class="dev-sub">项目 / 工单 / 投诉 / 查验 / 我的</div>
+                <span class="dev-tag">Mobile · 企业</span>
+              </a>
+              <a class="dev-card" href="../08-移动端/mobile_gov_prototype.html#page-M-9-AUDIT">
+                <div class="dev-frame gov">✓</div>
+                <div class="dev-name">移动端 · 主管部门</div>
+                <div class="dev-sub">待办 / 审批 / 报事 / 查询 / 大屏</div>
+                <span class="dev-tag">Mobile · 政务</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 系统配置与基础管理 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>系统配置与基础管理
+              <span class="card-title-extra">主数据字典、工作流节点、证书管理、短信频次 — 平台级配置入口</span>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="sub-grid">
+              <!-- 平台配置 -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title"><span style="color:#165DFF;">●</span> 平台配置</div>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-DICT">
+                    <div class="sub-ico">▤</div><div class="sub-txt">主数据字典</div>
+                    <span class="sub-num">328</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-WF">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">工作流节点配置</div>
+                    <span class="sub-num">26</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-CERT">
+                    <div class="sub-ico">⌬</div><div class="sub-txt">数字证书 / UKey</div>
+                    <span class="sub-num">86</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-SMS">
+                    <div class="sub-ico">⌮</div><div class="sub-txt">短信频次配置</div>
+                    <span class="sub-num">12</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-DASHBOARD">
+                    <div class="sub-ico">▦</div><div class="sub-txt">综合大屏</div>
+                    <span class="sub-num">实时</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT">
+                    <div class="sub-ico">⌕</div><div class="sub-txt">操作审计</div>
+                    <span class="sub-num">日志</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 重点专项 P0 -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title"><span style="color:#00B42A;">●</span> 重点专项(P0 新)</div>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-11-G">
+                    <div class="sub-ico">⊕</div><div class="sub-txt">承接查验 · 两类分支</div>
+                    <span class="sub-num">87</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../05-党建联建/web_b_general_prototype.html#page-B-8-L">
+                    <div class="sub-ico">▲</div><div class="sub-txt">党组织应建覆盖率</div>
+                    <span class="sub-num">87.2%</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-6-R10">
+                    <div class="sub-ico">⚠</div><div class="sub-txt">维修资金异常专项</div>
+                    <span class="sub-num">158</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-24-E6">
+                    <div class="sub-ico">⚙</div><div class="sub-txt">应急物业自动匹配</div>
+                    <span class="sub-num">策略</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../03-物业监管-监测/web_a3_insight_prototype.html">
+                    <div class="sub-ico">▦</div><div class="sub-txt">自定义统计报表</div>
+                    <span class="sub-num">28</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-18-E">
+                    <div class="sub-ico">⏰</div><div class="sub-txt">查验超期升级预警</div>
+                    <span class="sub-num">12</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 跨端快捷 -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title"><span style="color:#722ED1;">●</span> 跨端快捷</div>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../08-移动端/mobile_owner_prototype.html#page-M-2-LST">
+                    <div class="sub-ico">⌮</div><div class="sub-txt">业主通知推送</div>
+                    <span class="sub-num">12</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../08-移动端/mobile_owner_prototype.html#page-M-5-VOTE-CAST">
+                    <div class="sub-ico">⌧</div><div class="sub-txt">业主移动表决</div>
+                    <span class="sub-num">156</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../08-移动端/mobile_owner_prototype.html#page-M-3-CMP">
+                    <div class="sub-ico">⌨</div><div class="sub-txt">业主投诉上报</div>
+                    <span class="sub-num">218</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../08-移动端/mobile_owner_prototype.html#page-M-4-REP">
+                    <div class="sub-ico">⌫</div><div class="sub-txt">业主报修上报</div>
+                    <span class="sub-num">1820</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../08-移动端/mobile_corp_prototype.html#page-M-8-CMP-PROC">
+                    <div class="sub-ico">⚙</div><div class="sub-txt">企业端处置</div>
+                    <span class="sub-num">86</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../08-移动端/mobile_gov_prototype.html#page-M-9-DASH">
+                    <div class="sub-ico">▦</div><div class="sub-txt">主管移动大屏</div>
+                    <span class="sub-num">实时</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- 文档 / 帮助 -->
+              <div class="sub-grp">
+                <div class="sub-grp-hd">
+                  <div class="sub-grp-title"><span style="color:#FF7D00;">●</span> 文档 / 帮助</div>
+                </div>
+                <div class="sub-item-list">
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-PWD">
+                    <div class="sub-ico">⚙</div><div class="sub-txt">修改密码 / 安全</div>
+                    <span class="sub-num">密码</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-NOTI">
+                    <div class="sub-ico">⌮</div><div class="sub-txt">通知中心</div>
+                    <span class="sub-num">12</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG">
+                    <div class="sub-ico">✉</div><div class="sub-txt">站内消息</div>
+                    <span class="sub-num">5</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../09-系统管理/web_z_system_prototype.html#page-Z-SET">
+                    <div class="sub-ico">⚙</div><div class="sub-txt">个人设置</div>
+                    <span class="sub-num">设置</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="../login.html">
+                    <div class="sub-ico">⏏</div><div class="sub-txt">退出登录</div>
+                    <span class="sub-num">退出</span><span class="sub-arrow">→</span>
+                  </a>
+                  <a class="sub-item" href="javascript:void(0)" onclick="openModule('HELP')">
+                    <div class="sub-ico">ⓘ</div><div class="sub-txt">使用帮助</div>
+                    <span class="sub-num">指南</span><span class="sub-arrow">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== MAIN-A 最近活动 + 快捷功能 ========== -->
+      <section class="page" id="page-MAIN-A">
+        <div class="grid-2">
+
+          <!-- 最近活动时间线 -->
+          <div class="card">
+            <div class="card-hd">
+              <div class="card-title">
+                <span class="card-title-bar"></span>最近活动 · 近 7 天关键事件
+                <span class="card-title-extra">审批通过 · 投票结束 · 信用降级 · 应急指派 · 自动归档</span>
+              </div>
+              <div class="card-extra">
+                <a class="btn btn-text btn-sm" href="javascript:void(0)" onclick="showToast('演示模式:完整动态请见操作审计 Z-AUDIT')">查看全部 →</a>
+              </div>
+            </div>
+            <div class="card-bd">
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">▤ 物业企业备案审批通过 · 西安万科物业服务有限责任公司
+                    <span class="tag tag-green tag-sm">已通过</span>
+                    <span class="tl-time">10-15 16:42</span>
+                  </div>
+                  <div class="tl-body">操作人:陈默 · 资质等级:壹级 · 触发 FilingApproved 事件 → 信用引擎已更新
+                    <br><a class="tl-link" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D">查看详情 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot purple"></div>
+                  <div class="tl-head">⌧ 御锦城 6 号楼电梯更新改造投票已结束(通过率 92.3%)
+                    <span class="tag tag-purple tag-sm">投票结束</span>
+                    <span class="tl-time">10-15 14:18</span>
+                  </div>
+                  <div class="tl-body">投票人数 286 / 应投 312 · 关联表决结果入库 C-5-QR · 已自动归档 D-1
+                    <br><a class="tl-link" href="../06-业主决策/web_c_decision_prototype.html#page-C-5-QR">查看结果 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot red"></div>
+                  <div class="tl-head">⌯ 西安市某物业服务公司信用评级从 B → C(扣 12 分)
+                    <span class="tag tag-red tag-sm">信用降级</span>
+                    <span class="tl-time">10-15 11:03</span>
+                  </div>
+                  <div class="tl-body">触发因素:3 起有效投诉 + 2 起逾期报修未响应 · 联动:招投标受限 6 个月
+                    <br><a class="tl-link" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-8-D">查看信用档案 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot orange"></div>
+                  <div class="tl-head">⚠ 曲江紫薇城市花园原物业退出 · 应急物业 A-24-E6 自动匹配成功
+                    <span class="tag tag-orange tag-sm">应急指派</span>
+                    <span class="tl-time">10-15 09:25</span>
+                  </div>
+                  <div class="tl-body">命中候选 3 名 · 区域权重 80% · 历史评分 4.6 · 已推送通知 + 应急公示
+                    <br><a class="tl-link" href="../04-物业监管-评价查验进出/web_a4to6_supervision_prototype.html#page-A-24-E1">查看应急 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">✦ 雁塔区 7 家物业企业党组织应建覆盖 · 已推动建党组织 3 家
+                    <span class="tag tag-green tag-sm">党建应建推动</span>
+                    <span class="tl-time">10-14 17:48</span>
+                  </div>
+                  <div class="tl-body">覆盖率从 86.5% → 87.2% · 同步 B-8-L 看板实时数据
+                    <br><a class="tl-link" href="../05-党建联建/web_b_general_prototype.html#page-B-8-L">查看应建 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⚙ 雁塔区国际公寓承接查验档案(D-1)自动归档完成
+                    <span class="tag tag-blue tag-sm">档案归档</span>
+                    <span class="tl-time">10-14 15:12</span>
+                  </div>
+                  <div class="tl-body">四性检测全部通过 · Hash 写入区块链存证 · 操作审计 Z-AUDIT 已记录
+                    <br><a class="tl-link" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-R">查看归档 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">⌫ 阳光小区 12 栋 3 单元电梯故障报修工单 · 已完结 + 业主签字
+                    <span class="tag tag-green tag-sm">报修完结</span>
+                    <span class="tl-time">10-14 10:30</span>
+                  </div>
+                  <div class="tl-body">用时 2h18min · 满意度 5.0 · 业主:张女士 · 工单 C-2-L 已归档
+                    <br><a class="tl-link" href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L">查看工单 →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 快捷功能 + 系统状态 -->
+          <div class="card">
+            <div class="card-hd">
+              <div class="card-title">
+                <span class="card-title-bar"></span>快捷功能
+                <span class="card-title-extra">12 个高频操作</span>
+              </div>
+            </div>
+            <div class="card-bd">
+              <div class="qc-grid">
+                <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-F">
+                  <div class="qc-ico">⊕</div><span>新增企业备案</span>
+                </a>
+                <a onclick="gbToast('审核操作已受理')" class="qc-btn" href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D">
+                  <div class="qc-ico">✓</div><span>待审批 (23)</span>
+                </a>
+                <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../06-业主决策/web_c_decision_prototype.html#page-C-5-F">
+                  <div class="qc-ico">⌧</div><span>发起投票</span>
+                </a>
+                <a onclick="gbToast('打开新增表单')" class="qc-btn" href="../05-党建联建/web_b_general_prototype.html#page-B-1-F">
+                  <div class="qc-ico">✦</div><span>党组织录入</span>
+                </a>
+                <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../03-物业监管-监测/web_a3_insight_prototype.html">
+                  <div class="qc-ico">▤</div><span>数据监测</span>
+                </a>
+                <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-6-R1">
+                  <div class="qc-ico">$</div><span>资金报表</span>
+                </a>
+                <a onclick="gbToast('正在生成导出文件,下载即将开始')" class="qc-btn" href="../07-档案归档/web_d_archive_prototype.html#page-D-1-F">
+                  <div class="qc-ico">⤓</div><span>档案上传</span>
+                </a>
+                <a onclick="gbToast('操作已受理(演示环境)')" class="qc-btn" href="../07-档案归档/web_d_archive_prototype.html#page-D-2-D">
+                  <div class="qc-ico">⚠</div><span>异常处置</span>
+                </a>
+              </div>
+
+              <!-- 系统状态 -->
+              <div class="sys-hd">系统状态</div>
+              <div>
+                <div class="sys-row"><span>● 数据网关</span><span class="ok">● 正常</span></div>
+                <div class="sys-row"><span>● 工作流引擎</span><span class="ok">● 正常</span></div>
+                <div class="sys-row"><span>● 短信平台</span><span class="ok">● 正常</span></div>
+                <div class="sys-row"><span>● 档案存储</span><span class="warn">● 写满 78%</span></div>
+                <div class="sys-row"><span>● UKey 服务</span><span class="ok">● 正常</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- .page-bd -->
+
+    <!-- ============ 底部 Footer ============ -->
+    <footer class="footer" style="margin:0;border-radius:0;">
+      <div class="ft-grid">
+        <div class="ft-col">
+          <h4>物业服务管理子系统</h4>
+          <ul>
+            <li>物业监管 · 物业事项备案</li>
+            <li>社区物业党建联建</li>
+            <li>业主决策 · 业主自治管理</li>
+            <li>档案归档 · 四性检测</li>
+          </ul>
+        </div>
+        <div class="ft-col">
+          <h4>跨端协同</h4>
+          <ul>
+            <li>桌面端 · 物业主管部门</li>
+            <li>移动端 · 业主(秦务员)</li>
+            <li>移动端 · 物业企业</li>
+            <li>移动端 · 移动审批员</li>
+          </ul>
+        </div>
+        <div class="ft-col">
+          <h4>平台基础</h4>
+          <ul>
+            <li>主数据字典 Z-DICT</li>
+            <li>工作流节点配置 Z-WF</li>
+            <li>数字证书 / UKey Z-CERT</li>
+            <li>短信频次配置 Z-SMS</li>
+            <li>操作审计日志 Z-AUDIT</li>
+          </ul>
+        </div>
+        <div class="ft-col">
+          <h4>技术支持</h4>
+          <ul>
+            <li>帮助中心 · 操作手册</li>
+            <li>API 文档 · OpenAPI 3.0</li>
+            <li>设计规范 · R4 基线</li>
+            <li>联系管理员 · 029-88880000</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ft-bottom">
+        <div>
+          © 2026 陕西省住房和城乡建设厅 · 数字住建统一平台
+          <span style="margin-left:16px;">陕ICP备 2026000888 号</span>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;">
+          <span>服务热线 029-8888-0000</span>
+          <span>·</span>
+          <span>当前版本 R4-2026.10.16</span>
+          <span>·</span>
+          <span class="ok">● 系统正常</span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div><!-- .layout -->
+
+<!-- ============ 弹窗:切换角色视角 ============ -->
+<div class="modal-mask" id="modal-role" onclick="if(event.target===this)closeModal('modal-role')">
+  <div class="modal" style="width:720px;">
+    <div class="modal-hd">
+      <div>
+        切换角色视角
+        <div style="font-size:12px;color:#86909C;font-weight:400;margin-top:4px;">不同角色登录后,工作台会自动按权限范围重组数据与功能</div>
+      </div>
+      <div class="modal-close" onclick="closeModal('modal-role')">×</div>
+    </div>
+    <div class="modal-bd">
+      <div class="mode-desc">请选择您当前需要进入的角色身份。角色切换后,顶栏、菜单、KPI、待办全部会重新计算可见范围。</div>
+      <div class="mode-opts">
+        <div class="mode-opt active" data-role="province" data-cn="省级物业主管" onclick="chooseMode(this)">
+          <div class="mo-ico" style="color:#165DFF;">省</div>
+          <div class="mo-name">省级物业主管</div>
+          <div class="mo-desc">陕西省住建厅<br/>全境数据总览</div>
+        </div>
+        <div class="mode-opt" data-role="city" data-cn="市级主管部门" onclick="chooseMode(this)">
+          <div class="mo-ico" style="color:#00B42A;">市</div>
+          <div class="mo-name">市级主管部门</div>
+          <div class="mo-desc">西安市住建局<br/>市级业务办理</div>
+        </div>
+        <div class="mode-opt" data-role="county" data-cn="县区级主管" onclick="chooseMode(this)">
+          <div class="mo-ico" style="color:#FF7D00;">区</div>
+          <div class="mo-name">县区级主管</div>
+          <div class="mo-desc">雁塔区住建局<br/>区级精细监管</div>
+        </div>
+        <div class="mode-opt" data-role="street" data-cn="街道办" onclick="chooseMode(this)">
+          <div class="mo-ico" style="color:#F53F3F;">街</div>
+          <div class="mo-name">街道办</div>
+          <div class="mo-desc">曲江街道办<br/>基层操作</div>
+        </div>
+        <div class="mode-opt" data-role="corp" data-cn="物业企业" onclick="chooseMode(this)">
+          <div class="mo-ico" style="color:#722ED1;">企</div>
+          <div class="mo-name">物业企业</div>
+          <div class="mo-desc">万科物业西安<br/>企业总部视角</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeModal('modal-role')">取消</button>
+      <button class="btn btn-primary" onclick="confirmMode()">✓ 确认切换</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ JS(与 web_d 同构:switchPage + hashchange) ============ -->
+<script>
+
+
+/* R14 侧栏折叠交互 */
+function toggleGrp(el){
+  el.classList.toggle('collapsed');
+  var body = el.nextElementSibling;
+  if(body && body.classList.contains('grp-body')){ body.classList.toggle('grp-hidden'); }
+}
+(function(){
+  function initGrp(){
+    document.querySelectorAll('.grp-body').forEach(function(b){
+      var hasCur = b.querySelector('.cur');
+      if(!hasCur){
+        b.classList.add('grp-hidden');
+        var h = b.previousElementSibling;
+        if(h && h.classList.contains('sider-grp-toggle')) h.classList.add('collapsed');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', initGrp); } else { initGrp(); }
+})();
+/* R12 通用按钮交互反馈 */
+function gbToast(msg){var el=document.getElementById('gbToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},1800);}
+/* ====== 页面切换(与 web_d 一致) ====== */
+function switchPage(id){
+  // 隐藏所有页面
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('cur'));
+  // 显示目标页面
+  const target = document.getElementById('page-'+id);
+  if(target) target.classList.add('cur');
+  // 更新 tab 高亮
+  document.querySelectorAll('#tabbar a').forEach(a=>{
+    a.classList.toggle('cur', a.dataset.tab===id);
+  });
+  // 更新左导高亮
+  document.querySelectorAll('.sider .s-item').forEach(a=>{
+    a.classList.toggle('cur', a.getAttribute('href')==='#page-'+id);
+  });
+  // 更新面包屑 + 标题
+  const titles = {
+    'MAIN-O':{crumb:'工作台总览', title:'综合工作台 · 总览', desc:'欢迎横幅 · 核心 KPI 看板 · 紧急待办 · 快捷功能'},
+    'MAIN-M':{crumb:'业务板块入口', title:'综合工作台 · 板块入口', desc:'5 大业务板块(A/B/C/D/Z)· 二级模块快速直达(9+8+8+6+11 子项)· 数据监测为 A 板块子入口'},
+    'MAIN-X':{crumb:'端类型切换', title:'综合工作台 · 跨端协同', desc:'桌面端 / 移动端业主 / 物业企业 / 主管部门 + 平台级配置'},
+    'MAIN-A':{crumb:'最近活动', title:'综合工作台 · 动态', desc:'近 7 天关键事件时间线 · 快捷功能 · 系统状态'}
+  };
+  const t = titles[id] || titles['MAIN-O'];
+  document.getElementById('crumb-3').textContent = t.crumb;
+  document.getElementById('page-title-text').textContent = t.title;
+  document.getElementById('page-desc-text').textContent = t.desc;
+  // 更新 hash
+  history.replaceState(null, '', '#page-'+id);
+  // 滚到顶部
+  document.querySelector('.page-bd').scrollTop = 0;
+}
+
+/* ====== 侧栏折叠(与 web_d 一致) ====== */
+function toggleSider(){
+  document.getElementById('sider').classList.toggle('collapsed');
+}
+
+/* ====== 弹窗(web_d 标准) ====== */
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+/* ====== 角色切换 ====== */
+function chooseMode(el){
+  document.querySelectorAll('.mode-opt').forEach(function(o){ o.classList.remove('active'); });
+  el.classList.add('active');
+}
+function confirmMode(){
+  const active = document.querySelector('.mode-opt.active');
+  if(!active) return;
+  const cn = active.getAttribute('data-cn');
+  document.getElementById('roleWelcome').textContent = cn;
+  closeModal('modal-role');
+  showToast('已切换到「' + cn + '」视角,数据已根据权限自动重算');
+  refreshKPI();
+}
+
+/* ====== KPI 刷新(模拟动效) ====== */
+function refreshKPI(){
+  showToast('KPI 数据已重新加载 · 用时 320ms');
+}
+
+/* ====== 通用模块跳转(R7:Z 通用功能统一指向 09-系统管理/web_z_system_prototype.html) ====== */
+function openModule(name){
+  var Z = '../09-系统管理/web_z_system_prototype.html#page-Z-';
+  var url = '';
+  var cn = '';
+  switch(name){
+    case 'Z-DICT': url = Z + 'DICT'; cn = '主数据字典'; break;
+    case 'Z-WF': url = Z + 'WF'; cn = '工作流节点配置'; break;
+    case 'Z-CERT': url = Z + 'CERT'; cn = '数字证书管理'; break;
+    case 'Z-SMS': url = Z + 'SMS'; cn = '短信频次配置'; break;
+    case 'Z-DASHBOARD': url = Z + 'DASHBOARD'; cn = '综合大屏'; break;
+    case 'Z-AUDIT': url = Z + 'AUDIT'; cn = '操作审计查询'; break;
+    case 'Z-PWD': url = Z + 'PWD'; cn = '修改密码'; break;
+    case 'Z-NOTI': url = Z + 'NOTI'; cn = '通知中心'; break;
+    case 'Z-MSG': url = Z + 'MSG'; cn = '站内消息'; break;
+    case 'Z-SET': url = Z + 'SET'; cn = '个人设置'; break;
+    case 'Z-LOGOUT': cn = '退出登录'; showToast('已退出登录,正在返回登录页'); setTimeout(function(){ location.href = '../login.html'; }, 800); return;
+    case 'HELP': showToast('使用手册 v2.3 即将打开'); return;
+    default: url = '../09-系统管理/web_z_system_prototype.html';
+  }
+  showToast('正在打开「' + cn + '」...');
+  setTimeout(function(){ location.href = url; }, 200);
+}
+
+/* ====== 头像下拉菜单(R7:退出登录 → ../login.html) ====== */
+function toggleUserMenu(e){
+  if (e) e.stopPropagation();
+  document.getElementById('topUser').classList.toggle('open');
+}
+document.addEventListener('click', function(){
+  var u = document.getElementById('topUser');
+  if (u) u.classList.remove('open');
+});
+
+/* ====== Toast 提示 ====== */
+function showToast(msg){
+  var old = document.getElementById('__toast');
+  if (old) old.remove();
+  var t = document.createElement('div');
+  t.id = '__toast';
+  t.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:rgba(29,33,41,0.92);color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.20);display:flex;align-items:center;gap:8px;';
+  t.innerHTML = '<span style="color:#4080FF;">ⓘ</span> ' + msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ if (t && t.parentNode) t.remove(); }, 2400);
+}
+
+/* ====== 启动初始化 ====== */
+window.addEventListener('DOMContentLoaded', function(){
+  // 登录时间
+  var now = new Date();
+  var weekMap = ['周日','周一','周二','周三','周四','周五','周六'];
+  var timeStr = now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1)+'-'+(now.getDate()<10?'0':'')+now.getDate() + ' ' + weekMap[now.getDay()] + ' ' + (now.getHours()<10?'0':'')+now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  var loginEl = document.getElementById('loginTime');
+  if (loginEl) loginEl.textContent = timeStr + ' 登录';
+
+  // 更新时间
+  var updateTime = document.getElementById('updateTime');
+  if (updateTime) {
+    var h = now.getHours() < 10 ? '0'+now.getHours() : now.getHours();
+    var m = now.getMinutes() < 10 ? '0'+now.getMinutes() : now.getMinutes();
+    updateTime.textContent = h + ':' + m;
+  }
+
+  // KPI 数字动态递增(模拟首次渲染)
+  var kpiEl = document.getElementById('kpiA1');
+  if (kpiEl) {
+    var cur = 0, target = 1284, step = Math.max(1, Math.floor(target / 18));
+    var timer = setInterval(function(){
+      cur += step;
+      if (cur >= target) { cur = target; clearInterval(timer); }
+      kpiEl.textContent = cur.toLocaleString();
+    }, 24);
+  }
+
+  // 全局搜索回车跳转
+  var searchInput = document.getElementById('globalSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') {
+        var q = searchInput.value.trim();
+        if (!q) return;
+        location.href = '../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-L&q=' + encodeURIComponent(q);
+      }
+    });
+  }
+
+  // 从 hash 自动定位(与 web_d 一致)
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash && document.getElementById('page-'+hash)){
+    switchPage(hash);
+  } else {
+    switchPage('MAIN-O');
+  }
+});
+
+/* ====== hashchange 监听(与 web_d 一致,支持跨文件带锚点进入) ====== */
+window.addEventListener('hashchange', function(){
+  var hash = location.hash.replace('#','').replace('page-','');
+  if(hash && document.getElementById('page-'+hash)){
+    switchPage(hash);
+  }
+});
+
+/* ====== 控制台自检 ====== */
+console.log('%c 数字住建 · 物业服务管理子系统 ' , 'background:#165DFF;color:#fff;padding:4px 10px;border-radius:4px;font-weight:600;');
+console.log('%c R7 web_main 综合工作台 · 顶栏 6 项导航 · 视觉与 web_d 标杆统一 ' , 'color:#165DFF;font-weight:600;');
+console.log('4 个 page:MAIN-O 总览 / MAIN-M 板块入口 / MAIN-X 端切换+配置 / MAIN-A 动态');
+console.log('顶栏全局导航 6 项(主页 cur + 物业监管 + 党建联建 + 业主决策 + 档案归档 + 系统管理)· 数据监测归入 A 板块子入口');
+console.log('Z 通用功能(LOG/PWD/NOTI/MSG/SET/AUDIT/DICT/CERT/WF/SMS/DASHBOARD)→ 09-系统管理/web_z_system_prototype.html');
+console.log('退出登录:顶栏头像下拉 + MAIN-X 文档/帮助组 → ../login.html(独立登录页,系统默认入口)');
+</script>
+
+
+<div class="gb-toast" id="gbToast"></div>
+</body>
+</html>

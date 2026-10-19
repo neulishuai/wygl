@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>陕西数字住建 · 物业服务管理子系统 · 系统管理</title>
+<style>
+/* ============ Arco Design 设计规范 CSS 变量(web_d 统一布局 R6) ============ */
+:root{
+  --primary:#165DFF; --primary-hover:#4080FF; --primary-active:#003CB3;
+  --primary-1:#E8F1FF; --primary-2:#BEDAFF;
+  --success:#00B42A; --success-bg:#E8FFEA; --success-border:#ABF2BC;
+  --warning:#FF7D00; --warning-bg:#FFF3E0; --warning-border:#FFD199;
+  --danger:#F53F3F; --danger-bg:#FFECE8; --danger-border:#FDBDB5;
+  --text-1:#1D2129; --text-2:#4E5969; --text-3:#86909C; --text-4:#C9CDD4;
+  --border:#E5E6EB; --border-2:#F2F3F5; --fill:#F7F8FA; --fill-2:#F2F3F5;
+  --bg:#FFFFFF; --bg-page:#F7F8FA;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r-sm:4px; --r:8px; --r-lg:12px; --r-xl:16px;
+  --top-h:56px; --sider-w:208px; --sider-c:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font);font-size:14px;color:var(--text-1);background:var(--bg-page);-webkit-font-smoothing:antialiased;line-height:1.5;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+input,select,textarea{font-family:inherit;font-size:13px;outline:none}
+ul,ol{list-style:none}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#d4d6d9;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 顶栏(web_d 统一:深蓝渐变) ============ */
+.topbar{height:var(--top-h);background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);color:#fff;display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;padding-right:18px;border-right:1px solid rgba(255,255,255,.18);margin-right:18px;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#69b1ff,#fff);color:#165DFF;display:flex;align-items:center;justify-content:center;font-weight:700}
+.global-nav{display:flex;gap:4px;flex:1}
+.global-nav a{display:flex;align-items:center;gap:6px;padding:0 16px;height:56px;font-size:14px;color:rgba(255,255,255,.85);font-weight:500;position:relative;transition:color .2s}
+.global-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.global-nav a.cur{color:#fff;font-weight:600}
+.global-nav a.cur::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:28px;height:3px;background:#fff;border-radius:2px}
+.topbar-right{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.9);font-size:13px}
+.top-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 14px;border-radius:18px;font-size:13px;color:rgba(255,255,255,.85)}
+.top-search input{background:transparent;border:none;outline:none;color:#fff;width:200px;font-size:13px}
+.top-search input::placeholder{color:rgba(255,255,255,.6)}
+.top-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;font-size:15px}
+.top-icon:hover{background:rgba(255,255,255,.12)}
+.top-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#E9353A;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #003a8c}
+.top-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FFB84D,#E9353A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer}
+.top-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:8px;cursor:pointer}
+.top-user:hover{background:rgba(255,255,255,.12)}
+
+/* ============ 主体布局(web_d 统一:白底侧栏) ============ */
+.layout{display:flex;min-height:calc(100vh - var(--top-h))}
+.sider{width:var(--sider-w);min-width:var(--sider-w);background:#FFFFFF;color:#1D2129;border-right:1px solid #E5E6EB;transition:width .25s;display:flex;flex-direction:column}
+.sider.collapsed{width:var(--sider-c);min-width:var(--sider-c)}
+.sider-hd{padding:14px 18px;font-size:12px;color:#86909C;letter-spacing:1px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:8px}
+.sider.collapsed .sider-hd-label{display:none}
+.sider-bd{flex:1;overflow-y:auto;padding:8px 0}
+.sider-grp{padding:10px 18px 4px;font-size:11px;color:#86909C;font-weight:500;letter-spacing:1px}
+.sider.collapsed .sider-grp{display:none}
+.sider a.s-item{display:flex;align-items:center;gap:10px;padding:9px 18px;margin:2px 8px;border-radius:var(--r);font-size:13px;color:#4E5969;cursor:pointer;transition:all .2s;position:relative}
+.sider a.s-item:hover{background:#F2F3F5;color:#165DFF}
+.sider a.s-item.cur{background:#E8F1FF;color:#165DFF;font-weight:600}
+.sider a.s-item.cur::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:#165DFF;border-radius:0 2px 2px 0}
+.sider a.s-item .s-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sider a.s-item .s-tag{margin-left:auto;background:#F2F3F5;color:#4E5969;font-size:10px;padding:1px 6px;border-radius:8px}
+.sider a.s-item.cur .s-tag{background:#165DFF;color:#fff}
+.sider.collapsed .s-label,.sider.collapsed .s-tag{display:none}
+.sider.collapsed a.s-item{justify-content:center;padding:10px 0;margin:2px 6px}
+.sider-ft{padding:10px;border-top:1px solid #F2F3F5;font-size:12px;color:#86909C;display:flex;align-items:center;gap:6px;cursor:pointer}
+.sider-ft:hover{background:#F2F3F5;color:#165DFF}
+.sider.collapsed .sider-ft{justify-content:center;padding:10px 0}
+
+/* ============ 内容区(web_d 统一:page-hd 面包屑+蓝条标题) ============ */
+.main{flex:1;min-width:0;background:#F7F8FA;overflow:hidden}
+.page-hd{background:#fff;padding:18px 24px 0;border-bottom:1px solid #F2F3F5}
+.page-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.page-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}
+.page-title-bar{width:4px;height:20px;background:#165DFF;border-radius:2px}
+.page-desc{font-size:13px;color:#86909C;margin-left:14px}
+.page-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.breadcrumb{font-size:13px;color:#86909C;display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.breadcrumb span:not(:last-child)::after{content:"/";margin-left:6px;color:#C9CDD4}
+.breadcrumb span:last-child{color:#1D2129;font-weight:500}
+.tabbar{display:flex;flex-wrap:wrap;align-items:stretch}
+.tabbar a{padding:0 14px;height:42px;display:flex;align-items:center;gap:6px;font-size:13px;color:#4E5969;border-bottom:2px solid transparent;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tabbar a:hover{color:#165DFF}
+.tabbar a.cur{color:#165DFF;border-bottom-color:#165DFF;font-weight:600}
+.tabbar a .tab-tag{background:#E8F1FF;color:#165DFF;font-size:10px;padding:1px 5px;border-radius:8px;font-weight:600}
+.page-bd{padding:18px 22px 36px;overflow-y:auto}
+
+/* ============ 页面切换(web_d 统一) ============ */
+.page{display:none}
+.page.cur{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.page a{color:#165DFF;cursor:pointer}
+.page a:hover{text-decoration:underline}
+
+.btn{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px;border:1px solid transparent;transition:.15s;background:#fff;color:#1D2129;cursor:pointer;line-height:1.4}
+.btn:hover{opacity:.88}
+.btn-primary{background:#165DFF;color:#fff;border-color:#165DFF}
+.btn-primary:hover{background:#0E4AD9}
+.btn-danger{background:#F53F3F;color:#fff;border-color:#F53F3F}
+.btn-warn{background:#FF7D00;color:#fff;border-color:#FF7D00}
+.btn-success{background:#00B42A;color:#fff;border-color:#00B42A}
+.btn-default{background:#FFFFFF;color:#1D2129;border-color:#E5E6EB}
+.btn-default:hover{border-color:#C9CDD4;background:#F7F8FA}
+.btn-text{background:transparent;color:#165DFF;border:none;padding:3px 6px}
+.btn-text:hover{background:#E8F1FF}
+.btn-sm{padding:3px 9px;font-size:11px}
+.btn-lg{padding:8px 18px;font-size:13px}
+
+.card{background:#FFFFFF;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:18px;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:600;color:#1D2129;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-title .extra{font-size:12px;color:#86909C;font-weight:400}
+.card-grid{display:grid;gap:14px;margin-bottom:14px}
+.card-grid-4{grid-template-columns:repeat(4,1fr)}
+.card-grid-3{grid-template-columns:repeat(3,1fr)}
+.card-grid-2{grid-template-columns:repeat(2,1fr)}
+
+.kpi-card{background:#FFFFFF;border-radius:12px;padding:16px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.kpi-card::before{content:"";position:absolute;right:-20px;top:-20px;width:70px;height:70px;border-radius:50%;background:rgba(22,93,255,.08)}
+.kpi-card .label{font-size:12px;color:#4E5969;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kpi-card .label::before{content:"";width:3px;height:12px;border-radius:2px;background:#165DFF}
+.kpi-card .value{font-size:28px;font-weight:600;color:#1D2129;letter-spacing:-0.5px;line-height:1.2}
+.kpi-card .value small{font-size:13px;color:#86909C;font-weight:400;margin-left:3px}
+.kpi-card .sub{font-size:11px;color:#86909C;margin-top:5px;display:flex;align-items:center;gap:6px}
+.kpi-card .sub .up{color:#00B42A}
+.kpi-card .sub .down{color:#F53F3F}
+.kpi-card.danger::before{background:rgba(245,63,63,.08)}
+.kpi-card.danger .label::before{background:#F53F3F}
+.kpi-card.danger .value{color:#F53F3F}
+.kpi-card.warn::before{background:rgba(255,125,0,.08)}
+.kpi-card.warn .label::before{background:#FF7D00}
+.kpi-card.warn .value{color:#FF7D00}
+.kpi-card.success::before{background:rgba(0,180,42,.08)}
+.kpi-card.success .label::before{background:#00B42A}
+.kpi-card.success .value{color:#00B42A}
+
+.tag{display:inline-flex;align-items:center;padding:1px 7px;border-radius:4px;font-size:11px;line-height:1.6;font-weight:500}
+.tag-blue{background:#E8F1FF;color:#165DFF}
+.tag-green{background:#E8FFEA;color:#00B42A}
+.tag-red{background:#FFECE8;color:#F53F3F}
+.tag-orange{background:#FFF3E0;color:#FF7D00}
+.tag-gray{background:#F2F3F5;color:#86909C}
+.tag-purple{background:#F0E8FF;color:#534AB7}
+.tag-red-strong{background:#E9353A;color:#fff}
+
+.table-wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+table.data{width:100%;border-collapse:collapse;background:#fff}
+table.data thead th{background:#F7F8FA;color:#1D2129;font-weight:600;font-size:12px;padding:10px;text-align:left;border-bottom:1px solid #E5E6EB;white-space:nowrap}
+table.data tbody td{padding:10px;font-size:12px;color:#1D2129;border-bottom:1px solid #F2F3F5;vertical-align:middle}
+table.data tbody tr:hover{background:#FAFBFC}
+table.data tbody tr:last-child td{border-bottom:none}
+table.data .row-actions{display:flex;gap:3px;flex-wrap:nowrap}
+
+.form-row{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.form-item{flex:1;min-width:200px}
+.form-item label{display:block;font-size:12px;color:#4E5969;margin-bottom:5px}
+.form-item label .req{color:#F53F3F;margin-right:2px}
+.form-item input[type=text],.form-item input[type=password],.form-item input[type=email],.form-item textarea,.form-item select,.form-control{width:100%;padding:7px 11px;border:1px solid #E5E6EB;border-radius:8px;font-size:13px;color:#1D2129;background:#fff;transition:.15s}
+.form-item input:focus,.form-item textarea:focus,.form-item select:focus,.form-control:focus{border-color:#165DFF;box-shadow:0 0 0 2px rgba(22,93,255,.15)}
+.form-item textarea{resize:vertical;min-height:70px}
+.form-item .hint{font-size:11px;color:#86909C;margin-top:3px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+
+.steps{display:flex;align-items:center;justify-content:space-between;margin:14px 0;padding:0 20px}
+.step{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;position:relative}
+.step:not(:last-child)::after{content:"";position:absolute;top:14px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:#E5E6EB}
+.step.done::after{background:#00B42A}
+.step .dot{width:28px;height:28px;border-radius:50%;background:#fff;border:2px solid #E5E6EB;color:#86909C;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;z-index:1}
+.step.active .dot{background:#165DFF;border-color:#165DFF;color:#fff;box-shadow:0 0 0 4px rgba(22,93,255,.15)}
+.step.done .dot{background:#00B42A;border-color:#00B42A;color:#fff}
+.step .name{font-size:12px;color:#86909C}
+.step.active .name{color:#165DFF;font-weight:600}
+.step.done .name{color:#00B42A}
+
+.filter-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#fff;padding:12px 14px;border-radius:12px 12px 0 0;border-bottom:1px solid #F2F3F5}
+.filter-bar .filter-label{font-size:12px;color:#86909C}
+.filter-bar input[type=text],.filter-bar input[type=date],.filter-bar select{padding:5px 10px;border:1px solid #E5E6EB;border-radius:6px;font-size:12px;background:#fff;min-width:120px}
+
+.pagination{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:0 0 12px 12px}
+.pagination .info{font-size:12px;color:#86909C}
+.pagination .pages{display:flex;gap:3px}
+.pagination .pages button{width:28px;height:28px;border:1px solid #E5E6EB;background:#fff;border-radius:6px;font-size:12px;color:#4E5969}
+.pagination .pages button.active{background:#165DFF;color:#fff;border-color:#165DFF}
+
+.timeline{position:relative;padding-left:22px}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:#E5E6EB}
+.timeline-item{position:relative;padding-bottom:14px}
+.timeline-item::before{content:"";position:absolute;left:-20px;top:5px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #165DFF;z-index:1}
+.timeline-item.success::before{border-color:#00B42A}
+.timeline-item.warn::before{border-color:#FF7D00}
+.timeline-item.danger::before{border-color:#F53F3F}
+.timeline-item .time{font-size:11px;color:#86909C;margin-bottom:3px}
+.timeline-item .title{font-size:13px;font-weight:600;color:#1D2129;margin-bottom:3px}
+.timeline-item .content{font-size:12px;color:#4E5969;line-height:1.6}
+.timeline-item .meta{font-size:11px;color:#86909C;margin-top:3px}
+
+.upload-area{border:2px dashed #C9CDD4;border-radius:8px;padding:18px;text-align:center;background:#FAFBFC;transition:.15s;cursor:pointer}
+.upload-area:hover{border-color:#165DFF;background:#E8F1FF}
+.upload-area .icon{font-size:28px;color:#86909C;margin-bottom:6px}
+.upload-area .txt{font-size:12px;color:#4E5969}
+.upload-area .hint{font-size:11px;color:#86909C;margin-top:3px}
+
+.geo-map{background:linear-gradient(180deg,#F0F5FF 0%,#E8F1FF 100%);border-radius:12px;padding:14px;position:relative;min-height:440px}
+.geo-map svg{width:100%;height:auto;display:block}
+
+.event-stream{background:#0F1F35;border-radius:12px;padding:0;overflow:hidden;height:560px;display:flex;flex-direction:column;border:1px solid #1F3050}
+.event-stream .head{padding:12px 14px;border-bottom:1px solid #1F3050;display:flex;align-items:center;justify-content:space-between;background:rgba(22,93,255,.1)}
+.event-stream .head .live{display:flex;align-items:center;gap:6px;font-size:12px;color:#4080FF;font-weight:600}
+.event-stream .head .live::before{content:"";width:8px;height:8px;border-radius:50%;background:#F53F3F;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.event-stream .body{flex:1;overflow:hidden;position:relative}
+.event-stream .list{padding:6px 0;animation:scroll 50s linear infinite}
+@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+.event-stream:hover .list{animation-play-state:paused}
+.event-stream .item{padding:9px 14px;display:flex;align-items:flex-start;gap:8px;border-bottom:1px dashed rgba(255,255,255,.05);font-size:12px}
+.event-stream .item .dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:5px}
+.event-stream .item .body{flex:1;min-width:0}
+.event-stream .item .t{color:#86909C;font-size:10px;margin-bottom:2px}
+.event-stream .item .c{color:#fff;line-height:1.5}
+
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}
+.dash-block{background:#0E1A2B;border-radius:12px;color:#fff;padding:16px;position:relative;overflow:hidden;border:1px solid #1F3050}
+.dash-block::before{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:linear-gradient(180deg,#165DFF,#00B42A)}
+.dash-block .ttl{font-size:13px;color:#A0CFFF;margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:500}
+.dash-block .num{font-size:28px;font-weight:600;color:#fff;line-height:1.2}
+.metric-row{display:flex;gap:8px;align-items:baseline;margin-bottom:6px;font-size:12px}
+.metric-row .l{color:#A0CFFF;flex-shrink:0}
+.metric-row .v{font-size:20px;font-weight:600;color:#fff;margin-left:auto}
+.metric-row .delta{font-size:11px;color:#00B42A;margin-left:6px}
+
+.rating-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}
+.rating-item{text-align:center;padding:6px;border-radius:6px;background:#F7F8FA}
+.rating-item .s{font-size:16px;font-weight:600;color:#1D2129}
+.rating-item .l{font-size:11px;color:#86909C;margin-top:2px}
+.rating-item.ok{background:#E8FFEA}
+.rating-item.ok .s{color:#00B42A}
+.rating-item.mid{background:#FFF3E0}
+.rating-item.mid .s{color:#FF7D00}
+
+.switch{position:relative;display:inline-block;width:32px;height:18px;background:#C9CDD4;border-radius:10px;transition:.15s;cursor:pointer;vertical-align:middle}
+.switch::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.15s}
+.switch.on{background:#165DFF}
+.switch.on::after{left:16px}
+
+.progress{height:6px;background:#F2F3F5;border-radius:3px;overflow:hidden}
+.progress .bar{height:100%;background:linear-gradient(90deg,#165DFF,#4080FF);border-radius:3px}
+.progress .bar.orange{background:linear-gradient(90deg,#FF7D00,#FFA940)}
+.progress .bar.green{background:linear-gradient(90deg,#00B42A,#33D45A)}
+.progress .bar.red{background:linear-gradient(90deg,#F53F3F,#FF7878)}
+
+.party-banner{background:linear-gradient(135deg,#E9353A 0%,#FF7878 100%);color:#fff;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(233,53,58,.15)}
+.party-banner .emblem{width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.party-banner h3{font-size:18px;font-weight:600;margin-bottom:3px}
+.party-banner p{font-size:12px;opacity:.9}
+
+.wf-canvas{background:#F7F8FA;border-radius:12px;padding:18px;position:relative;min-height:300px;border:1px dashed #E5E6EB}
+.wf-node{position:absolute;background:#fff;border:2px solid #165DFF;border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 2px 8px rgba(22,93,255,.15);min-width:110px;text-align:center}
+.wf-node:hover{box-shadow:0 4px 16px rgba(22,93,255,.25)}
+.wf-node.start{border-color:#00B42A;background:#E8FFEA}
+.wf-node.end{border-color:#86909C;background:#F7F8FA}
+.wf-node .lbl{font-weight:600;color:#1D2129;margin-bottom:1px}
+.wf-node .meta{font-size:10px;color:#86909C}
+
+.dict-tree{background:#fff;border-radius:6px;border:1px solid #E5E6EB;max-height:480px;overflow-y:auto}
+.dict-tree .item{padding:6px 10px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px}
+.dict-tree .item:hover{background:#FAFBFC}
+.dict-tree .item.active{background:#E8F1FF;color:#165DFF;font-weight:600}
+.dict-tree .item .count{margin-left:auto;font-size:10px;color:#86909C;background:#F2F3F5;padding:1px 5px;border-radius:8px}
+
+.score-ring{position:relative;width:130px;height:130px;margin:0 auto}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600;color:#165DFF}
+.score-ring .score-num small{font-size:13px;color:#86909C;font-weight:400;margin-left:2px}
+
+.flex{display:flex}
+.flex-between{display:flex;justify-content:space-between;align-items:center}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.text-muted{color:#86909C}
+.text-danger{color:#F53F3F}
+.text-success{color:#00B42A}
+.text-warn{color:#FF7D00}
+.text-primary{color:#165DFF}
+.text-bold{font-weight:600}
+.f12{font-size:12px}
+.f13{font-size:13px}
+.f14{font-size:14px}
+.center{text-align:center}
+.divider{height:1px;background:#F2F3F5;margin:14px 0}
+
+.cross-link{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:#FFF3E0;color:#FF7D00;border-radius:5px;border:1px solid #FFAA1F;font-size:11px;margin:1px}
+.cross-link::before{content:"↗";font-size:12px}
+.cross-link:hover{background:#FFE8C2;text-decoration:none}
+
+/* R12 通用按钮交互反馈 */
+.gb-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(29,33,41,.92);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.gb-toast.show{opacity:1}
+
+/* R14 侧栏折叠交互 */
+.sider-grp.sider-grp-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.sider-grp.sider-grp-toggle:hover{color:#165DFF}
+.grp-arrow{font-size:10px;transition:transform .2s;display:inline-block}
+.sider-grp-toggle.collapsed .grp-arrow{transform:rotate(-90deg)}
+.grp-body{overflow:hidden;max-height:3000px;transition:max-height .25s ease}
+.grp-body.grp-hidden{max-height:0}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶栏(R7:深蓝渐变 + global-nav 6 项 + 搜索 + 图标 + 头像) ============ -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">陕</div>
+    <span>陕西数字住建</span>
+  </div>
+  <nav class="global-nav">
+    <a href="../00-主页/web_main.html">⌂ 主页</a>
+    <a href="../01-物业监管-备案/web_a1_filing_prototype.html">▤ 物业监管</a>
+    <a href="../05-党建联建/web_b_general_prototype.html">⌬ 社区物业党建联建</a>
+    <a href="../06-业主决策/web_c_decision_prototype.html">⌧ 业主决策</a>
+    <a href="../07-档案归档/web_d_archive_prototype.html">▤ 档案归档</a>
+    <a class="cur">⚙ 系统管理</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="top-search">⌕ <input placeholder="搜索字典 / 证书 / 工作流 / 审计…"></div>
+    <a href="#page-Z-PWD" onclick="switchPage('Z-PWD');return false;" class="top-icon" title="密码安全">⚙</a>
+    <a href="#page-Z-NOTI" onclick="switchPage('Z-NOTI');return false;" class="top-icon" title="通知">⌭<span class="top-badge">12</span></a>
+    <a href="#page-Z-MSG" onclick="switchPage('Z-MSG');return false;" class="top-icon" title="消息">✉<span class="top-badge">5</span></a>
+    <div class="top-user">
+      <div class="top-avatar">陈</div>
+      <span>陈默</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 布局(web_d 统一) ============ -->
+<div class="layout">
+
+  <!-- 左侧导航:系统管理 3 大分组(基础账号 / 平台配置 / 监管支撑) · 11 菜单 -->
+  <aside class="sider" id="sider">
+    <div class="sider-hd">⚙ <span class="sider-hd-label">系统管理子系统</span></div>
+    <div class="sider-bd">
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>基础账号</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item cur" href="#page-Z-LOG" onclick="switchPage('Z-LOG');return false;"><span class="s-ico">🔑</span><span class="s-label">登录策略</span></a>
+      <a class="s-item" href="#page-Z-PWD" onclick="switchPage('Z-PWD');return false;"><span class="s-ico">🔒</span><span class="s-label">密码安全</span></a>
+      <a class="s-item" href="#page-Z-NOTI" onclick="switchPage('Z-NOTI');return false;"><span class="s-ico">⌭</span><span class="s-label">通知中心</span></a>
+      <a class="s-item" href="#page-Z-MSG" onclick="switchPage('Z-MSG');return false;"><span class="s-ico">✉</span><span class="s-label">站内消息</span></a>
+      <a class="s-item" href="#page-Z-SET" onclick="switchPage('Z-SET');return false;"><span class="s-ico">⚙</span><span class="s-label">个人设置</span></a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>平台配置</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="#page-Z-DICT" onclick="switchPage('Z-DICT');return false;"><span class="s-ico">⌬</span><span class="s-label">主数据字典</span><span class="s-tag">P0</span></a>
+      <a class="s-item" href="#page-Z-CERT" onclick="switchPage('Z-CERT');return false;"><span class="s-ico">⊕</span><span class="s-label">数字证书</span></a>
+      <a class="s-item" href="#page-Z-WF" onclick="switchPage('Z-WF');return false;"><span class="s-ico">⚙</span><span class="s-label">工作流配置</span></a>
+      <a class="s-item" href="#page-Z-SMS" onclick="switchPage('Z-SMS');return false;"><span class="s-ico">⏰</span><span class="s-label">短信频次</span></a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>监管支撑</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="#page-Z-AUDIT" onclick="switchPage('Z-AUDIT');return false;"><span class="s-ico">▤</span><span class="s-label">操作审计</span></a>
+      <a class="s-item" href="#page-Z-DASHBOARD" onclick="switchPage('Z-DASHBOARD');return false;"><span class="s-ico">▦</span><span class="s-label">省级大屏</span><span class="s-tag">P1</span></a>
+      </div>
+      </div>
+    <div class="sider-ft" onclick="toggleSider()">⇆ <span class="sider-hd-label">收起菜单</span></div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main">
+
+    <!-- 页面头(web_d 统一:面包屑 + 蓝条标题 + desc + actions) -->
+    <div class="page-hd">
+      <div class="page-hd-row">
+        <div>
+          <div class="breadcrumb">
+            <span>首页</span>
+            <span>系统管理</span>
+            <span id="crumb-3">登录策略</span>
+          </div>
+          <div class="page-title">
+            <span class="page-title-bar"></span>
+            <span id="page-title-text">登录策略配置 · Z-LOG</span>
+            <span class="page-desc" id="page-desc-text">账号锁定 / 会话超时 / 双因素开关 / IP 访问控制 · 登录页已独立为 login.html</span>
+          </div>
+        </div>
+        <div class="page-actions" id="page-actions-box">
+          <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-sm">⤓ 策略导出</button>
+          <button onclick="gbToast('保存成功');" class="btn btn-primary btn-sm">💾 保存策略</button>
+        </div>
+      </div>
+
+      <!-- Tab 切换:11 个 page -->
+      <nav class="tabbar" id="tabbar">
+        <a href="#page-Z-LOG" data-tab="Z-LOG" class="cur" onclick="switchPage('Z-LOG');return false;">🔑 登录策略</a>
+        <a href="#page-Z-PWD" data-tab="Z-PWD" onclick="switchPage('Z-PWD');return false;">🔒 密码安全</a>
+        <a href="#page-Z-NOTI" data-tab="Z-NOTI" onclick="switchPage('Z-NOTI');return false;">⌭ 通知中心</a>
+        <a href="#page-Z-MSG" data-tab="Z-MSG" onclick="switchPage('Z-MSG');return false;">✉ 站内消息</a>
+        <a href="#page-Z-SET" data-tab="Z-SET" onclick="switchPage('Z-SET');return false;">⚙ 个人设置</a>
+        <a href="#page-Z-AUDIT" data-tab="Z-AUDIT" onclick="switchPage('Z-AUDIT');return false;">⏱ 操作审计</a>
+        <a href="#page-Z-DICT" data-tab="Z-DICT" onclick="switchPage('Z-DICT');return false;">⌬ 主数据字典 <span class="tab-tag">P0</span></a>
+        <a href="#page-Z-CERT" data-tab="Z-CERT" onclick="switchPage('Z-CERT');return false;">⊕ 数字证书</a>
+        <a href="#page-Z-WF" data-tab="Z-WF" onclick="switchPage('Z-WF');return false;">⚙ 工作流配置</a>
+        <a href="#page-Z-SMS" data-tab="Z-SMS" onclick="switchPage('Z-SMS');return false;">⏰ 短信频次</a>
+        <a href="#page-Z-DASHBOARD" data-tab="Z-DASHBOARD" onclick="switchPage('Z-DASHBOARD');return false;">▦ 省级大屏 <span class="tab-tag">P1</span></a>
+      </nav>
+    </div>
+
+    <!-- 页面内容:11 个 page(Z 自 web_b 原样迁移;Z-LOG 按 R7 简化为登录策略配置) -->
+    <div class="page-bd">
+
+    <!-- ============ Z-LOG 登录策略配置(R7:登录页已独立为 login.html,本页简化为策略配置) ============ -->
+    <section class="page cur" id="page-Z-LOG">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">今日登录</div><div class="value">1,286</div><div class="sub">较昨日 ↑ 3.2% · 成功率 96.7%</div></div>
+        <div class="kpi-card danger"><div class="label">登录失败</div><div class="value">42</div><div class="sub">密码错误 29 · 锁定 5 · IP 拦截 8</div></div>
+        <div class="kpi-card success"><div class="label">双因素开启率</div><div class="value">96.8<small>%</small></div><div class="sub">监管角色强制 100%</div></div>
+        <div class="kpi-card warn"><div class="label">当前在线会话</div><div class="value">186</div><div class="sub">并发上限 2 会话 / 用户</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">🔒 账号锁定策略</span><span class="text-muted f12" style="margin-left:auto">连续认证失败自动锁定 · 分级递增 · 更新于 2026-09-01</span></div>
+        <table class="data">
+          <thead><tr><th>策略项</th><th>当前值</th><th>生效范围</th><th>说明</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>失败锁定阈值</td><td><strong>5</strong> 次 / 30 分钟</td><td>全部角色</td><td>窗口期内连续失败达到阈值即锁定账号</td><td><span class="switch on"></span> 启用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>首次锁定时长</td><td><strong>30</strong> 分钟</td><td>全部角色</td><td>到期自动解锁,管理员可提前解锁</td><td><span class="switch on"></span> 启用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>累计锁定升级</td><td><strong>3</strong> 次后升级 2 小时</td><td>全部角色</td><td>30 天内累计锁定 3 次,锁定时长升级为 2 小时并短信告警</td><td><span class="switch on"></span> 启用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>监管角色阈值</td><td><strong>3</strong> 次 / 15 分钟</td><td>省级 / 市级监管</td><td>涉密监管岗位执行更严格的锁定阈值</td><td><span class="switch on"></span> 启用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>自助解锁</td><td>短信验证码解锁</td><td>企业 / 业委会 / 业主</td><td>锁定后可通过绑定手机短信验证码自助解锁(每账号每日 1 次)</td><td><span class="switch on"></span> 启用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>企业角色阈值</td><td><strong>5</strong> 次 / 30 分钟</td><td>物业企业 / 业委会</td><td>普通业务角色执行默认阈值</td><td><span class="switch"></span> 停用</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">⏱ 会话管理 <span class="extra">登录后无操作自动退出</span></div>
+          <div class="form-grid">
+            <div class="form-item"><label>会话超时时长</label><input type="text" value="30 分钟"><div class="hint">监管角色强制 15 分钟,不可放宽</div></div>
+            <div class="form-item"><label>并发会话上限</label><input type="text" value="2 个 / 用户"><div class="hint">超出后挤掉最早会话并站内消息提醒</div></div>
+            <div class="form-item"><label>记住账号</label><div><span class="switch on"></span> <span class="text-primary">允许</span> <span class="text-muted f12">仅记住账号名,不记住密码</span></div></div>
+            <div class="form-item"><label>7 天免登录</label><div><span class="switch"></span> <span class="text-muted">仅企业 / 业主角色可选,监管角色强制关闭</span></div></div>
+            <div class="form-item"><label>单点登录(SSO)</label><div><span class="switch on"></span> <span class="text-primary">开启</span> <span class="text-muted f12">对接省政务统一身份认证平台</span></div></div>
+            <div class="form-item"><label>退出保留草稿</label><div><span class="switch on"></span> <span class="text-primary">开启</span> <span class="text-muted f12">超时退出前自动暂存表单草稿</span></div></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px"><button onclick="gbToast('保存成功');" class="btn btn-primary">💾 保存会话策略</button><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default">恢复默认</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔐 双因素认证(2FA)开关 <span class="extra">按角色差异化管理</span></div>
+          <table class="data">
+            <thead><tr><th>认证方式</th><th>省级监管</th><th>市县监管</th><th>企业/业委会</th><th>业主</th></tr></thead>
+            <tbody>
+              <tr><td>账号密码</td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-green">强制</span></td></tr>
+              <tr><td>短信验证码</td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-orange">可选</span></td></tr>
+              <tr><td>UKey 数字证书</td><td><span class="tag tag-green">强制</span></td><td><span class="tag tag-orange">可选</span></td><td><span class="tag tag-orange">可选</span></td><td><span class="tag tag-gray">不支持</span></td></tr>
+              <tr><td>扫码登录(秦务员 APP)</td><td><span class="tag tag-orange">可选</span></td><td><span class="tag tag-orange">可选</span></td><td><span class="tag tag-green">推荐</span></td><td><span class="tag tag-green">推荐</span></td></tr>
+              <tr><td>生物识别(指纹/人脸)</td><td><span class="tag tag-gray">停用</span></td><td><span class="tag tag-gray">停用</span></td><td><span class="tag tag-orange">可选</span></td><td><span class="tag tag-orange">可选</span></td></tr>
+            </tbody>
+          </table>
+          <div class="text-muted f12 mt-12">💡 证书状态与 <a href="#page-Z-CERT" onclick="switchPage('Z-CERT');return false;">Z-CERT 数字证书</a> 联动,过期前 30 天自动提醒;密码规则见 <a href="#page-Z-PWD" onclick="switchPage('Z-PWD');return false;">Z-PWD 密码安全</a></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🌐 IP 访问控制 <span class="extra">白名单优先 · 黑名单实时拦截</span></div>
+        <div class="card-grid card-grid-3">
+          <div>
+            <div class="text-muted f13 mb-8">白名单 IP 段(免异地校验)</div>
+            <table class="data" style="font-size:11px">
+              <thead><tr><th>IP 段</th><th>用途</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>10.0.0.0/8</td><td>省电子政务外网</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">⊖</button></td></tr>
+                <tr><td>36.45.0.0/16</td><td>市住建局专线</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">⊖</button></td></tr>
+                <tr><td>218.30.0.0/16</td><td>政务云出口</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">⊖</button></td></tr>
+              </tbody>
+            </table>
+            <button onclick="gbToast('打开新增表单');" class="btn btn-default btn-sm mt-8" style="width:100%;justify-content:center">⊕ 添加白名单</button>
+          </div>
+          <div>
+            <div class="text-muted f13 mb-8">黑名单(临时拦截 30 分钟)</div>
+            <table class="data" style="font-size:11px">
+              <thead><tr><th>IP</th><th>原因</th><th>解封</th></tr></thead>
+              <tbody>
+                <tr><td>36.45.x.x</td><td>连续登录失败 5 次</td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解封</button></td></tr>
+                <tr><td>112.84.x.x</td><td>疑似撞库攻击</td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解封</button></td></tr>
+                <tr><td>222.35.x.x</td><td>高频验证码请求</td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解封</button></td></tr>
+              </tbody>
+            </table>
+            <button onclick="gbToast('打开新增表单');" class="btn btn-default btn-sm mt-8" style="width:100%;justify-content:center">⊕ 手动加入黑名单</button>
+          </div>
+          <div>
+            <div class="text-muted f13 mb-8">异地登录策略</div>
+            <table class="data" style="font-size:11px">
+              <thead><tr><th>策略</th><th>值</th><th>开关</th></tr></thead>
+              <tbody>
+                <tr><td>异地登录短信提醒</td><td>常用城市外 200km</td><td><span class="switch on"></span></td></tr>
+                <tr><td>异地登录二次验证</td><td>强制短信码</td><td><span class="switch on"></span></td></tr>
+                <tr><td>境外 IP 直接拦截</td><td>全部角色</td><td><span class="switch on"></span></td></tr>
+                <tr><td>代理 / VPN 检测告警</td><td>告警不拦截</td><td><span class="switch on"></span></td></tr>
+              </tbody>
+            </table>
+            <div class="text-muted f12 mt-8">拦截记录同步 <a href="#page-Z-AUDIT" onclick="switchPage('Z-AUDIT');return false;">Z-AUDIT 操作审计</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">📈 近 7 日登录趋势 <span class="extra">单位:次</span></div>
+          <div style="display:flex;align-items:end;gap:10px;height:150px;padding:6px 4px 0">
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#4080FF,#165DFF);height:82%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周一<br><strong class="text-primary">1,108</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#4080FF,#165DFF);height:88%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周二<br><strong class="text-primary">1,192</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#4080FF,#165DFF);height:95%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周三<br><strong class="text-primary">1,265</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#4080FF,#165DFF);height:90%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周四<br><strong class="text-primary">1,220</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#4080FF,#165DFF);height:84%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周五<br><strong class="text-primary">1,146</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#FFA940,#FF7D00);height:36%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周六<br><strong class="text-warn">486</strong></div></div>
+            <div style="flex:1;text-align:center"><div style="background:linear-gradient(180deg,#FFA940,#FF7D00);height:28%;border-radius:4px 4px 0 0"></div><div class="text-muted f12 mt-8">周日<br><strong class="text-warn">382</strong></div></div>
+          </div>
+          <div class="text-muted f12 mt-12">工作日均登录 <strong class="text-primary">1,186</strong> 次 · 非工作日均 <strong class="text-warn">434</strong> 次 · 高峰时段 09:00-11:00</div>
+        </div>
+        <div class="card">
+          <div class="card-title">📱 认证渠道分布 <span class="extra">近 30 日</span></div>
+            <table class="data">
+            <thead><tr><th>登录渠道</th><th>次数</th><th>占比</th><th>占比图</th></tr></thead>
+            <tbody>
+              <tr><td>账号密码 + 短信验证码</td><td>18,682</td><td>62.4%</td><td><div class="progress" style="width:120px"><div class="bar" style="width:62%"></div></div></td></tr>
+              <tr><td>UKey 数字证书</td><td>5,846</td><td>19.5%</td><td><div class="progress" style="width:120px"><div class="bar green" style="width:20%"></div></div></td></tr>
+              <tr><td>秦务员 APP 扫码</td><td>4,213</td><td>14.1%</td><td><div class="progress" style="width:120px"><div class="bar orange" style="width:14%"></div></div></td></tr>
+              <tr><td>省政务 SSO 单点</td><td>1,192</td><td>4.0%</td><td><div class="progress" style="width:120px"><div class="bar red" style="width:4%"></div></div></td></tr>
+            </tbody>
+          </table>
+          <div class="text-muted f12 mt-12">💡 登录页已按 R7 规范独立为 <a href="../login.html" class="cross-link">login.html</a>(角色选择 + 账密 + 短信码双因素),本页仅保留策略配置。</div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <span class="text-bold">📋 最近登录日志</span>
+          <span class="text-muted f12" style="margin-left:auto">留存 7 年 · 不可篡改 · 同步 Z-AUDIT</span>
+        </div>
+        <table class="data">
+          <thead><tr><th>时间</th><th>用户</th><th>角色</th><th>认证方式</th><th>IP / 设备</th><th>结果</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>2026-10-16 14:28:45</td><td>陈默(admin)</td><td>省级监管</td><td>账密 + UKey</td><td>10.0.12.45 / Chrome</td><td><span class="tag tag-green">成功</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+            <tr><td>2026-10-16 14:20:12</td><td>李建国</td><td>物业企业</td><td>账密 + 短信</td><td>10.0.13.78 / Edge</td><td><span class="tag tag-green">成功</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+            <tr><td>2026-10-16 14:05:36</td><td>王秀英</td><td>县区监管</td><td>账密 + 短信</td><td>117.136.x.x / Chrome · <span class="tag tag-orange">异地</span></td><td><span class="tag tag-green">成功 · 已短信提醒</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+            <tr><td>2026-10-16 14:02:45</td><td>未知用户</td><td>—</td><td>账密(撞库疑似)</td><td>36.45.x.x / Unknown</td><td><span class="tag tag-red">失败 · IP 已拦截</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">加黑名单</button></td></tr>
+            <tr><td>2026-10-16 13:48:20</td><td>张博文</td><td>物业企业</td><td>APP 扫码</td><td>10.0.14.20 / Android</td><td><span class="tag tag-green">成功</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+            <tr><td>2026-10-16 13:32:08</td><td>孙卫东</td><td>市级监管</td><td>账密 + UKey</td><td>10.0.15.36 / Firefox</td><td><span class="tag tag-orange">失败 · 证书即将过期</span></td><td><button class="btn btn-text" onclick="go('Z-CERT')">去续期</button></td></tr>
+            <tr><td>2026-10-16 13:15:44</td><td>陈默(admin)</td><td>省级监管</td><td>省政务 SSO</td><td>218.30.16.8 / Chrome</td><td><span class="tag tag-green">成功</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><div class="info">共 286,412 条 · 当前 1-7 条</div><div class="pages"><button onclick="gbToast('翻页操作');">‹</button><button onclick="gbToast('已跳转至第 1 页');" class="active">1</button><button onclick="gbToast('已跳转至第 2 页');">2</button><button onclick="gbToast('已跳转至第 3 页');">3</button><button onclick="gbToast('翻页操作');">…</button><button onclick="gbToast('已跳转至第 40916 页');">40916</button><button onclick="gbToast('翻页操作');">›</button></div></div>
+      </div>
+    </section>
+    <!-- ============ Z-PWD 密码安全 ============ -->
+    <section class="page" id="page-Z-PWD">
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">🔒 修改密码</div>
+          <div class="form-item mb-12"><label><span class="req">*</span>当前密码</label><input type="password" value="********"></div>
+          <div class="form-item mb-12"><label><span class="req">*</span>新密码</label><input type="password" placeholder="12 位以上 · 大小写 + 数字 + 特殊字符">
+            <div class="progress mt-8"><div class="bar orange" style="width:60%"></div></div>
+            <div class="hint">密码强度:中 · 推荐:长密码 + 数字 + 特殊字符</div>
+          </div>
+          <div class="form-item mb-12"><label><span class="req">*</span>确认新密码</label><input type="password"></div>
+          <div class="form-item mb-12"><label><span class="req">*</span>二次验证(短信)</label>
+            <div style="display:flex;gap:6px"><input type="text" placeholder="6 位验证码" style="flex:1"><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default">📱 获取</button></div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:12px"><button onclick="gbToast('进入编辑模式');" class="btn btn-primary">✓ 提交修改</button><button onclick="gbToast('已取消,未做任何变更');" class="btn btn-default">取消</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⚙ 密码强度策略(管理员配置)</div>
+          <table class="data">
+            <thead><tr><th>策略项</th><th>当前值</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr><td>最小长度</td><td><strong>12</strong> 位</td><td>≥ 8 位为合规</td></tr>
+              <tr><td>复杂度</td><td><span class="tag tag-green">大小写 + 数字 + 特殊</span></td><td>强制四选三</td></tr>
+              <tr><td>有效期</td><td><strong>90</strong> 天</td><td>到期前 7 天提醒</td></tr>
+              <tr><td>历史密码</td><td><strong>5</strong> 次</td><td>不可重复最近 5 次</td></tr>
+              <tr><td>登录失败锁定</td><td><strong>5</strong> 次 / 30 分钟</td><td>自动解锁</td></tr>
+              <tr><td>二次验证</td><td><span class="switch on"></span> <strong>强制开启</strong></td><td>短信 / 邮箱 / UKey</td></tr>
+              <tr><td>异地登录</td><td><span class="switch on"></span> <strong>短信提醒</strong></td><td>IP / 设备变化提醒</td></tr>
+              <tr><td>会话超时</td><td><strong>30</strong> 分钟</td><td>无操作自动退出</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">🔑 UKey 解绑 / 变更</span></div>
+        <table class="data">
+          <thead><tr><th>设备</th><th>证书序列号</th><th>绑定时间</th><th>有效期至</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>华大 UKey · S/N U12345</td><td>CN-SHA-2024-001</td><td>2024-05-12</td><td>2027-05-11</td><td><span class="tag tag-green">正常</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解绑</button></td></tr>
+            <tr><td>飞天 UKey · S/N F67890</td><td>CN-XA-2025-002</td><td>2025-08-30</td><td>2026-11-13</td><td><span class="tag tag-orange">即将过期</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解绑</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">续期</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ Z-NOTI 通知中心 ============ -->
+    <section class="page" id="page-Z-NOTI">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">未读总数</div><div class="value">28</div><div class="sub">较昨日 ↓ 12</div></div>
+        <div class="kpi-card warn"><div class="label">待办事项</div><div class="value">12</div><div class="sub">含逾期 2</div></div>
+        <div class="kpi-card"><div class="label">系统公告</div><div class="value">8</div><div class="sub">本周发布</div></div>
+        <div class="kpi-card"><div class="label">短信已发</div><div class="value">156</div><div class="sub">本月统计</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary btn-sm">📌 全部</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm">待办(12)</button>
+          <button onclick="gbToast('发布成功,已推送相关方');" class="btn btn-default btn-sm">公告(8)</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm">物业监管(5)</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm">党建(3)</button>
+          <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-default btn-sm">业主决策(2)</button>
+        </div>
+        <table class="data">
+          <thead><tr><th width="36"><input type="checkbox"></th><th>类型</th><th>标题</th><th>来源</th><th>时间</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr style="background:#FFF8E8"><td><input type="checkbox"></td><td><span class="tag tag-orange">待办</span></td><td><strong>中海物业西安分公司备案审批</strong> · 待您审批</td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">A-1-D 物业企业详情</a></td><td>2 小时前</td><td><span class="tag tag-orange">未读</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">立即处理 →</button></td></tr>
+            <tr style="background:#FFF8E8"><td><input type="checkbox"></td><td><span class="tag tag-orange">待办</span></td><td><strong>保利物业申请变更法人代表</strong> · 待审批</td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-CH" class="cross-link">A-1-CH 变更记录</a></td><td>3 小时前</td><td><span class="tag tag-orange">未读</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">立即处理 →</button></td></tr>
+            <tr style="background:#FFF8E8"><td><input type="checkbox"></td><td><span class="tag tag-red">逾期</span></td><td><strong>汉中锦园物业党支部超期未换届</strong> · 已超期 28 天</td><td>党建联建</td><td>昨日</td><td><span class="tag tag-red">逾期</span></td><td><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">立即处理 →</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><span class="tag tag-blue">公告</span></td><td><strong>关于开展物业行业党建"百日提升"专项行动的通知</strong></td><td>西安市住建局</td><td>2 天前</td><td><span class="tag tag-green">已读</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><span class="tag tag-blue">公告</span></td><td><strong>"红色物业"三年行动收官 · 覆盖率突破 76.6%</strong></td><td>省住建厅</td><td>3 天前</td><td><span class="tag tag-green">已读</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">查看</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><span class="tag tag-purple">系统</span></td><td><strong>您的 UKey 数字证书将于 28 天后过期,请尽快续期</strong></td><td>系统消息</td><td>5 天前</td><td><span class="tag tag-green">已读</span></td><td><button class="btn btn-text" onclick="go('Z-CERT')">去续期</button></td></tr>
+            <tr><td><input type="checkbox"></td><td><span class="tag tag-gray">短信</span></td><td><strong>已向 156 名业主发送投票提醒短信</strong></td><td>短信平台</td><td>6 天前</td><td><span class="tag tag-green">已读</span></td><td><button class="btn btn-text" onclick="go('Z-SMS')">查看记录</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ Z-MSG 站内消息 ============ -->
+    <section class="page" id="page-Z-MSG">
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="display:grid;grid-template-columns:260px 1fr;height:520px">
+          <div style="border-right:1px solid #F2F3F5;overflow-y:auto">
+            <div class="filter-bar" style="border-radius:0"><input type="text" placeholder="⌕ 搜索联系人" style="flex:1;min-width:200px"></div>
+            <div style="padding:7px;background:#E8F1FF;border-left:3px solid #165DFF;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:7px">
+                <div style="width:34px;height:34px;border-radius:50%;background:#00B42A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">李</div>
+                <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong style="font-size:12px">李建国</strong><span class="text-muted f12">14:30</span></div><div class="text-muted f12" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">好的,会议资料已发送...</div></div>
+                <span class="tag tag-red">3</span>
+              </div>
+            </div>
+            <div style="padding:7px;cursor:pointer"><div style="display:flex;align-items:center;gap:7px"><div style="width:34px;height:34px;border-radius:50%;background:#FF7D00;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">王</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong style="font-size:12px">王秀英</strong><span class="text-muted f12">昨日</span></div><div class="text-muted f12" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">保利物业联合支部</div></div></div></div>
+            <div style="padding:7px;cursor:pointer"><div style="display:flex;align-items:center;gap:7px"><div style="width:34px;height:34px;border-radius:50%;background:#534AB7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px">赵</div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong style="font-size:12px">赵建斌</strong><span class="text-muted f12">10-13</span></div><div class="text-muted f12" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">咸阳联合党支部</div></div></div></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column">
+            <div style="padding:14px;border-bottom:1px solid #F2F3F5;background:#FAFBFC">
+              <div style="display:flex;align-items:center;gap:9px"><div style="width:38px;height:38px;border-radius:50%;background:#00B42A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600">李</div><div><strong>李建国</strong><div class="text-muted f12">中海物业西安党支部 · 副书记 · 在线</div></div></div>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:14px;background:#F7F8FA">
+              <div style="display:flex;gap:7px;margin-bottom:14px"><div style="width:30px;height:30px;border-radius:50%;background:#00B42A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">李</div><div style="background:#fff;padding:9px 12px;border-radius:8px;max-width:60%"><div class="text-muted f12">2026-10-16 11:20</div><div style="font-size:12px">陈默书记,中海物业党委换届选举的资料已经准备好,附件发您审阅。</div></div></div>
+              <div style="display:flex;gap:7px;margin-bottom:14px;flex-direction:row-reverse"><div style="width:30px;height:30px;border-radius:50%;background:#165DFF;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">陈</div><div style="background:#E8F1FF;padding:9px 12px;border-radius:8px;max-width:60%"><div class="text-muted f12">14:25</div><div style="font-size:12px">收到,我看看后回复。</div></div></div>
+              <div style="display:flex;gap:7px;margin-bottom:14px"><div style="width:30px;height:30px;border-radius:50%;background:#00B42A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">李</div><div style="background:#fff;padding:9px 12px;border-radius:8px;max-width:60%"><div class="text-muted f12">14:30</div><div style="font-size:12px">好的,会议资料已发送到您邮箱,请注意查阅。</div></div></div>
+            </div>
+            <div style="padding:10px;border-top:1px solid #F2F3F5;background:#fff">
+              <div style="display:flex;gap:7px;align-items:center"><textarea placeholder="输入消息内容..." style="flex:1;border:1px solid #E5E6EB;border-radius:8px;padding:7px;min-height:36px;max-height:90px;resize:none;font-size:12px"></textarea><button onclick="gbToast('提交成功,已进入下一环节');" class="btn btn-primary">发送 ➤</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-SET 个人设置 ============ -->
+    <section class="page" id="page-Z-SET">
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">👤 基本资料</div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <div style="width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#165DFF,#003CB3);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;flex-shrink:0">陈</div>
+            <div>
+              <div style="font-size:16px;font-weight:600">陈默</div>
+              <div class="text-muted f13">省厅物业主管 · 138****5678 · admin@shanxjzz.cn</div>
+              <button onclick="gbToast('进入编辑模式');" class="btn btn-default btn-sm mt-8">📷 修改头像</button>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-item"><label>姓名</label><input type="text" value="陈默"></div>
+            <div class="form-item"><label>工号</label><input type="text" value="SN-00128"></div>
+            <div class="form-item"><label>所属部门</label><input type="text" value="省厅物业管理处"></div>
+            <div class="form-item"><label>职务</label><input type="text" value="副处长"></div>
+            <div class="form-item"><label>手机号</label><input type="text" value="138****5678"></div>
+            <div class="form-item"><label>邮箱</label><input type="email" value="admin@shanxjzz.cn"></div>
+          </div>
+          <button onclick="gbToast('进入编辑模式');" class="btn btn-primary mt-12">💾 保存修改</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔔 通知偏好</div>
+          <table class="data">
+            <thead><tr><th>通知类型</th><th>站内</th><th>短信</th><th>邮件</th><th>APP 推送</th></tr></thead>
+            <tbody>
+              <tr><td>待办提醒</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>审批结果</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>系统公告</td><td><span class="switch on"></span></td><td><span class="switch"></span></td><td><span class="switch on"></span></td><td><span class="switch"></span></td></tr>
+              <tr><td>投票提醒(业主)</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>夜间勿扰(22-08)</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>党建动态</td><td><span class="switch on"></span></td><td><span class="switch"></span></td><td><span class="switch"></span></td><td><span class="switch on"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎨 界面偏好</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <div class="form-item"><label>主题模式</label><select><option selected>浅色</option><option>深色</option><option>跟随系统</option></select></div>
+          <div class="form-item"><label>语言</label><select><option selected>简体中文</option><option>English</option></select></div>
+          <div class="form-item"><label>侧边栏</label><select><option>默认折叠</option><option selected>默认展开</option></select></div>
+          <div class="form-item"><label>字体大小</label><select><option>小</option><option selected>标准</option><option>大</option></select></div>
+          <div class="form-item"><label>数字格式</label><select><option selected>1,234.56</option><option>1.234,56</option></select></div>
+          <div class="form-item"><label>首页默认页</label><select><option selected>党建联建</option><option>物业监管</option></select></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-AUDIT 操作审计 ============ -->
+    <section class="page" id="page-Z-AUDIT">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">今日操作</div><div class="value">8,256</div><div class="sub">较昨日 ↑ 4.5%</div></div>
+        <div class="kpi-card warn"><div class="label">异常操作</div><div class="value">12</div><div class="sub">含 IP 异常 / 权限外访问</div></div>
+        <div class="kpi-card"><div class="label">活跃用户</div><div class="value">186</div><div class="sub">本系统登录用户</div></div>
+        <div class="kpi-card success"><div class="label">合规率</div><div class="value">99.86%</div><div class="sub">7 日滚动</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar">
+          <span class="filter-label">操作人:</span><input type="text" placeholder="姓名 / 工号">
+          <span class="filter-label">模块:</span><select><option>全部</option><option>物业监管</option><option>党建联建</option><option>业主决策</option><option>通用</option></select>
+          <span class="filter-label">操作类型:</span><select><option>全部</option><option>登录</option><option>查询</option><option>新增</option><option>修改</option><option>删除</option><option>审批</option><option>导出</option></select>
+          <span class="filter-label">时间:</span><input type="date" value="2026-10-16">
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+        </div>
+        <table class="data">
+          <thead><tr><th>时间</th><th>操作人</th><th>模块</th><th>操作</th><th>对象</th><th>IP / 设备</th><th>结果</th></tr></thead>
+          <tbody>
+            <tr><td>14:32:18</td><td>陈默(admin)</td><td>党建联建</td><td><span class="tag tag-blue">查询</span></td><td>党组织列表 · B-1-L</td><td>10.0.12.45 / Chrome</td><td><span class="tag tag-green">成功</span></td></tr>
+            <tr><td>14:30:02</td><td>陈默(admin)</td><td>通用</td><td><span class="tag tag-blue">查询</span></td><td>通知中心 · Z-NOTI</td><td>10.0.12.45 / Chrome</td><td><span class="tag tag-green">成功</span></td></tr>
+            <tr><td>14:25:36</td><td>李建国</td><td>物业监管</td><td><span class="tag tag-orange">修改</span></td><td>物业企业备案 · A-1-CH</td><td>10.0.13.78 / Edge</td><td><span class="tag tag-green">成功</span></td></tr>
+            <tr><td>14:18:12</td><td>王秀英</td><td>党建联建</td><td><span class="tag tag-green">新增</span></td><td>党组织新增 · B-1-F</td><td>10.0.14.20 / Chrome</td><td><span class="tag tag-green">成功</span></td></tr>
+            <tr><td>14:02:45</td><td>未知用户</td><td>通用</td><td><span class="tag tag-purple">登录</span></td><td>Z-LOG</td><td>36.45.x.x / Unknown</td><td><span class="tag tag-red">失败 · IP 黑名单</span></td></tr>
+            <tr><td>13:58:22</td><td>赵建斌</td><td>党建联建</td><td><span class="tag tag-red">删除</span></td><td>党员档案 · B-2-L</td><td>10.0.15.36 / Firefox</td><td><span class="tag tag-orange">权限外访问</span></td></tr>
+            <tr><td>13:45:08</td><td>陈默(admin)</td><td>物业监管</td><td><span class="tag tag-blue">审批通过</span></td><td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">物业企业备案 · A-1-D</a></td><td>10.0.12.45 / Chrome</td><td><span class="tag tag-green">成功</span></td></tr>
+            <tr><td>13:32:55</td><td>陈默(admin)</td><td>物业监管</td><td><span class="tag tag-orange">导出</span></td><td>报表导出(含水印)</td><td>10.0.12.45 / Chrome</td><td><span class="tag tag-green">成功 · 已加水印</span></td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><div class="info">共 8,256 条 · 当前 1-8 条</div><div class="pages"><button onclick="gbToast('翻页操作');">‹</button><button onclick="gbToast('已跳转至第 1 页');" class="active">1</button><button onclick="gbToast('已跳转至第 2 页');">2</button><button onclick="gbToast('已跳转至第 3 页');">3</button><button onclick="gbToast('翻页操作');">…</button><button onclick="gbToast('已跳转至第 1032 页');">1032</button><button onclick="gbToast('翻页操作');">›</button></div></div>
+      </div>
+    </section>
+
+    <!-- ============ Z-DICT 主数据字典 ============ -->
+    <section class="page" id="page-Z-DICT">
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="display:grid;grid-template-columns:260px 1fr;min-height:480px">
+          <div style="border-right:1px solid #F2F3F5;background:#FAFBFC">
+            <div style="padding:11px 14px;border-bottom:1px solid #F2F3F5;font-weight:600">📚 字典分类</div>
+            <div class="dict-tree" style="border:none;max-height:none">
+              <div class="item active"><span class="icon">▾</span>行政区划 <span class="count">156</span></div>
+              <div class="item" style="padding-left:24px"><span class="icon">├</span>陕西省 <span class="count">1</span></div>
+              <div class="item" style="padding-left:32px"><span class="icon">├</span>西安市 <span class="count">13</span></div>
+              <div class="item" style="padding-left:40px;background:#F7F8FA"><span class="icon">├</span>雁塔区</div>
+              <div class="item" style="padding-left:40px"><span class="icon">├</span>高新区</div>
+              <div class="item" style="padding-left:24px"><span class="icon">├</span>咸阳市</div>
+              <div class="item" style="padding-left:24px"><span class="icon">├</span>宝鸡市</div>
+              <div class="item"><span class="icon">▾</span>物业类型 <span class="count">12</span></div>
+              <div class="item"><span class="icon">▾</span>资质等级 <span class="count">6</span></div>
+              <div class="item"><span class="icon">▾</span>信用评级 <span class="count">5</span></div>
+              <div class="item"><span class="icon">▾</span>业务事项类型 <span class="count">28</span></div>
+              <div class="item"><span class="icon">▾</span>审核状态 <span class="count">8</span></div>
+              <div class="item"><span class="icon">▾</span>归档密级 <span class="count">5</span></div>
+              <div class="item"><span class="icon">▾</span>业委会状态 <span class="count">6</span></div>
+              <div class="item"><span class="icon">▾</span>投诉类型 <span class="count">18</span></div>
+              <div class="item"><span class="icon">▾</span>报修类型 <span class="count">15</span></div>
+              <div class="item"><span class="icon">▾</span>紧急度 <span class="count">4</span></div>
+              <div class="item"><span class="icon">▾</span>问题分类 <span class="count">22</span></div>
+            </div>
+          </div>
+
+          <div style="padding:18px">
+            <div class="flex-between mb-12">
+              <div>
+                <h3 style="font-size:16px;font-weight:600">行政区划字典</h3>
+                <div class="text-muted f13">陕西省 / 西安市 / 共 156 项 · 关联物业区域备案 <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-2-D" class="cross-link">A-2-D</a></div>
+              </div>
+              <div>
+                <button onclick="gbToast('打开新增表单');" class="btn btn-default btn-sm">⊕ 新增</button>
+                <button onclick="gbToast('进入编辑模式');" class="btn btn-default btn-sm">⎘ 编辑</button>
+                <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-default btn-sm">⤓ 导入</button>
+                <button onclick="gbToast('发布成功,已推送相关方');" class="btn btn-warn btn-sm">发布</button>
+              </div>
+            </div>
+            <table class="data">
+              <thead><tr><th>字典编码</th><th>名称</th><th>父级</th><th>层级</th><th>关联模块</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
+              <tbody>
+                <tr><td>610000</td><td><strong>陕西省</strong></td><td>—</td><td>省</td><td>全部</td><td><span class="tag tag-green">启用</span></td><td>2025-12-20</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610100</td><td><strong>西安市</strong></td><td>陕西省</td><td>市</td><td>物业区域 / 党建</td><td><span class="tag tag-green">启用</span></td><td>2025-12-20</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610113</td><td>雁塔区</td><td>西安市</td><td>区</td><td>物业区域</td><td><span class="tag tag-green">启用</span></td><td>2026-01-15</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610116</td><td>高新区</td><td>西安市</td><td>区</td><td>物业区域</td><td><span class="tag tag-green">启用</span></td><td>2026-01-15</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610200</td><td><strong>咸阳市</strong></td><td>陕西省</td><td>市</td><td>物业区域</td><td><span class="tag tag-green">启用</span></td><td>2025-12-20</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610300</td><td><strong>宝鸡市</strong></td><td>陕西省</td><td>市</td><td>物业区域</td><td><span class="tag tag-green">启用</span></td><td>2025-12-20</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+                <tr><td>610700</td><td><strong>汉中市</strong></td><td>陕西省</td><td>市</td><td>物业区域</td><td><span class="tag tag-green">启用</span></td><td>2025-12-20</td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+              </tbody>
+            </table>
+
+            <div class="divider"></div>
+            <div class="text-muted f13 mb-12">其他字典速览(11 类)</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>物业类型</span><strong>12</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>资质等级</span><strong>6</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>信用评级</span><strong>5</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>业务事项类型</span><strong>28</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>审核状态</span><strong>8</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>归档密级</span><strong>5</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>业委会状态</span><strong>6</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>投诉类型</span><strong>18</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>报修类型</span><strong>15</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>紧急度</span><strong>4</strong></div>
+              <div style="background:#FAFBFC;border:1px solid #E5E6EB;padding:8px 11px;border-radius:6px;display:flex;justify-content:space-between"><span>问题分类</span><strong>22</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-CERT 数字证书 ============ -->
+    <section class="page" id="page-Z-CERT">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card success"><div class="label">有效证书</div><div class="value">186</div><div class="sub">正常使用中</div></div>
+        <div class="kpi-card warn"><div class="label">即将过期</div><div class="value">12</div><div class="sub">30 天内到期</div></div>
+        <div class="kpi-card danger"><div class="label">已过期</div><div class="value">3</div><div class="sub">需续期</div></div>
+        <div class="kpi-card"><div class="label">已吊销</div><div class="value">8</div><div class="sub">本年度</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">🔑 证书列表</span></div>
+        <table class="data">
+          <thead><tr><th>用户</th><th>UKey 型号</th><th>证书序列号</th><th>颁发机构</th><th>颁发日期</th><th>有效期至</th><th>剩余天数</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>陈默(admin)</td><td>华大 HD-100</td><td>CN-SHA-2024-001-12345</td><td>陕西省 CA 中心</td><td>2024-05-12</td><td>2027-05-11</td><td><strong class="text-success">220 天</strong></td><td><span class="tag tag-green">正常</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解绑</button></td></tr>
+            <tr><td>李建国</td><td>飞天 FT-200</td><td>CN-XA-2025-002-67890</td><td>陕西省 CA 中心</td><td>2025-08-30</td><td>2026-11-13</td><td><strong class="text-warn">28 天</strong></td><td><span class="tag tag-orange">即将过期</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary btn-sm">续期</button></td></tr>
+            <tr><td>王秀英</td><td>华大 HD-100</td><td>CN-XA-2025-003-11223</td><td>陕西省 CA 中心</td><td>2025-09-15</td><td>2028-09-14</td><td><strong class="text-success">699 天</strong></td><td><span class="tag tag-green">正常</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text">解绑</button></td></tr>
+            <tr><td>赵建斌</td><td>华大 HD-100</td><td>CN-XY-2023-005-99887</td><td>陕西省 CA 中心</td><td>2023-04-22</td><td>2026-04-21</td><td><strong class="text-danger">已过期</strong></td><td><span class="tag tag-red">已过期</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button> <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-warn btn-sm">续期</button></td></tr>
+            <tr><td>孙卫东</td><td>飞天 FT-200</td><td>CN-BJ-2024-008-77665</td><td>陕西省 CA 中心</td><td>2024-12-10</td><td style="text-decoration:line-through">2025-12-09</td><td><strong class="text-danger">已过期</strong></td><td><span class="tag tag-gray">已吊销</span></td><td><button onclick="gbToast('打开详情视图');" class="btn btn-text">详情</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚙ 证书策略配置</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+          <div class="form-item"><label>有效期(默认)</label><input type="text" value="3 年"></div>
+          <div class="form-item"><label>过期前预警(天)</label><input type="text" value="30"></div>
+          <div class="form-item"><label>强制定期更换</label><div><span class="switch on"></span> <span class="text-primary">强制</span></div></div>
+          <div class="form-item"><label>允许登录 IP 段</label><input type="text" value="10.0.0.0/8, 36.45.0.0/16"></div>
+          <div class="form-item"><label>允许登录时段</label><input type="text" value="全天 / 含夜间"></div>
+          <div class="form-item"><label>单点登录</label><div><span class="switch on"></span> <span class="text-primary">是</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-WF 工作流配置 ============ -->
+    <section class="page" id="page-Z-WF">
+
+      <div class="card">
+        <div class="filter-bar">
+          <span class="filter-label">业务事项:</span><select>
+            <option>全部</option>
+            <option selected>维修资金使用 · 申请</option>
+            <option>物业企业备案</option>
+            <option>业委会换届</option>
+            <option>应急物业启动</option>
+            <option>党组织成立</option>
+          </select>
+          <span class="filter-label">状态:</span><select><option>全部</option><option selected>已发布</option><option>草稿</option></select>
+          <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary btn-sm">⌕ 筛选</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔄 工作流可视化建模 · 维修资金使用 · 多级审核</div>
+        <div class="wf-canvas">
+          <div class="wf-node start" style="left:20px;top:130px"><div class="lbl">① 申请发起</div><div class="meta">业委会/物业企业</div></div>
+          <div class="wf-node" style="left:190px;top:130px;border-color:#FF7D00;background:#FFF3E0"><div class="lbl">② 社区审核</div><div class="meta">街道办 · 3 天</div></div>
+          <div class="wf-node" style="left:190px;top:40px;border-color:#FF7D00;background:#FFF3E0"><div class="lbl">③ 街道审核</div><div class="meta">街道办 · 5 天</div></div>
+          <div class="wf-node" style="left:360px;top:40px;border-color:#FF7D00;background:#FFF3E0"><div class="lbl">④ 区县审核</div><div class="meta">区县住建 · 7 天</div></div>
+          <div class="wf-node" style="left:360px;top:220px"><div class="lbl">⑤ 业主表决</div><div class="meta">≥ 2/3 通过</div></div>
+          <div class="wf-node" style="left:530px;top:40px;border-color:#FF7D00;background:#FFF3E0"><div class="lbl">⑥ 代管审核</div><div class="meta">代管机构 · 5 天</div></div>
+          <div class="wf-node end" style="left:530px;top:220px"><div class="lbl">⑦ 实施登记</div><div class="meta">物业企业</div></div>
+          <div class="wf-node end" style="left:20px;top:260px"><div class="lbl">驳回 / 终止</div><div class="meta">回到申请</div></div>
+
+          <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none" viewBox="0 0 700 320">
+            <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L0,10 L8,5 z" fill="#165DFF"/></marker></defs>
+            <path d="M140 150 L200 150" stroke="#165DFF" stroke-width="2" marker-end="url(#arr)"/>
+            <path d="M330 150 Q350 150 350 70" stroke="#165DFF" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+            <path d="M430 70 L540 70" stroke="#165DFF" stroke-width="2" marker-end="url(#arr)"/>
+            <path d="M310 190 Q340 210 360 250" stroke="#00B42A" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+            <path d="M460 270 Q490 250 530 240" stroke="#00B42A" stroke-width="2" fill="none" stroke-dasharray="4,2" marker-end="url(#arr)"/>
+            <path d="M70 190 Q70 230 70 260" stroke="#F53F3F" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+          </svg>
+
+          <div style="position:absolute;left:20px;top:5px;font-size:11px;color:#165DFF">—— 顺序审批</div>
+          <div style="position:absolute;left:20px;top:23px;font-size:11px;color:#00B42A">---- 并行任务</div>
+          <div style="position:absolute;left:20px;top:41px;font-size:11px;color:#F53F3F">—— 驳回 / 回退</div>
+        </div>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">⏱ 超时升级配置</div>
+          <table class="data">
+            <thead><tr><th>节点</th><th>超时时长</th><th>升级路径</th><th>通知模板</th><th>启用</th></tr></thead>
+            <tbody>
+              <tr><td>② 社区审核</td><td>3 天</td><td>→ 街道</td><td>超时升级通知 v1</td><td><span class="switch on"></span></td></tr>
+              <tr><td>③ 街道审核</td><td>5 天</td><td>→ 区县</td><td>超时升级通知 v1</td><td><span class="switch on"></span></td></tr>
+              <tr><td>④ 区县审核</td><td>7 天</td><td>→ 市住建</td><td>超时升级通知 v2</td><td><span class="switch on"></span></td></tr>
+              <tr><td>⑤ 业主表决</td><td>15 天</td><td>→ 公告催办</td><td>表决催办通知</td><td><span class="switch on"></span></td></tr>
+              <tr><td>⑥ 代管审核</td><td>5 天</td><td>→ 上级主管</td><td>超时升级通知 v1</td><td><span class="switch on"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">👥 节点角色绑定</div>
+          <table class="data">
+            <thead><tr><th>节点</th><th>审批角色</th><th>可回退</th><th>可转办</th></tr></thead>
+            <tbody>
+              <tr><td>② 社区审核</td><td>街道办负责人</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>③ 街道审核</td><td>街道办主任</td><td><span class="switch on"></span></td><td><span class="switch"></span></td></tr>
+              <tr><td>④ 区县审核</td><td>区县住建科长</td><td><span class="switch on"></span></td><td><span class="switch on"></span></td></tr>
+              <tr><td>⑤ 业主表决</td><td>全体业主(2/3)</td><td><span class="switch"></span></td><td><span class="switch"></span></td></tr>
+              <tr><td>⑥ 代管审核</td><td>代管机构负责人</td><td><span class="switch on"></span></td><td><span class="switch"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-SMS 短信频次 ============ -->
+    <section class="page" id="page-Z-SMS">
+
+      <div class="card-grid card-grid-4">
+        <div class="kpi-card"><div class="label">本月已发</div><div class="value">12.8k</div><div class="sub">环比 ↓ 8.3%</div></div>
+        <div class="kpi-card warn"><div class="label">触发频次限制</div><div class="value">42</div><div class="sub">超阈值 12</div></div>
+        <div class="kpi-card success"><div class="label">到达率</div><div class="value">98.6%</div><div class="sub">7 日滚动</div></div>
+        <div class="kpi-card"><div class="label">活跃模板</div><div class="value">28</div><div class="sub">本月使用</div></div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="filter-bar"><span class="text-bold">📝 短信模板</span></div>
+        <table class="data">
+          <thead><tr><th>模板编号</th><th>模板名称</th><th>适用场景</th><th>触发频次上限</th><th>夜间勿扰</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>SMS-VOTE-001</td><td><strong>业主投票提醒</strong></td><td>投票事项</td><td>同一业主 1 次 / 投票</td><td><span class="switch on"></span> 启用</td><td><span class="tag tag-green">启用</span></td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>SMS-CMP-002</td><td><strong>投诉受理通知</strong></td><td>业主投诉</td><td>同一业主 1 次 / 投诉</td><td><span class="switch on"></span> 启用</td><td><span class="tag tag-green">启用</span></td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>SMS-REP-003</td><td><strong>报修接单通知</strong></td><td>报修工单</td><td>同一业主 2 次 / 工单</td><td><span class="switch on"></span> 启用</td><td><span class="tag tag-green">启用</span></td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>SMS-MTG-004</td><td><strong>业主大会通知</strong></td><td>业主大会</td><td>同一业主 2 次 / 大会</td><td><span class="switch on"></span> 启用</td><td><span class="tag tag-green">启用</span></td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+            <tr><td>SMS-PTY-005</td><td><strong>应急物业公示</strong></td><td>应急物业</td><td>同一业主 1 次 / 事件</td><td><span class="switch"></span> 禁用</td><td><span class="tag tag-gray">禁用</span></td><td><button onclick="gbToast('进入编辑模式');" class="btn btn-text">⎘</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <div class="card-title">📊 频次控制规则 <a href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-7-FA" class="cross-link">维修资金使用申请触发短信</a></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+            <div class="form-item"><label>同一手机号 / 小时</label><input type="text" value="5 条"></div>
+            <div class="form-item"><label>同一手机号 / 日</label><input type="text" value="20 条"></div>
+            <div class="form-item"><label>同一业主 / 月</label><input type="text" value="60 条"></div>
+            <div class="form-item"><label>夜间勿扰时段</label><input type="text" value="22:00 - 08:00"></div>
+            <div class="form-item"><label>超出后动作</label><select><option>合并发送</option><option selected>次日提醒</option><option>直接拒绝</option></select></div>
+            <div class="form-item"><label>验证码有效期</label><input type="text" value="10 分钟"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 白名单 / 黑名单</div>
+          <table class="data">
+            <thead><tr><th>类型</th><th>号码 / 主体</th><th>原因</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td><span class="tag tag-green">白名单</span></td><td>138****5678(陈默)</td><td>系统管理员</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">移除</button></td></tr>
+              <tr><td><span class="tag tag-green">白名单</span></td><td>应急通道(政务办)</td><td>应急事件</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">移除</button></td></tr>
+              <tr><td><span class="tag tag-red">黑名单</span></td><td>139****0000</td><td>用户退订</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">移除</button></td></tr>
+              <tr><td><span class="tag tag-red">黑名单</span></td><td>139****9999</td><td>投诉举报</td><td><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text">移除</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Z-DASHBOARD 省级大屏 ============ -->
+    <section class="page" id="page-Z-DASHBOARD">
+
+      <div style="background:linear-gradient(135deg,#0E1A2B 0%,#0F2555 100%);border-radius:12px;padding:22px;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.2)">
+        <div style="text-align:center;margin-bottom:20px">
+          <h2 style="font-size:26px;font-weight:600;color:#fff;letter-spacing:3px">陕西省住建厅 · 物业管理大数据看板</h2>
+          <div style="color:#A0CFFF;margin-top:5px;font-size:12px">2026-10-16 14:30 · v3.2 · 数据实时更新(刷新间隔 30 秒)</div>
+        </div>
+
+        <div class="card-grid card-grid-4" style="margin-bottom:14px">
+          <div class="dash-block">
+            <div class="ttl">🏢 物业企业备案</div>
+            <div class="metric-row"><span class="l">总数</span><span class="v">1,287</span><span class="delta">↑ 12</span></div>
+            <div class="metric-row"><span class="l">本月新增</span><span class="v">23</span></div>
+            <div class="metric-row"><span class="l">变更备案</span><span class="v">156</span></div>
+          </div>
+          <div class="dash-block">
+            <div class="ttl">⌐ 物业区域</div>
+            <div class="metric-row"><span class="l">划定区域</span><span class="v">3,562</span></div>
+            <div class="metric-row"><span class="l">在管项目</span><span class="v">4,128</span></div>
+            <div class="metric-row"><span class="l">本月新增</span><span class="v">68</span></div>
+          </div>
+          <div class="dash-block">
+            <div class="ttl">⌧ 业主大会 / 投票</div>
+            <div class="metric-row"><span class="l">本月召开</span><span class="v">86</span><span class="delta">↑ 12</span></div>
+            <div class="metric-row"><span class="l">已审投票</span><span class="v">142</span></div>
+            <div class="metric-row"><span class="l">业主参与率</span><span class="v">78.6%</span></div>
+          </div>
+          <div class="dash-block">
+            <div class="ttl">⌹ 维修资金</div>
+            <div class="metric-row"><span class="l">归集总额(亿)</span><span class="v">¥286.5</span><span class="delta">↑ 1.2</span></div>
+            <div class="metric-row"><span class="l">使用申请</span><span class="v">428</span></div>
+            <div class="metric-row"><span class="l">异常项</span><span class="v" style="color:#FF7D00">86</span></div>
+          </div>
+        </div>
+
+        <div class="dash-grid">
+          <div>
+            <div class="dash-block" style="margin-bottom:14px">
+              <div class="ttl">⌐ 陕西省物业监管分布</div>
+              <svg viewBox="0 0 500 280" style="width:100%;height:auto">
+                <defs><linearGradient id="dGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4080FF" stop-opacity=".8"/><stop offset="100%" stop-color="#165DFF" stop-opacity=".4"/></linearGradient></defs>
+                <path d="M80 40 L160 25 L230 50 L320 35 L400 60 L450 100 L460 180 L420 240 L350 260 L260 270 L180 250 L100 220 L60 170 L70 100 Z" fill="url(#dGrad)" stroke="#4080FF" stroke-width="1"/>
+                <circle cx="220" cy="170" r="22" fill="#165DFF"/><circle cx="220" cy="170" r="32" fill="#165DFF" opacity=".2"/><text x="220" y="135" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">西安 568</text>
+                <circle cx="160" cy="140" r="14" fill="#4080FF"/><text x="160" y="115" text-anchor="middle" fill="#fff" font-size="11">宝鸡 152</text>
+                <circle cx="250" cy="170" r="16" fill="#4080FF"/><text x="280" y="170" fill="#fff" font-size="11">咸阳 218</text>
+                <circle cx="290" cy="100" r="12" fill="#4080FF"/><text x="290" y="80" text-anchor="middle" fill="#fff" font-size="11">铜川 86</text>
+                <circle cx="320" cy="180" r="14" fill="#4080FF"/><text x="320" y="158" text-anchor="middle" fill="#fff" font-size="11">渭南 196</text>
+                <circle cx="280" cy="60" r="13" fill="#4080FF"/><text x="280" y="40" text-anchor="middle" fill="#fff" font-size="11">延安 128</text>
+                <circle cx="340" cy="40" r="12" fill="#4080FF"/><text x="340" y="22" text-anchor="middle" fill="#fff" font-size="11">榆林 118</text>
+                <circle cx="230" cy="240" r="13" fill="#4080FF"/><text x="230" y="262" text-anchor="middle" fill="#fff" font-size="11">汉中 102</text>
+                <circle cx="320" cy="260" r="10" fill="#4080FF"/><text x="340" y="270" fill="#fff" font-size="11">安康 78</text>
+                <circle cx="380" cy="200" r="9" fill="#4080FF"/><text x="395" y="200" fill="#fff" font-size="11">商洛 62</text>
+              </svg>
+              <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:11px;color:#A0CFFF">
+                <span>应建覆盖率 <strong style="color:#00B42A">51.8%</strong></span>
+                <span>投诉率 <strong style="color:#FF7D00">2.3%</strong></span>
+                <span>资金异常 <strong style="color:#F53F3F">86 项</strong></span>
+              </div>
+            </div>
+
+            <div class="dash-block">
+              <div class="ttl">★ 党建联建指标</div>
+              <div class="metric-row"><span class="l">党组织总数</span><span class="v">1,287</span></div>
+              <div class="metric-row"><span class="l">党员总数</span><span class="v">9,432</span></div>
+              <div class="metric-row"><span class="l">应建覆盖率</span><span class="v" style="color:#00B42A">51.8%</span><span class="delta">↑ 0.5%</span></div>
+              <div class="metric-row"><span class="l">五星党组织</span><span class="v">38</span></div>
+              <div class="metric-row"><span class="l">本月新增</span><span class="v" style="color:#00B42A">12</span></div>
+              <div style="margin-top:10px;background:rgba(255,255,255,.05);border-radius:6px;padding:8px;font-size:11px">
+                <div style="color:#A0CFFF;margin-bottom:5px">📈 应建覆盖率趋势</div>
+                <div style="display:flex;align-items:end;gap:3px;height:50px">
+                  <div style="flex:1;background:#165DFF;height:35%"></div>
+                  <div style="flex:1;background:#165DFF;height:42%"></div>
+                  <div style="flex:1;background:#165DFF;height:48%"></div>
+                  <div style="flex:1;background:#165DFF;height:55%"></div>
+                  <div style="flex:1;background:#4080FF;height:62%"></div>
+                  <div style="flex:1;background:#4080FF;height:68%"></div>
+                  <div style="flex:1;background:#4080FF;height:75%"></div>
+                  <div style="flex:1;background:#4080FF;height:82%"></div>
+                  <div style="flex:1;background:#00B42A;height:88%"></div>
+                  <div style="flex:1;background:#00B42A;height:95%"></div>
+                  <div style="flex:1;background:#00B42A;height:100%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:3px;color:#86909C;font-size:9px"><span>1月</span><span>6月</span><span>10月</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="event-stream">
+              <div class="head">
+                <div class="live">● 实时事件流</div>
+                <div style="font-size:11px;color:#86909C">滚动播出 · 鼠标悬停暂停</div>
+              </div>
+              <div class="body">
+                <div class="list">
+                  <div class="item"><div class="dot" style="background:#F53F3F"></div><div class="body"><div class="t">14:32:18</div><div class="c"><strong style="color:#4080FF">【备案】</strong>中海物业(西安)申请变更法人代表 · 进入街道办审核</div></div></div>
+                  <div class="item"><div class="dot" style="background:#FF7D00"></div><div class="body"><div class="t">14:30:02</div><div class="c"><strong style="color:#FFA940">【投诉】</strong>中海寰宇天下 15 号楼业主投诉电梯故障 · 已派单</div></div></div>
+                  <div class="item"><div class="dot" style="background:#00B42A"></div><div class="body"><div class="t">14:28:45</div><div class="c"><strong style="color:#00B42A">【党建】</strong>万科物业西安党支部完成本月三会一课 · 36 人参加</div></div></div>
+                  <div class="item"><div class="dot" style="background:#165DFF"></div><div class="body"><div class="t">14:25:36</div><div class="c"><strong style="color:#4080FF">【资金】</strong>咸阳市中航花园申请使用维修资金 23.6 万 · 进入区县审核</div></div></div>
+                  <div class="item"><div class="dot" style="background:#534AB7"></div><div class="body"><div class="t">14:22:18</div><div class="c"><strong style="color:#A6B0FF">【投票】</strong>曲江城市花园业委会换届投票开启 · 投票率 38.6%</div></div></div>
+                  <div class="item"><div class="dot" style="background:#F53F3F"></div><div class="body"><div class="t">14:18:12</div><div class="c"><strong style="color:#FF7878">【预警】</strong>汉中锦园物业党支部超期未换届 28 天 · 自动上报</div></div></div>
+                  <div class="item"><div class="dot" style="background:#FF7D00"></div><div class="body"><div class="t">14:15:08</div><div class="c"><strong style="color:#FFA940">【应急】</strong>安康汉滨物业触发应急响应 · 自动匹配策略启动</div></div></div>
+                  <div class="item"><div class="dot" style="background:#00B42A"></div><div class="body"><div class="t">14:12:36</div><div class="c"><strong style="color:#00B42A">【归档】</strong>延安红色物业示范点档案已自动归档(4性检测通过)</div></div></div>
+                  <div class="item"><div class="dot" style="background:#165DFF"></div><div class="body"><div class="t">14:08:25</div><div class="c"><strong style="color:#4080FF">【备案】</strong>保利物业陕西分公司法人变更申请 · 退回补充材料</div></div></div>
+                  <div class="item"><div class="dot" style="background:#534AB7"></div><div class="body"><div class="t">14:05:18</div><div class="c"><strong style="color:#A6B0FF">【业委会】</strong>中海寰宇天下业委会换届选举结果公示 · 7 名委员</div></div></div>
+                  <div class="item"><div class="dot" style="background:#F53F3F"></div><div class="body"><div class="t">14:02:36</div><div class="c"><strong style="color:#FF7878">【安全】</strong>检测到 5 次连续登录失败 · IP 36.45.x.x 已加入临时黑名单</div></div></div>
+                  <div class="item"><div class="dot" style="background:#00B42A"></div><div class="body"><div class="t">13:58:42</div><div class="c"><strong style="color:#00B42A">【归档】</strong>咸阳金茂府级资金归集凭证自动归档(真实性+完整性+可用性+安全性 PASS)</div></div></div>
+                  <div class="item"><div class="dot" style="background:#FF7D00"></div><div class="body"><div class="t">13:55:08</div><div class="c"><strong style="color:#FFA940">【资金】</strong>渭南市 18 个小区维修资金欠缴清单 · 自动催缴</div></div></div>
+                  <div class="item"><div class="dot" style="background:#165DFF"></div><div class="body"><div class="t">13:48:22</div><div class="c"><strong style="color:#4080FF">【检查】</strong>陕西数字住建 v3.2.0 R4 版本已上线 14 天 · 0 严重故障</div></div></div>
+                  <!-- 第二组(循环用) -->
+                  <div class="item"><div class="dot" style="background:#F53F3F"></div><div class="body"><div class="t">14:32:18</div><div class="c"><strong style="color:#4080FF">【备案】</strong>中海物业(西安)申请变更法人代表 · 进入街道办审核</div></div></div>
+                  <div class="item"><div class="dot" style="background:#FF7D00"></div><div class="body"><div class="t">14:30:02</div><div class="c"><strong style="color:#FFA940">【投诉】</strong>中海寰宇天下 15 号楼业主投诉电梯故障 · 已派单</div></div></div>
+                  <div class="item"><div class="dot" style="background:#00B42A"></div><div class="body"><div class="t">14:28:45</div><div class="c"><strong style="color:#00B42A">【党建】</strong>万科物业西安党支部完成本月三会一课 · 36 人参加</div></div></div>
+                  <div class="item"><div class="dot" style="background:#165DFF"></div><div class="body"><div class="t">14:25:36</div><div class="c"><strong style="color:#4080FF">【资金】</strong>咸阳市中航花园申请使用维修资金 23.6 万 · 进入区县审核</div></div></div>
+                  <div class="item"><div class="dot" style="background:#534AB7"></div><div class="body"><div class="t">14:22:18</div><div class="c"><strong style="color:#A6B0FF">【投票】</strong>曲江城市花园业委会换届投票开启 · 投票率 38.6%</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-block mt-16">
+          <div class="ttl">⌐ R4 整改专题:党组织应建覆盖率(实时)</div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:6px">
+            <div style="text-align:center;padding:8px;background:rgba(0,180,42,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">西安市</div><div style="font-size:22px;font-weight:600;color:#00B48A">68%</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(255,125,0,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">咸阳市</div><div style="font-size:22px;font-weight:600;color:#FFA940">62%</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(0,180,42,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">宝鸡市</div><div style="font-size:22px;font-weight:600;color:#00B48A">56%</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(0,180,42,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">渭南市</div><div style="font-size:22px;font-weight:600;color:#00B48A">55%</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(255,125,0,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">延安市</div><div style="font-size:22px;font-weight:600;color:#FFA940">42%</div></div>
+            <div style="text-align:center;padding:8px;background:rgba(245,63,63,.1);border-radius:6px"><div style="font-size:11px;color:#A0CFFF">商洛市</div><div style="font-size:22px;font-weight:600;color:#FF7878">28%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+      <div class="card-title">📌 R4 整改要点说明</div>
+  <div style="font-size:12px;line-height:1.8;color:#4E5969">
+    <p><strong class="text-primary">P0-2 党组织应建覆盖率看板(<a href="../05-党建联建/web_b_general_prototype.html#page-B-8-L" class="cross-link">B-8-L</a>)</strong>:实时统计"应建 / 已建 / 应建未建 / 覆盖率"四大 KPI,支持"物业企业 / 物业区域 / 在管项目"3 维度 Tab 切换,内置"未建原因分类饼图" + "推动记录追踪时间线" + "陕西 10 市热力地图"。可一键下发推动通知至相关物业企业 / 街道主管部门,跨文件跳转 <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="cross-link">A-1-D</a> 关联物业企业档案。</p>
+    <p><strong class="text-primary">P0-5 主数据字典(Z-DICT)</strong>:统一管理 11 类业务字典 — 行政区划(关联 <a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-2-D" class="cross-link">A-2-D 物业区域备案</a>)、物业类型、资质等级、信用评级、业务事项类型、审核状态、归档密级、业委会状态、投诉类型、报修类型、紧急度、问题分类。支持字典树导航 + 版本发布 + 批量导入导出。</p>
+    <p><strong class="text-primary">P1-2 数字证书(Z-CERT)</strong>:UKey 证书绑定、有效期预警(<span class="text-warn">28 天阈值</span>)、吊销、补办、变更、登录范围绑定(IP 段 / 时段)、单点登录。证书状态与 Z-LOG 登录鉴权联动,过期前自动提醒。</p>
+    <p><strong class="text-primary">P1-3 工作流配置(Z-WF)</strong>:可视化建模节点 + 边 + 角色 + 条件,支持并行 / 串行 / 回退 / 超时升级,与 <a href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-7-RV" class="cross-link">A-7-RV 多级审核</a> 等核心流程联动。预置"维修资金使用"等模板,导出 JSON 可在版本管理中回溯。</p>
+    <p><strong class="text-primary">P1-4 短信频次(Z-SMS)</strong>:短信模板 + 触发频次上限(尤其投票提醒 1 次/投票)+ 白名单 / 黑名单 + 夜间勿扰(22-08)+ 超阈值自动合并 / 拒绝策略,避免业主被骚扰。</p>
+    <p><strong class="text-primary">P1-5 省级大屏(Z-DASHBOARD)</strong>:与 <a href="../03-物业监管-监测/web_a3_insight_prototype.html#page-A-3-1" class="cross-link">A-3-1 监测看板</a> 数据同源,深色主题 + 实时事件滚动(8 大类:备案/投诉/党建/资金/投票/预警/应急/归档),含应建覆盖率 10 市专题、归集金额、维修资金异常等关键 KPI。</p>
+    <p><strong class="text-primary">P2-4 密码强度配置(嵌入 Z-PWD)</strong>:密码策略(最小 12 位 + 复杂度四选三 + 90 天有效 + 历史 5 次不重复)+ 二次验证强制 + 异地登录提醒 + 会话超时 30 分钟,与 Z-CERT UKey 共同构成双因素认证体系。</p>
+  </div>
+</div>
+    </section>
+
+    </div>
+    </main>
+</div>
+
+<script>
+
+
+/* R14 侧栏折叠交互 */
+function toggleGrp(el){
+  el.classList.toggle('collapsed');
+  var body = el.nextElementSibling;
+  if(body && body.classList.contains('grp-body')){ body.classList.toggle('grp-hidden'); }
+}
+(function(){
+  function initGrp(){
+    document.querySelectorAll('.grp-body').forEach(function(b){
+      var hasCur = b.querySelector('.cur');
+      if(!hasCur){
+        b.classList.add('grp-hidden');
+        var h = b.previousElementSibling;
+        if(h && h.classList.contains('sider-grp-toggle')) h.classList.add('collapsed');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', initGrp); } else { initGrp(); }
+})();
+/* R12 通用按钮交互反馈 */
+function gbToast(msg){var el=document.getElementById('gbToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},1800);}
+/* ============ 页面元数据:面包屑 / 标题 / 描述 / 操作按钮(11 个 page) ============ */
+const titles = {
+  'Z-LOG':{crumb:'登录策略',title:'登录策略配置 · Z-LOG',desc:'账号锁定 / 会话超时 / 双因素开关 / IP 访问控制 · 登录页已独立为 login.html',
+    actions:`<button class="btn btn-sm">⤓ 策略导出</button><button class="btn btn-sm" onclick="switchPage('Z-AUDIT')">⏱ 登录审计</button><button class="btn btn-primary btn-sm">💾 保存策略</button>`},
+  'Z-PWD':{crumb:'密码安全',title:'密码安全设置 · Z-PWD · P2-4',desc:'修改密码 · 二次验证 · 密码强度策略 · UKey 解绑',actions:''},
+  'Z-NOTI':{crumb:'通知中心',title:'通知中心 · Z-NOTI',desc:'全模块通知聚合 · 待办 / 公告 / 系统消息 / 短信已发',
+    actions:`<button class="btn btn-sm">✓ 全部已读</button><button class="btn btn-sm">⚙ 通知偏好</button>`},
+  'Z-MSG':{crumb:'站内消息',title:'站内消息 · Z-MSG',desc:'用户间点对点消息 · 群组消息 · 已读未读',
+    actions:`<button class="btn btn-sm">✓ 全部已读</button><button class="btn btn-primary btn-sm">✎ 写消息</button>`},
+  'Z-SET':{crumb:'个人设置',title:'个人设置 · Z-SET',desc:'个人信息 · 通知偏好 · 界面偏好 · 安全设置',actions:''},
+  'Z-AUDIT':{crumb:'操作审计',title:'操作审计 · Z-AUDIT',desc:'所有用户操作行为留痕 · 7 年留存 · 不可篡改 · 含水印导出',
+    actions:`<button class="btn btn-sm">⤓ 导出报表(带水印)</button><button class="btn btn-sm">⚙ 审计规则</button>`},
+  'Z-DICT':{crumb:'主数据字典',title:'主数据 / 字典管理 · Z-DICT · P0-5',desc:'11 类字典:行政区划 / 物业类型 / 资质等级 / 信用评级 / 业务事项类型 / 审核状态 / 归档密级 / 业委会状态 / 投诉类型 / 报修类型 / 紧急度 / 问题分类',
+    actions:`<button class="btn btn-sm">⤓ 导出字典</button><button class="btn btn-sm">📥 批量导入</button><button class="btn btn-primary btn-sm">⊕ 新增字典项</button>`},
+  'Z-CERT':{crumb:'数字证书',title:'数字证书 / UKey 管理 · Z-CERT · P1-2',desc:'证书绑定 · 有效期预警 · 吊销 · 补办 · 变更 · 登录范围绑定',
+    actions:`<button class="btn btn-sm">⊕ 证书补办</button><button class="btn btn-sm">⚙ 证书策略</button><button class="btn btn-primary btn-sm">⊕ 绑定新证书</button>`},
+  'Z-WF':{crumb:'工作流配置',title:'工作流节点配置 · Z-WF · P1-3',desc:'审批节点角色 / 条件 / 并行串行 / 回退 / 超时升级可视化建模 · 关联<a href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-7-RV" class="cross-link">A-7-RV 多级审核</a>',
+    actions:`<button class="btn btn-sm">📋 模板库</button><button class="btn btn-sm">⤓ 导出 JSON</button><button class="btn btn-primary btn-sm">⊕ 新建工作流</button>`},
+  'Z-SMS':{crumb:'短信频次',title:'短信频次配置 · Z-SMS · P1-4',desc:'短信模板 · 发送频次上限(尤其投票提醒)· 白名单 · 夜间勿扰',
+    actions:`<button class="btn btn-sm">📊 发送统计</button><button class="btn btn-sm">⤓ 发送记录</button><button class="btn btn-primary btn-sm">⊕ 新增模板</button>`},
+  'Z-DASHBOARD':{crumb:'省级大屏',title:'省级住建委专题大屏 · Z-DASHBOARD · P1-5',desc:'综合指标 + 实时事件流 + 关键 KPI · 与 <a href="../03-物业监管-监测/web_a3_insight_prototype.html#page-A-3-1" class="cross-link">A-3-1 监测看板</a> 数据同源',
+    actions:`<button class="btn btn-sm">⚙ 看板配置</button><button class="btn btn-sm">📺 大屏模式</button><button class="btn btn-sm">⤓ 截图导出</button>`}
+};
+
+/* ====== 页面切换(web_d 统一:page + tabbar + 侧栏 + 面包屑 + hash) ====== */
+function switchPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('cur'));
+  const target=document.getElementById('page-'+id);
+  if(target) target.classList.add('cur');
+  document.querySelectorAll('#tabbar a').forEach(a=>a.classList.toggle('cur',a.dataset.tab===id));
+  document.querySelectorAll('.sider .s-item').forEach(a=>a.classList.toggle('cur',a.getAttribute('href')==='#page-'+id));
+  const t=titles[id]||titles['Z-LOG'];
+  document.getElementById('crumb-3').textContent=t.crumb;
+  document.getElementById('page-title-text').textContent=t.title;
+  document.getElementById('page-desc-text').innerHTML=t.desc;
+  document.getElementById('page-actions-box').innerHTML=t.actions||'';
+  history.replaceState(null,'','#page-'+id);
+  document.querySelector('.page-bd').scrollTop=0;
+  window.scrollTo(0,0);
+}
+
+/* ====== 兼容旧 onclick="go(...)" 调用 ====== */
+function go(id){switchPage(id)}
+
+/* ====== 侧栏折叠 ====== */
+function toggleSider(){
+  document.getElementById('sider').classList.toggle('collapsed');
+}
+
+/* ====== 启动时:从 hash 自动定位 ====== */
+window.addEventListener('DOMContentLoaded',function(){
+  const hash=location.hash.replace('#','').replace('page-','');
+  if(hash && document.getElementById('page-'+hash)){
+    switchPage(hash);
+  }else{
+    switchPage('Z-LOG');
+  }
+});
+
+/* ====== 大屏事件流动画 ====== */
+const esList=document.querySelector('.event-stream .list');
+if(esList){esList.style.animationDuration='40s'}
+
+console.log('R7 web_z 系统管理 · 11 个 page · 默认 Z-LOG · 侧栏 3 分组(基础账号/平台配置/监管支撑)· 自 web_b 拆分独立 · 顶栏 6 项导航');
+</script>
+
+<div class="gb-toast" id="gbToast"></div>
+</body>
+</html>

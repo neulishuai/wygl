@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陕西数字住建 · 物业服务管理子系统 · 档案归档</title>
+<style>
+/* ============ Arco Design 设计规范 CSS 变量(R4 ============) */
+:root{
+  --primary:#165DFF; --primary-hover:#4080FF; --primary-active:#003CB3;
+  --primary-1:#E8F1FF; --primary-2:#BEDAFF; --primary-6:#003CB3;
+  --success:#00B42A; --success-bg:#E8FFEA; --success-border:#ABF2BC;
+  --warning:#FF7D00; --warning-bg:#FFF3E0; --warning-border:#FFD199;
+  --danger:#F53F3F; --danger-bg:#FFECE8; --danger-border:#FDBDB5;
+  --info:#165DFF; --info-bg:#E8F1FF;
+  --text-1:#1D2129; --text-2:#4E5969; --text-3:#86909C; --text-4:#C9CDD4;
+  --border:#E5E6EB; --border-2:#F2F3F5; --fill:#F7F8FA; --fill-2:#F2F3F5;
+  --bg:#FFFFFF; --bg-page:#F7F8FA; --bg-elevated:#FFFFFF;
+  --bg-spotlight:rgba(0,0,0,.45);
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:16px; --fs-lg:20px; --fs-xl:24px; --fs-xxl:32px;
+  --r-sm:4px; --r:8px; --r-lg:12px; --r-xl:16px;
+  --p-xs:8px; --p-sm:12px; --p-md:16px; --p-lg:24px; --p-xl:32px;
+  --sh-sm:0 2px 8px rgba(0,0,0,.06); --sh-md:0 4px 16px rgba(0,0,0,.10); --sh-lg:0 8px 24px rgba(0,0,0,.12);
+  --top-h:56px; --sider-w:208px; --sider-c:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font);font-size:var(--fs-base);color:var(--text-1);background:var(--bg-page);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:var(--fs-sm)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#d4d6d9;border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 顶栏 ============ */
+.topbar{height:var(--top-h);background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);color:#fff;display:flex;align-items:center;padding:0 var(--p-lg);position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.brand{display:flex;align-items:center;gap:10px;font-size:var(--fs-md);font-weight:600;padding-right:18px;border-right:1px solid rgba(255,255,255,.18);margin-right:18px;white-space:nowrap}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#69b1ff,#fff);color:#165DFF;display:flex;align-items:center;justify-content:center;font-weight:700}
+.global-nav{display:flex;gap:4px;flex:1}
+.global-nav a{display:flex;align-items:center;gap:6px;padding:0 16px;height:56px;font-size:14px;color:rgba(255,255,255,.85);font-weight:500;position:relative;transition:color .2s}
+.global-nav a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.global-nav a.cur{color:#fff;font-weight:600}
+.global-nav a.cur::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:28px;height:3px;background:#fff;border-radius:2px}
+.topbar-right{display:flex;align-items:center;gap:14px;color:rgba(255,255,255,.9);font-size:13px}
+.top-search{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);padding:6px 14px;border-radius:18px;font-size:13px;color:rgba(255,255,255,.85)}
+.top-search input{background:transparent;border:none;outline:none;color:#fff;width:200px;font-size:13px}
+.top-search input::placeholder{color:rgba(255,255,255,.6)}
+.top-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;font-size:15px}
+.top-icon:hover{background:rgba(255,255,255,.12)}
+.top-badge{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#E9353A;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #003a8c}
+.top-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#FFB84D,#E9353A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer}
+.top-user{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:8px;cursor:pointer}
+.top-user:hover{background:rgba(255,255,255,.12)}
+
+/* ============ 主体布局 ============ */
+.layout{display:flex;min-height:calc(100vh - var(--top-h))}
+.sider{width:var(--sider-w);min-width:var(--sider-w);background:#FFFFFF;color:#1D2129;border-right:1px solid #E5E6EB;transition:width .25s;display:flex;flex-direction:column}
+.sider.collapsed{width:var(--sider-c);min-width:var(--sider-c)}
+.sider-hd{padding:14px 18px;font-size:12px;color:#86909C;letter-spacing:1px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;gap:8px}
+.sider.collapsed .sider-hd-label{display:none}
+.sider-bd{flex:1;overflow-y:auto;padding:8px 0}
+.sider-grp{padding:10px 18px 4px;font-size:11px;color:#86909C;font-weight:500;letter-spacing:1px}
+.sider.collapsed .sider-grp{display:none}
+.sider a.s-item{display:flex;align-items:center;gap:10px;padding:9px 18px;margin:2px 8px;border-radius:var(--r);font-size:13px;color:#4E5969;cursor:pointer;transition:all .2s;position:relative}
+.sider a.s-item:hover{background:#F2F3F5;color:#165DFF}
+.sider a.s-item.cur{background:#E8F1FF;color:#165DFF;font-weight:600}
+.sider a.s-item.cur::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--primary);border-radius:0 2px 2px 0}
+.sider a.s-item .s-ico{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sider a.s-item .s-tag{margin-left:auto;background:#F2F3F5;color:#4E5969;font-size:10px;padding:1px 6px;border-radius:8px}
+.sider a.s-item.cur .s-tag{background:#165DFF;color:#fff}
+.sider.collapsed .s-label,.sider.collapsed .s-arrow,.sider.collapsed .sider-grp,.sider.collapsed .s-tag{display:none}
+.sider.collapsed a.s-item{justify-content:center;padding:10px 0;margin:2px 6px}
+.sider-ft{padding:10px;border-top:1px solid #F2F3F5;font-size:12px;color:#86909C;display:flex;align-items:center;gap:6px;cursor:pointer}
+.sider-ft:hover{background:#F2F3F5;color:#165DFF}
+.sider.collapsed .sider-ft{justify-content:center;padding:10px 0}
+
+/* ============ 内容区 ============ */
+.main{flex:1;min-width:0;background:var(--bg-page);overflow:hidden}
+.page-hd{background:#fff;padding:18px 24px 0;border-bottom:1px solid var(--border-2)}
+.page-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.page-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:10px}
+.page-title-bar{width:4px;height:20px;background:var(--primary);border-radius:2px}
+.page-desc{font-size:13px;color:var(--text-2);margin-left:14px}
+.page-actions{display:flex;align-items:center;gap:8px}
+.breadcrumb{font-size:13px;color:var(--text-2);display:flex;gap:6px;align-items:center;margin-bottom:10px}
+.breadcrumb span:not(:last-child)::after{content:"/";margin-left:6px;color:var(--text-4)}
+.breadcrumb span:last-child{color:var(--text-1);font-weight:500}
+
+.tabbar{display:flex;gap:0;align-items:center;height:42px}
+.tabbar a{padding:0 18px;height:42px;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);border-bottom:2px solid transparent;font-weight:500;cursor:pointer;transition:all .2s}
+.tabbar a:hover{color:var(--primary)}
+.tabbar a.cur{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.tabbar a .tab-tag{background:var(--primary-1);color:var(--primary);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:600}
+
+.page-bd{padding:18px 24px;overflow-y:auto}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:var(--r-lg);padding:18px 20px;border:1px solid var(--border-2);position:relative;overflow:hidden}
+.kpi-label{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px}
+.kpi-val{font-size:30px;font-weight:600;color:var(--text-1);margin-top:8px;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.kpi-val .unit{font-size:14px;color:var(--text-2);margin-left:4px;font-weight:400}
+.kpi-trend{margin-top:6px;font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:4px}
+.kpi-trend.up{color:var(--success)}
+.kpi-trend.down{color:var(--danger)}
+.kpi-icon{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* ============ 卡片 ============ */
+.card{background:#fff;border-radius:var(--r-lg);border:1px solid var(--border-2);margin-bottom:14px;box-shadow:var(--sh-sm);overflow:hidden}
+.card-hd{padding:14px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-title-bar{width:3px;height:14px;background:var(--primary);border-radius:2px}
+.card-title-extra{font-size:12px;color:var(--text-3);font-weight:400;margin-left:8px}
+.card-extra{display:flex;align-items:center;gap:8px}
+.card-bd{padding:18px 20px}
+.card-bd.pt{padding:0}
+
+/* ============ 按钮 ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:32px;padding:0 16px;font-size:13px;border-radius:var(--r);border:1px solid var(--border);background:#fff;color:var(--text-1);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;font-weight:500}
+.btn:hover{color:var(--primary);border-color:var(--primary)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);color:#fff}
+.btn-success{background:var(--success);border-color:var(--success);color:#fff}
+.btn-success:hover{background:#23c343;border-color:#23c343;color:#fff}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);border-color:var(--warning);color:#fff}
+.btn-link{border-color:transparent;background:transparent;color:var(--primary);padding:0 4px;height:32px}
+.btn-link:hover{background:var(--primary-1);border-color:transparent}
+.btn-text{border-color:transparent;background:transparent;color:var(--primary);padding:0 8px;height:32px}
+.btn-text:hover{background:var(--primary-1);border-color:transparent}
+.btn-sm{height:26px;padding:0 10px;font-size:12px}
+.btn-lg{height:40px;padding:0 22px;font-size:14px}
+.btn-icon{width:32px;padding:0}
+
+/* ============ 表单 ============ */
+.form-label{display:block;font-size:13px;color:var(--text-1);margin-bottom:6px;font-weight:500}
+.form-label.req::after{content:" *";color:var(--danger)}
+.form-row{margin-bottom:14px}
+.input,.sel,.ta{width:100%;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:var(--r);background:#fff;font-size:13px;color:var(--text-1);transition:all .2s}
+.input:hover,.sel:hover,.ta:hover{border-color:var(--primary-2)}
+.input:focus,.sel:focus,.ta:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-1)}
+.ta{height:auto;padding:8px 12px;min-height:64px;resize:vertical;font-family:inherit;line-height:1.5}
+.sel{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M1 1l4 4 4-4' stroke='%23999' fill='none' stroke-width='1.5'/></svg>");background-repeat:no-repeat;background-position:right 10px center;padding-right:24px}
+.input-affix{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--r);background:#fff;transition:all .2s}
+.input-affix:hover,.input-affix:focus-within{border-color:var(--primary)}
+.input-affix:focus-within{box-shadow:0 0 0 3px var(--primary-1)}
+.input-affix input{flex:1;height:30px;padding:0 12px;border:none;outline:none;background:transparent;font-size:13px}
+.input-affix .ipx{padding:0 10px;color:var(--text-3);font-size:12px}
+.form-grid{display:grid;gap:14px 18px}
+.form-grid.col-2{grid-template-columns:repeat(2,1fr)}
+.form-grid.col-3{grid-template-columns:repeat(3,1fr)}
+.form-grid.col-4{grid-template-columns:repeat(4,1fr)}
+
+/* ============ 表格 ============ */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl thead th{background:#FAFBFC;padding:12px 14px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-2);white-space:nowrap}
+.tbl tbody td{padding:13px 14px;border-bottom:1px solid var(--border-2);font-size:13px;vertical-align:middle}
+.tbl tbody tr:hover{background:#FAFBFC;cursor:pointer}
+.tbl tbody tr.sel{background:var(--primary-1)}
+.tbl tbody tr:last-child td{border-bottom:none}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.muted{color:var(--text-3)}
+.danger{color:var(--danger)}
+.success{color:var(--success)}
+.warning{color:var(--warning)}
+.primary{color:var(--primary)}
+.center{text-align:center}
+
+/* ============ 标签 ============ */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;font-size:12px;border-radius:var(--r-sm);border:1px solid;line-height:18px;background:#fff;font-weight:500}
+.tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag-blue{color:var(--primary);border-color:var(--primary-2);background:var(--primary-1)}
+.tag-blue::before{background:var(--primary)}
+.tag-green{color:var(--success);border-color:var(--success-border);background:var(--success-bg)}
+.tag-green::before{background:var(--success)}
+.tag-orange{color:var(--warning);border-color:var(--warning-border);background:var(--warning-bg)}
+.tag-orange::before{background:var(--warning)}
+.tag-red{color:var(--danger);border-color:var(--danger-border);background:var(--danger-bg)}
+.tag-red::before{background:var(--danger)}
+.tag-gray{color:var(--text-2);border-color:var(--border);background:var(--fill-2)}
+.tag-gray::before{background:var(--text-3)}
+.tag-purple{color:#722ED1;border-color:#D3ADF7;background:#F9F0FF}
+.tag-purple::before{background:#722ED1}
+.tag-cyan{color:#0FC6C2;border-color:#5CDBD3;background:#E6FFFB}
+.tag-cyan::before{background:#0FC6C2}
+.tag-sm{padding:0 6px;font-size:11px;line-height:16px}
+
+/* ============ 页面切换 ============ */
+.page{display:none}
+.page.cur{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ 时间线 ============ */
+.timeline{position:relative;padding-left:24px}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--border-2)}
+.tl-item{position:relative;padding-bottom:18px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-22px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.tl-dot.green{border-color:var(--success)}
+.tl-dot.red{border-color:var(--danger)}
+.tl-dot.gray{border-color:var(--text-4)}
+.tl-dot.orange{border-color:var(--warning)}
+.tl-head{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.tl-time{font-size:12px;color:var(--text-3);margin-left:auto}
+.tl-body{font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.6}
+
+/* ============ 步骤条 ============ */
+.steps{display:flex;align-items:center;gap:0;padding:6px 0}
+.step{flex:1;display:flex;align-items:center;gap:10px;position:relative}
+.step:not(:last-child)::after{content:"";flex:1;height:2px;background:var(--border-2);margin:0 8px}
+.step.done:not(:last-child)::after{background:var(--success)}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--border-2);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.step.done .step-num{background:var(--success);color:#fff}
+.step.cur .step-num{background:var(--primary);color:#fff;box-shadow:0 0 0 4px var(--primary-1)}
+.step.fail .step-num{background:var(--danger);color:#fff}
+.step-lbl{font-size:13px;color:var(--text-2)}
+.step.done .step-lbl{color:var(--success);font-weight:500}
+.step.cur .step-lbl{color:var(--primary);font-weight:600}
+
+/* ============ Tab 内嵌 ============ */
+.inner-tabs{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border-2);padding:0 20px}
+.inner-tabs a{padding:12px 16px;font-size:13px;color:var(--text-2);border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;font-weight:500}
+.inner-tabs a:hover{color:var(--primary)}
+.inner-tabs a.cur{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.inner-pane{display:none;padding:18px 20px}
+.inner-pane.cur{display:block}
+
+/* ============ 进度条 ============ */
+.bar{height:6px;background:var(--fill-2);border-radius:3px;overflow:hidden;position:relative}
+.bar-fill{height:100%;background:var(--primary);border-radius:3px;transition:width .5s}
+.bar-fill.green{background:var(--success)}
+.bar-fill.red{background:var(--danger)}
+.bar-fill.orange{background:var(--warning)}
+.bar-text{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--text-2)}
+
+/* ============ 弹窗 ============ */
+.modal-mask{position:fixed;inset:0;background:var(--bg-spotlight);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-mask.show{display:flex;animation:fadeIn .2s}
+.modal{background:#fff;border-radius:var(--r-xl);width:560px;max-width:92vw;max-height:90vh;overflow:hidden;box-shadow:var(--sh-lg);display:flex;flex-direction:column}
+.modal-hd{padding:16px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between;font-weight:600}
+.modal-close{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:18px}
+.modal-close:hover{background:var(--fill-2);color:var(--text-1)}
+.modal-bd{padding:18px 20px;overflow-y:auto;flex:1}
+.modal-ft{padding:12px 20px;border-top:1px solid var(--border-2);display:flex;justify-content:flex-end;gap:8px}
+
+/* ============ 抽屉 ============ */
+.drawer-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:150}
+.drawer-mask.show{display:block;animation:fadeIn .2s}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:520px;max-width:96vw;background:#fff;box-shadow:var(--sh-lg);transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;z-index:160}
+.drawer.show{transform:translateX(0)}
+.drawer-hd{padding:16px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:15px}
+.drawer-bd{padding:18px 20px;flex:1;overflow-y:auto}
+.drawer-ft{padding:12px 20px;border-top:1px solid var(--border-2);display:flex;justify-content:flex-end;gap:8px}
+
+/* ============ 拖拽上传 ============ */
+.dropzone{border:2px dashed var(--border);border-radius:var(--r-lg);padding:32px 20px;text-align:center;background:var(--fill);cursor:pointer;transition:all .2s}
+.dropzone:hover{border-color:var(--primary);background:var(--primary-1)}
+.dropzone.drag{border-color:var(--primary);background:var(--primary-1);transform:scale(1.01)}
+.dz-icon{width:54px;height:54px;border-radius:14px;background:var(--primary-1);color:var(--primary);display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px}
+.dz-title{font-size:15px;font-weight:600;color:var(--text-1);margin-bottom:4px}
+.dz-tip{font-size:12px;color:var(--text-3)}
+.dz-link{color:var(--primary);font-weight:500;cursor:pointer}
+
+/* ============ 检测维度卡 ============ */
+.dim-card{border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;background:#fff;transition:all .25s;position:relative}
+.dim-card.pass{border-color:var(--success-border);background:linear-gradient(180deg,var(--success-bg),#fff 60%)}
+.dim-card.fail{border-color:var(--danger-border);background:linear-gradient(180deg,var(--danger-bg),#fff 60%)}
+.dim-card.pending{border-color:var(--border);background:linear-gradient(180deg,var(--fill),#fff 60%)}
+.dim-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.dim-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.dim-ico.pass{background:var(--success-bg);color:var(--success)}
+.dim-ico.fail{background:var(--danger-bg);color:var(--danger)}
+.dim-ico.pending{background:var(--fill-2);color:var(--text-3)}
+.dim-name{font-size:15px;font-weight:600}
+.dim-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.dim-status{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:var(--r-sm);font-weight:600;display:flex;align-items:center;gap:4px}
+.dim-status.pass{background:var(--success);color:#fff}
+.dim-status.fail{background:var(--danger);color:#fff}
+.dim-status.pending{background:var(--warning);color:#fff}
+.dim-row{display:flex;justify-content:space-between;font-size:12px;padding:6px 0;border-bottom:1px dashed var(--border-2)}
+.dim-row:last-child{border-bottom:none}
+.dim-row .dk{color:var(--text-2)}
+.dim-row .dv{font-family:var(--mono);color:var(--text-1);font-weight:500}
+.dim-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border-2);font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+
+/* ============ 综合结论 ============ */
+.verdict{background:linear-gradient(135deg,var(--success-bg) 0%,#fff 100%);border:1px solid var(--success-border);border-radius:var(--r-lg);padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.verdict.fail{background:linear-gradient(135deg,var(--danger-bg) 0%,#fff 100%);border-color:var(--danger-border)}
+.verdict-ico{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:var(--success);color:#fff;flex-shrink:0}
+.verdict.fail .verdict-ico{background:var(--danger)}
+.verdict-main{flex:1}
+.verdict-title{font-size:18px;font-weight:600;color:var(--success)}
+.verdict.fail .verdict-title{color:var(--danger)}
+.verdict-desc{font-size:13px;color:var(--text-2);margin-top:4px}
+.verdict-meta{font-size:12px;color:var(--text-3);margin-top:4px}
+
+/* ============ 报告预览 ============ */
+.report-preview{background:#fff;border:1px solid var(--border);border-radius:var(--r);height:300px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.report-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:38px;color:rgba(165,170,255,.25);font-weight:600;transform:rotate(-30deg);pointer-events:none;letter-spacing:8px;user-select:none}
+.report-body{padding:24px;text-align:center;font-size:13px;color:var(--text-2)}
+.report-body .rb-title{font-size:18px;font-weight:600;color:var(--text-1);margin-bottom:8px}
+.report-body .rb-meta{font-size:12px;color:var(--text-3);margin-bottom:14px}
+
+/* ============ 杂项 ============ */
+.flex{display:flex}
+.flex-1{flex:1}
+.gap-4{gap:4px}.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}.gap-16{gap:16px}
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+.aic{align-items:center}.jcb{justify-content:space-between}.jce{justify-content:center}.jef{justify-content:flex-end}
+.text-c{text-align:center}.text-r{text-align:right}
+.fs-xs{font-size:12px}.fs-sm{font-size:13px}.fs-md{font-size:15px}.fs-lg{font-size:18px}.fs-xl{font-size:22px}
+.fw-5{font-weight:500}.fw-6{font-weight:600}
+.mono{font-family:var(--mono)}
+.divider{height:1px;background:var(--border-2);margin:14px 0}
+.divider-v{width:1px;height:14px;background:var(--border-2);margin:0 8px;display:inline-block}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#165DFF,#69b1ff);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.avatar.gr{background:linear-gradient(135deg,#00B42A,#23c343)}
+.avatar.rd{background:linear-gradient(135deg,#F53F3F,#FB6B6B)}
+.avatar.pu{background:linear-gradient(135deg,#722ED1,#B36BFF)}
+.avatar.or{background:linear-gradient(135deg,#FF7D00,#FFB84D)}
+
+.radio,.check{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;margin-right:16px}
+.radio input,.check input{accent-color:var(--primary)}
+.switch{position:relative;display:inline-block;width:34px;height:18px;background:var(--border);border-radius:10px;cursor:pointer;transition:.2s}
+.switch::after{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.2s}
+.switch.on{background:var(--primary)}
+.switch.on::after{left:18px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--r-sm);font-size:11px;font-weight:500}
+.chip-outline{background:#fff;border:1px solid var(--border);color:var(--text-2)}
+.chip-primary{background:var(--primary-1);color:var(--primary);border:1px solid var(--primary-2)}
+
+.empty{padding:36px 20px;text-align:center;color:var(--text-3);font-size:13px}
+.empty .e-ico{font-size:36px;color:var(--text-4);margin-bottom:8px;display:block}
+
+/* R12 通用按钮交互反馈 */
+.gb-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(29,33,41,.92);color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.gb-toast.show{opacity:1}
+
+/* R14 侧栏折叠交互 */
+.sider-grp.sider-grp-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.sider-grp.sider-grp-toggle:hover{color:#165DFF}
+.grp-arrow{font-size:10px;transition:transform .2s;display:inline-block}
+.sider-grp-toggle.collapsed .grp-arrow{transform:rotate(-90deg)}
+.grp-body{overflow:hidden;max-height:3000px;transition:max-height .25s ease}
+.grp-body.grp-hidden{max-height:0}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶栏 ============ -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">陕</div>
+    <span>陕西数字住建</span>
+  </div>
+  <nav class="global-nav">
+    <a href="../00-主页/web_main.html">⌂ 主页</a>
+    <a href="../01-物业监管-备案/web_a1_filing_prototype.html">▤ 物业监管</a>
+    <a href="../05-党建联建/web_b_general_prototype.html">⌬ 社区物业党建联建</a>
+    <a href="../06-业主决策/web_c_decision_prototype.html">⌧ 业主决策</a>
+    <a class="cur" href="../07-档案归档/web_d_archive_prototype.html">▤ 档案归档</a>
+    <a href="../09-系统管理/web_z_system_prototype.html">⚙ 系统管理</a>
+  </nav>
+  <div class="topbar-right">
+    <div class="top-search">⌕ <input placeholder="搜索档案号 / 业务 / 归档人…"></div>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-PWD" class="top-icon" title="设置">⚙</a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-NOTI" class="top-icon" title="通知">⌭<span class="top-badge">12</span></a>
+    <a href="../09-系统管理/web_z_system_prototype.html#page-Z-MSG" class="top-icon" title="消息">✉<span class="top-badge">5</span></a>
+    <div class="top-user">
+      <div class="top-avatar">陈</div>
+      <span>陈默</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 布局 ============ -->
+<div class="layout">
+
+  <!-- 左侧导航 -->
+  <aside class="sider" id="sider">
+    <div class="sider-hd">▤ <span class="sider-hd-label">档案归档子系统</span></div>
+    <div class="sider-bd">
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>D-1 档案管理</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item cur" href="#page-D-1-L" onclick="switchPage('D-1-L');return false;">
+        <span class="s-ico">▤</span><span class="s-label">档案列表</span>
+      </a>
+      <a class="s-item" href="#page-D-1-F" onclick="switchPage('D-1-F');return false;">
+        <span class="s-ico">⊕</span><span class="s-label">上传 / 参数配置</span>
+      </a>
+      <a class="s-item" href="#page-D-1-EX" onclick="switchPage('D-1-EX');return false;">
+        <span class="s-ico">⤓</span><span class="s-label">列表导出 / 归档报告</span>
+      </a>
+      </div>
+      <div class="sider-grp sider-grp-toggle" onclick="toggleGrp(this)"><span>D-2 四性检测</span><span class="grp-arrow">▾</span></div>
+      <div class="grp-body">
+      <a class="s-item" href="#page-D-2-T" onclick="switchPage('D-2-T');return false;">
+        <span class="s-ico">⏰</span><span class="s-label">检测任务管理</span>
+      </a>
+      <a class="s-item" href="#page-D-2-R" onclick="switchPage('D-2-R');return false;">
+        <span class="s-ico">⊟</span><span class="s-label">检测结果详情</span>
+        <span class="s-tag">详</span>
+      </a>
+      <a class="s-item" href="#page-D-2-D" onclick="switchPage('D-2-D');return false;">
+        <span class="s-ico">⚠</span><span class="s-label">异常处置</span>
+        <span class="s-tag">3</span>
+      </a>
+      </div>
+      </div>
+    <div class="sider-ft" onclick="toggleSider()">⇆ <span class="sider-hd-label">收起菜单</span></div>
+  </aside>
+
+  <!-- 主内容区 -->
+  <main class="main">
+
+    <!-- ============ 页面头 ============ -->
+    <div class="page-hd">
+      <div class="page-hd-row">
+        <div>
+          <div class="breadcrumb">
+            <span>首页</span>
+            <span>档案归档</span>
+            <span id="crumb-3">档案归档管理</span>
+          </div>
+          <div class="page-title">
+            <span class="page-title-bar"></span>
+            <span id="page-title-text">档案归档管理</span>
+            <span class="page-desc" id="page-desc-text">覆盖业务办理即归档的 6 个核心页面 · 真实档案 · 四性检测 · 异常处置</span>
+          </div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-sm" onclick="location.hash='#page-Z-NOTI';location.pathname='web_b_general_prototype.html'">✉ 站内消息</button>
+          <button class="btn btn-sm" onclick="location.href='web_b_general_prototype.html#page-Z-AUDIT'">⏱ 操作审计</button>
+          <button class="btn btn-primary btn-sm" onclick="switchPage('D-1-F')">⊕ 新建归档</button>
+        </div>
+      </div>
+
+      <!-- Tab 切换 -->
+      <nav class="tabbar" id="tabbar">
+        <a href="#page-D-1-L" data-tab="D-1-L" class="cur" onclick="switchPage('D-1-L');return false;">📁 档案列表</a>
+        <a href="#page-D-1-F" data-tab="D-1-F" onclick="switchPage('D-1-F');return false;">⊕ 上传/参数配置</a>
+        <a href="#page-D-1-EX" data-tab="D-1-EX" onclick="switchPage('D-1-EX');return false;">⤓ 列表导出/归档报告</a>
+        <a href="#page-D-2-T" data-tab="D-2-T" onclick="switchPage('D-2-T');return false;">⏰ 检测任务管理</a>
+        <a href="#page-D-2-R" data-tab="D-2-R" onclick="switchPage('D-2-R');return false;">⊟ 检测结果详情 <span class="tab-tag">详</span></a>
+        <a href="#page-D-2-D" data-tab="D-2-D" onclick="switchPage('D-2-D');return false;">⚠ 异常处置 <span class="tab-tag">3</span></a>
+      </nav>
+    </div>
+
+    <!-- ============ 页面内容 ============ -->
+    <div class="page-bd">
+
+      <!-- ========== D-1-L 档案列表 ========== -->
+      <section class="page cur" id="page-D-1-L">
+        <!-- KPI -->
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">📁 档案总数</div>
+            <div class="kpi-val">12,486<span class="unit">件</span></div>
+            <div class="kpi-trend up">↑ 较上月 +128</div>
+            <div class="kpi-icon" style="background:var(--primary-1);color:var(--primary)">📁</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">✓ 已通过检测</div>
+            <div class="kpi-val" style="color:var(--success)">11,902<span class="unit">件</span></div>
+            <div class="kpi-trend">通过率 95.32%</div>
+            <div class="kpi-icon" style="background:var(--success-bg);color:var(--success)">✓</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⚠ 待处置异常</div>
+            <div class="kpi-val" style="color:var(--danger)">3<span class="unit">件</span></div>
+            <div class="kpi-trend down">较上周 +1</div>
+            <div class="kpi-icon" style="background:var(--danger-bg);color:var(--danger)">⚠</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⏰ 本月新增</div>
+            <div class="kpi-val">428<span class="unit">件</span></div>
+            <div class="kpi-trend up">↑ 较上月 +12%</div>
+            <div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning)">⏰</div>
+          </div>
+        </div>
+
+        <!-- 卡片:档案列表 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>档案归档清单
+              <span class="card-title-extra">共 12,486 件 · 本页 10 条</span>
+            </div>
+            <div class="card-extra">
+              <button class="btn btn-sm" onclick="openDrawer('dlg-filter')">⌕ 高级过滤</button>
+              <button class="btn btn-sm" onclick="switchPage('D-1-F')">⊕ 批量归档</button>
+              <button class="btn btn-sm" onclick="switchPage('D-1-EX')">⤓ 导出</button>
+            </div>
+          </div>
+
+          <!-- 过滤栏 -->
+          <div style="padding:14px 20px;border-bottom:1px solid var(--border-2);background:#FAFBFC">
+            <div class="form-grid col-4">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">档案号</label>
+                <input class="input" placeholder="如 FJ-2026-001">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">来源业务</label>
+                <select class="sel">
+                  <option>全部</option>
+                  <option>物业企业备案</option>
+                  <option>业委会换届备案</option>
+                  <option>维修资金使用申请</option>
+                  <option>物业服务合同</option>
+                  <option>物业承接查验</option>
+                  <option>物业投诉处置</option>
+                  <option>业主投票决议</option>
+                  <option>党组织联建</option>
+                  <option>应急物业登记</option>
+                  <option>退出备案申请</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">归档人</label>
+                <input class="input" placeholder="如 张明">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">密级</label>
+                <select class="sel">
+                  <option>全部</option>
+                  <option>公开</option>
+                  <option>内部</option>
+                  <option>秘密</option>
+                  <option>机密</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">归档时间</label>
+                <div class="flex aic gap-6">
+                  <input class="input" placeholder="开始日期" style="flex:1">
+                  <span class="muted">至</span>
+                  <input class="input" placeholder="结束日期" style="flex:1">
+                </div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">保管期限</label>
+                <select class="sel">
+                  <option>全部</option>
+                  <option>10 年</option>
+                  <option>30 年</option>
+                  <option>永久</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">四性状态</label>
+                <select class="sel">
+                  <option>全部</option>
+                  <option>PASSED 已通过</option>
+                  <option>FAILED 未通过</option>
+                  <option>CHECKING 检测中</option>
+                  <option>PENDING 待检测</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0;display:flex;align-items:flex-end">
+                <button onclick="gbToast('查询完成,结果已刷新');" class="btn btn-primary" style="flex:1">⌕ 检索</button>
+                <button onclick="gbToast('筛选条件已重置');" class="btn" style="flex:1;margin-left:6px">↻ 重置</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 内嵌 Tab(列表 / 归档历史) -->
+          <div class="inner-tabs">
+            <a class="cur" onclick="switchInnerTab('list-tab',this)">📋 档案列表</a>
+            <a onclick="switchInnerTab('history-tab',this)">⏱ 归档历史 (P2-3) <span class="tab-tag">时间线</span></a>
+            <a onclick="switchInnerTab('stat-tab',this)">▦ 归档统计</a>
+          </div>
+
+          <!-- 内嵌 Tab:列表 -->
+          <div class="inner-pane cur" id="list-tab">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:36px"><input type="checkbox"></th>
+                  <th>档案号</th>
+                  <th>档案名称</th>
+                  <th>来源业务</th>
+                  <th>归档人</th>
+                  <th>归档时间</th>
+                  <th class="center">保管期限</th>
+                  <th class="center">密级</th>
+                  <th class="center">四性状态</th>
+                  <th>大小</th>
+                  <th class="center" style="width:160px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-001</span></td>
+                  <td>陕西嘉信物业管理有限公司·初始备案</td>
+                  <td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" onclick="event.stopPropagation()" class="primary">物业企业备案 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar">张</div>张明</div></td>
+                  <td class="muted">2026-10-15 14:32</td>
+                  <td class="center"><span class="tag tag-purple">永久</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">4.2 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();alert('预览')">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-002</span></td>
+                  <td>阳光花园小区·业委会换届备案</td>
+                  <td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-4-D" onclick="event.stopPropagation()" class="primary">业委会换届备案 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar gr">李</div>李娜</div></td>
+                  <td class="muted">2026-10-15 10:21</td>
+                  <td class="center"><span class="tag tag-cyan">30 年</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">2.8 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-003</span></td>
+                  <td>翠园小区·屋面防水维修资金使用申请</td>
+                  <td><a href="../02-物业监管-资金/web_a2_fund_prototype.html#page-A-7-FA" onclick="event.stopPropagation()" class="primary">维修资金使用 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar rd">王</div>王刚</div></td>
+                  <td class="muted">2026-10-14 16:48</td>
+                  <td class="center"><span class="tag tag-purple">永久</span></td>
+                  <td class="center"><span class="tag tag-red">秘密</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">8.6 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-004</span></td>
+                  <td>西安锦园小区·物业服务合同(2026)</td>
+                  <td><span class="muted">物业服务合同</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar pu">陈</div>陈雪</div></td>
+                  <td class="muted">2026-10-14 09:15</td>
+                  <td class="center"><span class="tag tag-blue">10 年</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">1.2 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr class="sel" onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" checked onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-005</span></td>
+                  <td>曲江·紫汀苑小区承接查验报告</td>
+                  <td><span class="muted">物业承接查验</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar or">赵</div>赵磊</div></td>
+                  <td class="muted">2026-10-13 11:30</td>
+                  <td class="center"><span class="tag tag-purple">永久</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-red">✕ FAILED</span></td>
+                  <td class="mono">12.4 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-D')">⚠ 处置</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-006</span></td>
+                  <td>御景湾小区·业主投诉处置报告</td>
+                  <td><a href="../06-业主决策/web_c_decision_prototype.html#page-C-1-L" onclick="event.stopPropagation()" class="primary">物业投诉处置 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar">刘</div>刘洋</div></td>
+                  <td class="muted">2026-10-12 15:42</td>
+                  <td class="center"><span class="tag tag-blue">10 年</span></td>
+                  <td class="center"><span class="tag tag-gray">公开</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">3.6 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-007</span></td>
+                  <td>阳光花园·业主大会投票决议</td>
+                  <td><a href="../06-业主决策/web_c_decision_prototype.html#page-C-5-L" onclick="event.stopPropagation()" class="primary">业主投票决议 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar gr">周</div>周婷</div></td>
+                  <td class="muted">2026-10-11 14:08</td>
+                  <td class="center"><span class="tag tag-cyan">30 年</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">5.8 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-008</span></td>
+                  <td>锦园物业党支部·联建协议</td>
+                  <td><a href="../05-党建联建/web_b_general_prototype.html#page-B-1-L" onclick="event.stopPropagation()" class="primary">党组织联建 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar pu">杨</div>杨帆</div></td>
+                  <td class="muted">2026-10-10 10:55</td>
+                  <td class="center"><span class="tag tag-purple">永久</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-orange">◐ CHECKING</span></td>
+                  <td class="mono">2.4 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测中</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-009</span></td>
+                  <td>长安区·应急物业服务登记(紫汀苑)</td>
+                  <td><span class="muted">应急物业登记</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar or">黄</div>黄琪</div></td>
+                  <td class="muted">2026-10-09 13:27</td>
+                  <td class="center"><span class="tag tag-blue">10 年</span></td>
+                  <td class="center"><span class="tag tag-orange">内部</span></td>
+                  <td class="center"><span class="tag tag-green">✓ PASSED</span></td>
+                  <td class="mono">3.2 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation()">⌕ 预览</button>
+                  </td>
+                </tr>
+                <tr onclick="switchPage('D-2-R')">
+                  <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+                  <td><span class="mono fw-6 primary">FJ-2026-010</span></td>
+                  <td>原嘉信物业·退出备案申请</td>
+                  <td><a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-EX" onclick="event.stopPropagation()" class="primary">退出备案 →</a></td>
+                  <td><div class="flex aic gap-6"><div class="avatar rd">孙</div>孙浩</div></td>
+                  <td class="muted">2026-10-08 16:03</td>
+                  <td class="center"><span class="tag tag-purple">永久</span></td>
+                  <td class="center"><span class="tag tag-red">秘密</span></td>
+                  <td class="center"><span class="tag tag-red">✕ FAILED</span></td>
+                  <td class="mono">6.8 MB</td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-D')">⚠ 处置</button>
+                    <button class="btn btn-text btn-sm" onclick="event.stopPropagation();switchPage('D-2-R')">⊟ 检测</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- 分页 -->
+            <div class="flex aic jcb" style="padding:14px 20px;border-top:1px solid var(--border-2);background:#FAFBFC">
+              <div class="fs-xs muted">共 12,486 条 · 当前 1-10</div>
+              <div class="flex aic gap-6">
+                <button onclick="gbToast('翻页操作');" class="btn btn-sm btn-icon">‹</button>
+                <button onclick="gbToast('已跳转至第 1 页');" class="btn btn-sm btn-primary" style="min-width:28px">1</button>
+                <button onclick="gbToast('已跳转至第 2 页');" class="btn btn-sm btn-icon" style="min-width:28px">2</button>
+                <button onclick="gbToast('已跳转至第 3 页');" class="btn btn-sm btn-icon" style="min-width:28px">3</button>
+                <button onclick="gbToast('翻页操作');" class="btn btn-sm btn-icon" style="min-width:28px">…</button>
+                <button onclick="gbToast('已跳转至第 1249 页');" class="btn btn-sm btn-icon" style="min-width:28px">1249</button>
+                <button onclick="gbToast('翻页操作');" class="btn btn-sm btn-icon">›</button>
+                <select class="sel" style="width:auto;height:28px">
+                  <option>10 条/页</option><option>20 条/页</option><option>50 条/页</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 内嵌 Tab:归档历史(P2-3) -->
+          <div class="inner-pane" id="history-tab">
+            <div class="flex aic jcb mb-12">
+              <div class="fw-6 fs-md">归档 / 解归档 / 版本变化时间线 <span class="tag tag-blue tag-sm" style="margin-left:6px">P2-3 内嵌</span></div>
+              <div class="flex gap-6">
+                <select class="sel" style="width:auto">
+                  <option>全部操作</option>
+                  <option>归档</option><option>解归档</option><option>版本变化</option><option>密级调整</option>
+                </select>
+                <select class="sel" style="width:auto">
+                  <option>近 30 天</option><option>近 7 天</option><option>近 90 天</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  ✓ 自动归档成功
+                  <span class="tl-time">2026-10-15 14:32:08</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-001</strong> 陕西嘉信物业管理有限公司·初始备案 ·
+                  触发源:<a href="../01-物业监管-备案/web_a1_filing_prototype.html#page-A-1-D" class="primary">物业企业备案审批通过</a> ·
+                  归档人:张明 · 保管期限:<span class="tag tag-purple tag-sm">永久</span> · 密级:<span class="tag tag-orange tag-sm">内部</span>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  ✓ 四性检测通过
+                  <span class="tl-time">2026-10-15 14:33:21</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-001</strong> 真实性 PASS · 完整性 PASS · 可用性 PASS · 安全性 PASS ·
+                  综合结论:<span class="tag tag-green tag-sm">✓ PASSED</span> ·
+                  <a href="#page-D-2-R" onclick="switchPage('D-2-R');return false;" class="primary">查看检测报告 →</a>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-head">
+                  ⎘ 版本变化(v1.0 → v1.1)
+                  <span class="tl-time">2026-10-14 18:12:50</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-003</strong> 翠园小区屋面防水维修资金申请 · 补充附件:专家评审意见 ·
+                  操作人:陈雪 · 变更原因:补充材料 · Hash 新值:<span class="mono fs-xs">a7f3e9b2c4d1...</span>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot red"></div>
+                <div class="tl-head">
+                  ✕ 四性检测未通过
+                  <span class="tl-time">2026-10-13 11:48:33</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-005</strong> 曲江·紫汀苑小区承接查验报告 · 完整性 FAIL(分块 Hash 不一致,8/24 块变化)
+                  · <a href="#page-D-2-D" onclick="switchPage('D-2-D');return false;" class="danger">已生成 1 项异常处置任务 →</a>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot gray"></div>
+                <div class="tl-head">
+                  ⊖ 解归档(管理员操作)
+                  <span class="tl-time">2026-10-12 09:21:18</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-002</strong> 阳光花园业委会换届备案 · 原因:补充候选人身份证件 ·
+                  操作人:李娜(主管授权) · 重新归档时间:2026-10-12 10:08:55
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot green"></div>
+                <div class="tl-head">
+                  ✓ 重新归档成功
+                  <span class="tl-time">2026-10-12 10:08:55</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-002</strong> v1.1 · 新增附件 2 份 · Hash 已更新 ·
+                  <a href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT" class="primary">审计日志已记录 →</a>
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot orange"></div>
+                <div class="tl-head">
+                  ⚠ 密级调整:内部 → 秘密
+                  <span class="tl-time">2026-10-11 16:35:42</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-010</strong> 原嘉信物业退出备案 · 密级提升原因:涉及企业清算资产 ·
+                  操作人:孙浩 · 双人复核:陈雪 · 已发短信通知归档人
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-head">
+                  ✓ 自动归档成功
+                  <span class="tl-time">2026-10-11 14:08:11</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-007</strong> 阳光花园业主大会投票决议 · 触发源:<a href="../06-业主决策/web_c_decision_prototype.html#page-C-5-QR" class="primary">业主投票结果确认</a> ·
+                  归档人:周婷
+                </div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot"></div>
+                <div class="tl-head">
+                  ◐ 检测任务已启动
+                  <span class="tl-time">2026-10-10 10:14:23</span>
+                </div>
+                <div class="tl-body">
+                  <strong>FJ-2026-008</strong> 锦园物业党支部联建协议 · 四性检测进行中 · 预计完成时间 5 分钟内 ·
+                  <a href="#page-D-2-T" onclick="switchPage('D-2-T');return false;" class="primary">查看任务进度 →</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex aic jce mt-16">
+              <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn">⤓ 导出时间线</button>
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn">⌕ 高级过滤</button>
+            </div>
+          </div>
+
+          <!-- 内嵌 Tab:归档统计 -->
+          <div class="inner-pane" id="stat-tab">
+            <!-- 字典小卡 -->
+            <div class="form-grid col-4 mb-12">
+              <div style="background:#FAFBFC;border:1px solid var(--border-2);border-radius:var(--r);padding:12px">
+                <div class="fs-xs muted mb-8">📚 密级字典 <a href="../09-系统管理/web_z_system_prototype.html#page-Z-DICT" class="primary">维护 →</a></div>
+                <div class="flex flex-col gap-6 fs-xs">
+                  <div class="flex aic jcb"><span class="tag tag-gray">公开</span><span class="muted">202 件</span></div>
+                  <div class="flex aic jcb"><span class="tag tag-orange">内部</span><span class="muted">168 件</span></div>
+                  <div class="flex aic jcb"><span class="tag tag-red">秘密</span><span class="muted">48 件</span></div>
+                  <div class="flex aic jcb"><span class="tag tag-red">机密</span><span class="muted">10 件</span></div>
+                </div>
+              </div>
+              <div style="background:#FAFBFC;border:1px solid var(--border-2);border-radius:var(--r);padding:12px">
+                <div class="fs-xs muted mb-8">📚 保管期限字典 <a href="../09-系统管理/web_z_system_prototype.html#page-Z-DICT" class="primary">维护 →</a></div>
+                <div class="flex flex-col gap-6 fs-xs">
+                  <div class="flex aic jcb"><span class="tag tag-blue">10 年</span><span class="muted">262 件</span></div>
+                  <div class="flex aic jcb"><span class="tag tag-cyan">30 年</span><span class="muted">78 件</span></div>
+                  <div class="flex aic jcb"><span class="tag tag-purple">永久</span><span class="muted">88 件</span></div>
+                </div>
+              </div>
+              <div style="background:#FAFBFC;border:1px solid var(--border-2);border-radius:var(--r);padding:12px">
+                <div class="fs-xs muted mb-8">📚 分类标识(Top 3)</div>
+                <div class="flex flex-col gap-6 fs-xs">
+                  <div>物业监管 / 物业企业 / 资质备案</div>
+                  <div>物业监管 / 业委会 / 换届备案</div>
+                  <div>物业监管 / 维修资金 / 使用申请</div>
+                </div>
+              </div>
+              <div style="background:#FAFBFC;border:1px solid var(--border-2);border-radius:var(--r);padding:12px">
+                <div class="fs-xs muted mb-8">📚 归档触发源</div>
+                <div class="flex flex-col gap-6 fs-xs">
+                  <div class="flex aic jcb"><span>自动归档</span><span class="success fw-6">86.4%</span></div>
+                  <div class="flex aic jcb"><span>手工归档</span><span class="muted">13.6%</span></div>
+                  <div class="flex aic jcb"><span>批量归档</span><span class="muted">0.2%</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-grid col-3" style="margin-bottom:14px">
+              <div class="kpi">
+                <div class="kpi-label">▦ 归档总量(本月)</div>
+                <div class="kpi-val">428<span class="unit">件</span></div>
+                <div class="kpi-trend up">↑ 12%</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">⤓ 自动归档占比</div>
+                <div class="kpi-val">86.4<span class="unit">%</span></div>
+                <div class="kpi-trend">370 件</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">⚠ 异常处置</div>
+                <div class="kpi-val" style="color:var(--danger)">12<span class="unit">件</span></div>
+                <div class="kpi-trend down">↓ 4 件 vs 上月</div>
+              </div>
+            </div>
+            <div class="form-grid col-2">
+              <div>
+                <div class="fs-sm muted mb-8">▦ 按来源业务分布(Top 6)</div>
+                <div style="background:#fff;border:1px solid var(--border-2);border-radius:var(--r);padding:14px">
+                  <div class="bar-text"><span>物业企业备案</span><span class="fw-6">128</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:92%"></div></div>
+                  <div class="bar-text mt-8"><span>维修资金使用</span><span class="fw-6">98</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:70%"></div></div>
+                  <div class="bar-text mt-8"><span>业委会换届备案</span><span class="fw-6">68</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:48%"></div></div>
+                  <div class="bar-text mt-8"><span>物业承接查验</span><span class="fw-6">54</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:38%"></div></div>
+                  <div class="bar-text mt-8"><span>业主投票决议</span><span class="fw-6">42</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:30%"></div></div>
+                  <div class="bar-text mt-8"><span>应急物业登记</span><span class="fw-6">38</span></div>
+                  <div class="bar"><div class="bar-fill" style="width:27%"></div></div>
+                </div>
+              </div>
+              <div>
+                <div class="fs-sm muted mb-8">▦ 按密级分布</div>
+                <div style="background:#fff;border:1px solid var(--border-2);border-radius:var(--r);padding:14px">
+                  <div class="flex aic jcb" style="padding:6px 0;border-bottom:1px dashed var(--border-2)">
+                    <div class="flex aic gap-8"><span class="tag tag-gray">公开</span><span class="muted fs-xs">202 件</span></div>
+                    <span class="fw-6">47.2%</span>
+                  </div>
+                  <div class="flex aic jcb" style="padding:6px 0;border-bottom:1px dashed var(--border-2)">
+                    <div class="flex aic gap-8"><span class="tag tag-orange">内部</span><span class="muted fs-xs">168 件</span></div>
+                    <span class="fw-6">39.3%</span>
+                  </div>
+                  <div class="flex aic jcb" style="padding:6px 0;border-bottom:1px dashed var(--border-2)">
+                    <div class="flex aic gap-8"><span class="tag tag-red">秘密</span><span class="muted fs-xs">48 件</span></div>
+                    <span class="fw-6">11.2%</span>
+                  </div>
+                  <div class="flex aic jcb" style="padding:6px 0">
+                    <div class="flex aic gap-8"><span class="tag tag-red">机密</span><span class="muted fs-xs">10 件</span></div>
+                    <span class="fw-6">2.3%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========== D-1-F 上传 / 参数配置 ========== -->
+      <section class="page" id="page-D-1-F">
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title"><span class="card-title-bar"></span>① 上传档案</div>
+            <div class="card-extra"><span class="muted fs-xs">支持 PDF / DOC / DOCX / XLS / XLSX / JPG / PNG,单个 ≤ 200MB</span></div>
+          </div>
+          <div class="card-bd">
+            <div class="dropzone" id="dropzone">
+              <div class="dz-icon">⊕</div>
+              <div class="dz-title">将文件拖拽到此处,或 <span class="dz-link">点击选择文件</span></div>
+              <div class="dz-tip">支持 PDF · DOC/DOCX · XLS/XLSX · JPG/PNG,单文件 ≤ 200MB,可批量上传</div>
+            </div>
+
+            <!-- 已上传文件队列 -->
+            <div class="mt-16" style="border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+              <div style="padding:10px 14px;background:#FAFBFC;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+                <span class="fw-6 fs-sm">📎 已选择文件 <span class="muted">(3 个)</span></span>
+                <span class="fs-xs muted">总大小 14.2 MB</span>
+              </div>
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th style="width:40px">#</th>
+                    <th>文件名</th>
+                    <th>类型</th>
+                    <th>大小</th>
+                    <th>页数</th>
+                    <th>状态</th>
+                    <th class="center">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td><span class="mono">陕西嘉信物业·初始备案_v1.0.pdf</span></td>
+                    <td><span class="tag tag-red tag-sm">PDF</span></td>
+                    <td class="mono">4.2 MB</td>
+                    <td class="mono">28</td>
+                    <td><span class="tag tag-green tag-sm">✓ 已识别</span></td>
+                    <td class="center"><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text btn-sm">⌕</button><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text btn-sm">⊖</button></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td><span class="mono">营业执照副本.pdf</span></td>
+                    <td><span class="tag tag-red tag-sm">PDF</span></td>
+                    <td class="mono">1.8 MB</td>
+                    <td class="mono">1</td>
+                    <td><span class="tag tag-green tag-sm">✓ 已识别</span></td>
+                    <td class="center"><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text btn-sm">⌕</button><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text btn-sm">⊖</button></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td><span class="mono">资质证书(二级).jpg</span></td>
+                    <td><span class="tag tag-blue tag-sm">JPG</span></td>
+                    <td class="mono">8.2 MB</td>
+                    <td class="mono">2</td>
+                    <td><span class="tag tag-orange tag-sm">◐ OCR 进行中</span></td>
+                    <td class="center"><button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text btn-sm">⌕</button><button onclick="gbToast('已删除(演示环境,数据未变更)');" class="btn btn-text btn-sm">⊖</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 31 字段元数据自动提取 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>② 元数据自动提取(31 字段)
+              <span class="card-title-extra">已识别 28 字段 · 待确认 3 字段</span>
+            </div>
+            <div class="card-extra">
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⌕ 字段模板</button>
+              <button onclick="gbToast('进入编辑模式');" class="btn btn-sm">⎘ 编辑</button>
+            </div>
+          </div>
+          <div class="card-bd">
+            <!-- 第一组:基础信息 -->
+            <div class="fw-6 mb-8" style="color:var(--primary)">▦ 基础信息(8 字段)</div>
+            <div class="form-grid col-4">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">档案号</label>
+                <input class="input mono" value="FJ-2026-011" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label req">档案名称</label>
+                <input class="input" value="陕西嘉信物业管理有限公司·资质升级备案">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label req">来源业务</label>
+                <select class="sel">
+                  <option>物业企业备案</option>
+                  <option>业委会换届备案</option>
+                  <option>维修资金使用申请</option>
+                  <option>物业服务合同</option>
+                  <option>物业承接查验</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">业务编号</label>
+                <input class="input mono" value="BA-2026-A1001">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label req">归档人</label>
+                <input class="input" value="陈默" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">归档部门</label>
+                <input class="input" value="陕西省住建厅·物业监管处">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">归档时间</label>
+                <input class="input" value="2026-10-16 09:30" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">档案来源</label>
+                <select class="sel"><option>业务办理即归档</option><option>手工上传</option></select>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="fw-6 mb-8" style="color:var(--primary)">▦ 业务关联(8 字段)</div>
+            <div class="form-grid col-4">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">关联企业名称</label>
+                <input class="input" value="陕西嘉信物业管理有限公司">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">统一社会信用代码</label>
+                <input class="input mono" value="91610000MA7****XX4T">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">物业区域</label>
+                <select class="sel"><option>西安市·雁塔区·曲江街道</option></select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">在管项目数</label>
+                <input class="input mono num" value="6">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">关联审批</label>
+                <input class="input mono" value="A-2026-0042">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">关联工作流</label>
+                <input class="input mono" value="WF-FILING-2026-0042">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">责任人</label>
+                <input class="input" value="张明 / 138****0001">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">涉及金额(元)</label>
+                <input class="input mono num" value="0">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="fw-6 mb-8" style="color:var(--primary)">▦ 文件技术信息(7 字段)</div>
+            <div class="form-grid col-4">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">文件格式</label>
+                <input class="input" value="PDF 1.7" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">页数</label>
+                <input class="input mono num" value="31" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">文件大小</label>
+                <input class="input mono" value="14.2 MB" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">SHA-256</label>
+                <input class="input mono fs-xs" value="a7f3e9b2c4d1..." readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">SM3 Hash</label>
+                <input class="input mono fs-xs" value="5b8e2f7c..." readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">电子签章</label>
+                <input class="input" value="✓ 已加盖 SM2" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">数字证书</label>
+                <input class="input mono fs-xs" value="CN=陕西省住建厅..." readonly style="background:#FAFBFC">
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="fw-6 mb-8" style="color:var(--primary)">▦ OCR 文本摘要(8 字段)</div>
+            <div class="form-grid col-2">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">标题</label>
+                <input class="input" value="陕西省物业管理服务资质(二级)申请书" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">关键词</label>
+                <input class="input" value="物业服务,资质升级,二级,陕西嘉信" readonly style="background:#FAFBFC">
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">摘要(自动生成)</label>
+                <textarea class="ta" readonly style="background:#FAFBFC;min-height:64px">本档案为陕西嘉信物业管理有限公司就二级物业服务资质升级向陕西省住建厅提交的申请文件,包含企业基本信息(注册资本 500 万、员工 156 人、在管项目 6 个)、资质等级证明材料、人员花名册、管理制度列表等附件...</textarea>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">OCR 置信度</label>
+                <div class="bar-text"><span class="success">98.6%</span><span class="muted fs-xs">28/28 字段</span></div>
+                <div class="bar"><div class="bar-fill green" style="width:98.6%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 归档参数配置 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title"><span class="card-title-bar"></span>③ 归档参数配置</div>
+            <div class="card-extra">
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⌕ 引用模板</button>
+              <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-sm">⤓ 保存模板</button>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="form-grid col-3">
+              <div class="form-row" style="margin:0">
+                <label class="form-label req">保管期限</label>
+                <div class="flex gap-12 mt-8">
+                  <label class="radio"><input type="radio" name="period"><span class="tag tag-blue">10 年</span></label>
+                  <label class="radio"><input type="radio" name="period"><span class="tag tag-cyan">30 年</span></label>
+                  <label class="radio"><input type="radio" name="period" checked><span class="tag tag-purple">永久</span></label>
+                  <label class="radio"><input type="radio" name="period"><span class="muted">自定义</span></label>
+                </div>
+                <div class="fs-xs muted mt-8">字典:<a href="../09-系统管理/web_z_system_prototype.html#page-Z-DICT" class="primary">维护 →</a></div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label req">密级</label>
+                <div class="flex gap-12 mt-8">
+                  <label class="radio"><input type="radio" name="sec"><span class="tag tag-gray">公开</span></label>
+                  <label class="radio"><input type="radio" name="sec" checked><span class="tag tag-orange">内部</span></label>
+                  <label class="radio"><input type="radio" name="sec"><span class="tag tag-red">秘密</span></label>
+                </div>
+                <div class="fs-xs muted mt-8">字典:<a href="../09-系统管理/web_z_system_prototype.html#page-Z-DICT" class="primary">维护 →</a></div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">3 级分类标识</label>
+                <select class="sel">
+                  <option>物业监管 / 物业企业 / 资质备案</option>
+                  <option>物业监管 / 业委会 / 换届备案</option>
+                  <option>物业监管 / 维修资金 / 使用申请</option>
+                  <option>物业监管 / 投诉处置 / 业主投诉</option>
+                  <option>物业监管 / 业主决策 / 投票决议</option>
+                  <option>通用 / 党建联建 / 党组织协议</option>
+                  <option>通用 / 应急管理 / 应急物业登记</option>
+                  <option>通用 / 退出备案 / 物业退出</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="form-grid col-2">
+              <div class="form-row" style="margin:0">
+                <label class="form-label">归档方式</label>
+                <div class="flex gap-12 mt-8">
+                  <label class="radio"><input type="radio" name="way" checked>自动归档(事件触发)</label>
+                  <label class="radio"><input type="radio" name="way">手工归档</label>
+                </div>
+                <div class="fs-xs muted mt-8">自动归档触发后,本档案将随业务办理即归档。<a href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT" class="primary">查看审计日志 →</a></div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">检测策略</label>
+                <div class="flex gap-12 mt-8">
+                  <label class="radio"><input type="checkbox" checked>真实性</label>
+                  <label class="radio"><input type="checkbox" checked>完整性</label>
+                  <label class="radio"><input type="checkbox" checked>可用性</label>
+                  <label class="radio"><input type="checkbox" checked>安全性</label>
+                </div>
+                <div class="fs-xs muted mt-8">采用 SM2 签名 / 分块 Hash / 格式兼容 / AES+SM4 加密</div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">访问控制</label>
+                <select class="sel"><option>仅归档部门可读</option><option>主管部门可读</option><option>公开</option></select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">到期提醒</label>
+                <div class="flex aic gap-10">
+                  <span class="switch on"></span>
+                  <span class="fs-sm">到期前 30 天短信提醒归档人</span>
+                </div>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">备注</label>
+                <textarea class="ta" placeholder="可填写归档说明..."></textarea>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="form-label">附件标签</label>
+                <div class="flex gap-6" style="flex-wrap:wrap">
+                  <span class="chip chip-primary">物业企业</span>
+                  <span class="chip chip-primary">资质升级</span>
+                  <span class="chip chip-primary">2026</span>
+                  <span class="chip chip-primary">西安</span>
+                  <button onclick="gbToast('打开新增表单');" class="btn btn-text btn-sm">⊕ 新增标签</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="flex aic jce gap-8">
+              <button onclick="gbToast('已取消,未做任何变更');" class="btn">取消</button>
+              <button onclick="gbToast('筛选条件已重置');" class="btn">⌫ 清空</button>
+              <button onclick="gbToast('保存成功');" class="btn">💾 暂存草稿</button>
+              <button onclick="gbToast('提交成功,已进入下一环节');" class="btn btn-primary btn-lg">✓ 提交归档</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== D-1-EX 列表导出 / 归档报告 ========== -->
+      <section class="page" id="page-D-1-EX">
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">📋 本周归档报告</div>
+            <div class="kpi-val">7<span class="unit">份</span></div>
+            <div class="kpi-trend">含 4 份周报 + 1 月报 + 1 季报 + 1 专项</div>
+            <div class="kpi-icon" style="background:var(--primary-1);color:var(--primary)">📋</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⤓ 本月导出次数</div>
+            <div class="kpi-val">186<span class="unit">次</span></div>
+            <div class="kpi-trend up">↑ 12% vs 上月</div>
+            <div class="kpi-icon" style="background:var(--success-bg);color:var(--success)">⤓</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⌫ 水印导出</div>
+            <div class="kpi-val">100<span class="unit">%</span></div>
+            <div class="kpi-trend">所有导出均带水印</div>
+            <div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning)">⌫</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⏱ 审计可追溯</div>
+            <div class="kpi-val">186<span class="unit">条</span></div>
+            <div class="kpi-trend">操作日志全留存</div>
+            <div class="kpi-icon" style="background:var(--info-bg);color:var(--primary)">⏱</div>
+          </div>
+        </div>
+
+        <!-- 7 份报告 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>归档报告(7 份)
+              <span class="card-title-extra">周报 4 + 月报 1 + 季报 1 + 专项 1</span>
+            </div>
+            <div class="card-extra">
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⌕ 报告模板</button>
+              <button onclick="switchPage('D-1-F');" class="btn btn-sm">⊕ 新建报告</button>
+              <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-primary btn-sm">⤓ 批量导出</button>
+            </div>
+          </div>
+          <div class="card-bd pt">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>报告名称</th>
+                  <th>类型</th>
+                  <th>覆盖周期</th>
+                  <th class="num">归档量</th>
+                  <th class="num">异常量</th>
+                  <th>编制人</th>
+                  <th>生成时间</th>
+                  <th>状态</th>
+                  <th class="center" style="width:200px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><strong>2026 年第 42 周·归档情况周报</strong></td>
+                  <td><span class="tag tag-blue">周报</span></td>
+                  <td class="muted">2026-10-12 ~ 2026-10-18</td>
+                  <td class="mono num">128</td>
+                  <td class="mono num danger">3</td>
+                  <td><div class="flex aic gap-6"><div class="avatar">张</div>张明</div></td>
+                  <td class="muted">2026-10-18 18:00</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ Excel</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>2026 年第 41 周·归档情况周报</td>
+                  <td><span class="tag tag-blue">周报</span></td>
+                  <td class="muted">2026-10-05 ~ 2026-10-11</td>
+                  <td class="mono num">142</td>
+                  <td class="mono num">1</td>
+                  <td><div class="flex aic gap-6"><div class="avatar gr">李</div>李娜</div></td>
+                  <td class="muted">2026-10-11 18:00</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ Excel</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>2026 年第 40 周·归档情况周报</td>
+                  <td><span class="tag tag-blue">周报</span></td>
+                  <td class="muted">2026-09-28 ~ 2026-10-04</td>
+                  <td class="mono num">136</td>
+                  <td class="mono num">2</td>
+                  <td><div class="flex aic gap-6"><div class="avatar pu">陈</div>陈雪</div></td>
+                  <td class="muted">2026-10-04 18:00</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>2026 年第 39 周·归档情况周报</td>
+                  <td><span class="tag tag-blue">周报</span></td>
+                  <td class="muted">2026-09-21 ~ 2026-09-27</td>
+                  <td class="mono num">158</td>
+                  <td class="mono num">0</td>
+                  <td><div class="flex aic gap-6"><div class="avatar or">赵</div>赵磊</div></td>
+                  <td class="muted">2026-09-27 18:00</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>2026 年 10 月·归档情况月报</td>
+                  <td><span class="tag tag-cyan">月报</span></td>
+                  <td class="muted">2026-10-01 ~ 2026-10-31</td>
+                  <td class="mono num">428</td>
+                  <td class="mono num danger">12</td>
+                  <td><div class="flex aic gap-6"><div class="avatar">张</div>张明</div></td>
+                  <td class="muted">2026-11-01 02:00 <span class="muted fs-xs">(定时)</span></td>
+                  <td><span class="tag tag-orange tag-sm">⏰ 排队中</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('打开配置面板');" class="btn btn-text btn-sm">⚙ 配置</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td>2026 年 Q3·归档情况季报</td>
+                  <td><span class="tag tag-purple">季报</span></td>
+                  <td class="muted">2026-07-01 ~ 2026-09-30</td>
+                  <td class="mono num">1,386</td>
+                  <td class="mono num danger">28</td>
+                  <td><div class="flex aic gap-6"><div class="avatar rd">王</div>王刚</div></td>
+                  <td class="muted">2026-10-05 09:30</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ Excel</button>
+                  </td>
+                </tr>
+                <tr class="sel">
+                  <td>7</td>
+                  <td><strong>2026-Q3·物业承接查验档案专项报告</strong></td>
+                  <td><span class="tag tag-orange">专项</span></td>
+                  <td class="muted">2026-07-01 ~ 2026-09-30</td>
+                  <td class="mono num">42</td>
+                  <td class="mono num danger">5</td>
+                  <td><div class="flex aic gap-6"><div class="avatar or">赵</div>赵磊</div></td>
+                  <td class="muted">2026-10-15 11:00</td>
+                  <td><span class="tag tag-green tag-sm">✓ 已生成</span></td>
+                  <td class="center">
+                    <button onclick="gbToast('打开详情视图');" class="btn btn-text btn-sm">⌕ 预览</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ PDF</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ Excel</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 报告预览 + 操作日志 -->
+        <div class="form-grid" style="grid-template-columns:1.4fr 1fr;gap:14px">
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>报告预览 <span class="card-title-extra">2026-Q3·物业承接查验档案专项报告</span></div>
+              <div class="card-extra">
+                <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⊟ 全屏</button>
+                <button onclick="switchPage('D-1-F');" class="btn btn-sm">⎘ 编辑</button>
+                <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-primary btn-sm">⤓ PDF 导出</button>
+              </div>
+            </div>
+            <div class="card-bd">
+              <div class="report-preview">
+                <div class="report-watermark">陕西数字住建 · 档案归档 · 内部</div>
+                <div class="report-body">
+                  <div class="rb-title">2026-Q3·物业承接查验档案专项报告</div>
+                  <div class="rb-meta">
+                    报告编号:SP-FJ-2026-Q3-001 · 编制人:赵磊 · 编制时间:2026-10-15 11:00 ·
+                    密级:<span class="tag tag-orange tag-sm">内部</span>
+                  </div>
+                  <div style="display:flex;justify-content:center;gap:14px;margin-top:14px">
+                    <div class="kpi" style="min-width:120px;text-align:center">
+                      <div class="kpi-label">覆盖档案</div>
+                      <div class="kpi-val" style="font-size:22px">42<span class="unit">件</span></div>
+                    </div>
+                    <div class="kpi" style="min-width:120px;text-align:center">
+                      <div class="kpi-label">通过检测</div>
+                      <div class="kpi-val success" style="font-size:22px">37<span class="unit">件</span></div>
+                    </div>
+                    <div class="kpi" style="min-width:120px;text-align:center">
+                      <div class="kpi-label">未通过</div>
+                      <div class="kpi-val danger" style="font-size:22px">5<span class="unit">件</span></div>
+                    </div>
+                  </div>
+                  <div class="fs-xs muted mt-12">本报告基于 2026 年 7-9 月归档的物业承接查验档案编制,含 5 项异常处置建议</div>
+                </div>
+              </div>
+              <div class="flex aic jcb mt-12">
+                <div class="fs-xs muted">ⓘ 报告导出将自动加盖水印 + 计入操作审计</div>
+                <div class="flex gap-8">
+                  <button onclick="gbToast('正在准备打印…');" class="btn btn-sm">🖨 打印</button>
+                  <button onclick="gbToast('提交成功,已进入下一环节');" class="btn btn-sm">📧 邮件发送</button>
+                  <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⏱ 定时下发</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>导出 / 操作日志</div>
+              <div class="card-extra"><a href="../09-系统管理/web_z_system_prototype.html#page-Z-AUDIT" class="primary fs-xs">查看全部 →</a></div>
+            </div>
+            <div class="card-bd">
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⤓ 导出 PDF · 专项报告<span class="tl-time">10-16 09:30</span></div>
+                  <div class="tl-body">操作人:陈默 · 1.6 MB · 已加水印 ✓</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">⤓ 导出 Excel · Q3 季报<span class="tl-time">10-12 14:18</span></div>
+                  <div class="tl-body">操作人:王刚 · 286 KB</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">⤓ 导出 PDF · 第 41 周周报<span class="tl-time">10-11 18:02</span></div>
+                  <div class="tl-body">操作人:李娜 · 480 KB</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">⊕ 新建专项报告<span class="tl-time">10-10 11:30</span></div>
+                  <div class="tl-body">操作人:赵磊 · 模板:物业承接查验专项</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot gray"></div>
+                  <div class="tl-head">⌕ 预览报告模板<span class="tl-time">10-09 16:45</span></div>
+                  <div class="tl-body">操作人:陈雪</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⤓ 导出 PDF · 第 40 周周报<span class="tl-time">10-04 18:01</span></div>
+                  <div class="tl-body">操作人:陈雪 · 510 KB</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⤓ 导出 Excel · 9 月月报<span class="tl-time">10-01 02:05</span></div>
+                  <div class="tl-body">操作人:定时任务</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== D-2-T 检测任务管理 ========== -->
+      <section class="page" id="page-D-2-T">
+<div style="background:#E8F1FF;border-radius:8px;padding:10px 14px;font-size:12px;color:#165DFF;margin:10px 0">ℹ R9 补:检测任务支持按计划周期自动触发或手动触发;参数(真实性算法/完整性规则/可用性兼容/安全性加密)可按档案类型灵活配置。</div>
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">⏰ 今日待检测</div>
+            <div class="kpi-val">5<span class="unit">个</span></div>
+            <div class="kpi-trend">含 1 个手动启动</div>
+            <div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning)">⏰</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">✓ 已通过</div>
+            <div class="kpi-val success">2<span class="unit">个</span></div>
+            <div class="kpi-trend">40%</div>
+            <div class="kpi-icon" style="background:var(--success-bg);color:var(--success)">✓</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">✕ 未通过</div>
+            <div class="kpi-val danger">1<span class="unit">个</span></div>
+            <div class="kpi-trend">20%</div>
+            <div class="kpi-icon" style="background:var(--danger-bg);color:var(--danger)">✕</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⏳ 检测中</div>
+            <div class="kpi-val" style="color:var(--primary)">1<span class="unit">个</span></div>
+            <div class="kpi-trend">20%</div>
+            <div class="kpi-icon" style="background:var(--primary-1);color:var(--primary)">⏳</div>
+          </div>
+        </div>
+
+        <!-- 任务列表 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>检测任务列表 <span class="card-title-extra">5 条 · 实时刷新</span>
+            </div>
+            <div class="card-extra">
+              <select class="sel" style="width:auto">
+                <option>全部状态</option>
+                <option>检测中</option><option>已通过</option><option>未通过</option><option>待检测</option>
+              </select>
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">↻ 刷新</button>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-start')">▶ 启动手动检测</button>
+            </div>
+          </div>
+          <div class="card-bd pt">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>任务 ID</th>
+                  <th>档案号 / 名称</th>
+                  <th>触发方式</th>
+                  <th>启动时间</th>
+                  <th style="width:180px">进度</th>
+                  <th class="center">4 维度</th>
+                  <th class="center">结果</th>
+                  <th class="center" style="width:140px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><span class="mono fw-6">DT-202610-005</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-008</span> 锦园物业党支部联建</div>
+                    <div class="fs-xs muted">党组织联建协议 · 2.4 MB</div>
+                  </td>
+                  <td><span class="chip chip-primary">自动触发</span></td>
+                  <td class="muted">10-16 09:18:23</td>
+                  <td>
+                    <div class="bar"><div class="bar-fill" style="width:75%"></div></div>
+                    <div class="fs-xs muted mt-8">75% · 已用 2 分 18 秒</div>
+                  </td>
+                  <td class="center">
+                    <span class="tag tag-green tag-sm">真✓</span>
+                    <span class="tag tag-green tag-sm">完✓</span>
+                    <span class="tag tag-orange tag-sm">用⋯</span>
+                    <span class="tag tag-green tag-sm">安✓</span>
+                  </td>
+                  <td class="center"><span class="tag tag-orange tag-sm">⏳ CHECKING</span></td>
+                  <td class="center">
+                    <button onclick="switchPage('D-2-D');" class="btn btn-text btn-sm">⌕ 详情</button>
+                    <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text btn-sm danger">⏸ 暂停</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><span class="mono fw-6">DT-202610-004</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-005</span> 曲江·紫汀苑承接查验</div>
+                    <div class="fs-xs muted">物业承接查验 · 12.4 MB</div>
+                  </td>
+                  <td><span class="chip chip-outline">手动启动</span></td>
+                  <td class="muted">10-13 11:32:08</td>
+                  <td>
+                    <div class="bar"><div class="bar-fill red" style="width:100%"></div></div>
+                    <div class="fs-xs muted mt-8">100% · 用时 4 分 51 秒</div>
+                  </td>
+                  <td class="center">
+                    <span class="tag tag-green tag-sm">真✓</span>
+                    <span class="tag tag-red tag-sm">完✕</span>
+                    <span class="tag tag-green tag-sm">用✓</span>
+                    <span class="tag tag-green tag-sm">安✓</span>
+                  </td>
+                  <td class="center"><span class="tag tag-red tag-sm">✕ FAILED</span></td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 报告</button>
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-D')">⚠ 处置</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><span class="mono fw-6">DT-202610-003</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-010</span> 原嘉信物业退出备案</div>
+                    <div class="fs-xs muted">退出备案申请 · 6.8 MB</div>
+                  </td>
+                  <td><span class="chip chip-outline">手动启动</span></td>
+                  <td class="muted">10-08 16:08:55</td>
+                  <td>
+                    <div class="bar"><div class="bar-fill red" style="width:100%"></div></div>
+                    <div class="fs-xs muted mt-8">100% · 用时 6 分 12 秒</div>
+                  </td>
+                  <td class="center">
+                    <span class="tag tag-red tag-sm">真✕</span>
+                    <span class="tag tag-green tag-sm">完✓</span>
+                    <span class="tag tag-green tag-sm">用✓</span>
+                    <span class="tag tag-green tag-sm">安✓</span>
+                  </td>
+                  <td class="center"><span class="tag tag-red tag-sm">✕ FAILED</span></td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 报告</button>
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-D')">⚠ 处置</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><span class="mono fw-6">DT-202610-002</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-007</span> 阳光花园业主投票决议</div>
+                    <div class="fs-xs muted">业主投票决议 · 5.8 MB</div>
+                  </td>
+                  <td><span class="chip chip-primary">自动触发</span></td>
+                  <td class="muted">10-11 14:09:18</td>
+                  <td>
+                    <div class="bar"><div class="bar-fill green" style="width:100%"></div></div>
+                    <div class="fs-xs muted mt-8">100% · 用时 3 分 42 秒</div>
+                  </td>
+                  <td class="center">
+                    <span class="tag tag-green tag-sm">真✓</span>
+                    <span class="tag tag-green tag-sm">完✓</span>
+                    <span class="tag tag-green tag-sm">用✓</span>
+                    <span class="tag tag-green tag-sm">安✓</span>
+                  </td>
+                  <td class="center"><span class="tag tag-green tag-sm">✓ PASSED</span></td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 报告</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ 导出</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><span class="mono fw-6">DT-202610-001</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-001</span> 嘉信物业初始备案</div>
+                    <div class="fs-xs muted">物业企业备案 · 4.2 MB</div>
+                  </td>
+                  <td><span class="chip chip-primary">自动触发</span></td>
+                  <td class="muted">10-15 14:33:01</td>
+                  <td>
+                    <div class="bar"><div class="bar-fill green" style="width:100%"></div></div>
+                    <div class="fs-xs muted mt-8">100% · 用时 2 分 56 秒</div>
+                  </td>
+                  <td class="center">
+                    <span class="tag tag-green tag-sm">真✓</span>
+                    <span class="tag tag-green tag-sm">完✓</span>
+                    <span class="tag tag-green tag-sm">用✓</span>
+                    <span class="tag tag-green tag-sm">安✓</span>
+                  </td>
+                  <td class="center"><span class="tag tag-green tag-sm">✓ PASSED</span></td>
+                  <td class="center">
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 报告</button>
+                    <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-text btn-sm">⤓ 导出</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4 维度检测参数配置 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>四性检测参数配置
+              <span class="card-title-extra">真实性 · 完整性 · 可用性 · 安全性</span>
+            </div>
+            <div class="card-extra">
+              <a href="../09-系统管理/web_z_system_prototype.html#page-Z-WF" class="primary fs-xs">→ 工作流节点配置</a>
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⌕ 引用模板</button>
+              <button onclick="gbToast('保存成功');" class="btn btn-primary btn-sm">💾 保存配置</button>
+            </div>
+          </div>
+          <div class="card-bd">
+            <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px">
+
+              <!-- 真实性 -->
+              <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:16px">
+                <div class="flex aic gap-10 mb-12">
+                  <div style="width:36px;height:36px;border-radius:8px;background:var(--primary-1);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px">✓</div>
+                  <div>
+                    <div class="fw-6">真实性 Authenticity</div>
+                    <div class="fs-xs muted">验证电子签章、数字签名、CA 证书</div>
+                  </div>
+                  <span class="switch on" style="margin-left:auto"></span>
+                </div>
+                <div class="form-grid col-2">
+                  <div>
+                    <label class="form-label fs-xs">签名算法</label>
+                    <select class="sel"><option>SM2 (国密)</option><option>RSA-2048</option><option>ECDSA</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">证书链校验</label>
+                    <select class="sel"><option>启用</option><option>禁用</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">证书有效期校验</label>
+                    <select class="sel"><option>严格模式</option><option>宽松</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">Hash 算法</label>
+                    <select class="sel"><option>SM3</option><option>SHA-256</option></select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 完整性 -->
+              <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:16px">
+                <div class="flex aic gap-10 mb-12">
+                  <div style="width:36px;height:36px;border-radius:8px;background:var(--info-bg);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:16px">▦</div>
+                  <div>
+                    <div class="fw-6">完整性 Integrity</div>
+                    <div class="fs-xs muted">分块 Hash 比对(原存档 vs 当前)</div>
+                  </div>
+                  <span class="switch on" style="margin-left:auto"></span>
+                </div>
+                <div class="form-grid col-2">
+                  <div>
+                    <label class="form-label fs-xs">分块大小</label>
+                    <select class="sel"><option>64 KB</option><option>128 KB</option><option>256 KB</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">Hash 算法</label>
+                    <select class="sel"><option>SHA-256</option><option>SM3</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">比对容差</label>
+                    <select class="sel"><option>0 (严格)</option><option>1 块</option><option>5 块</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">超期检测</label>
+                    <select class="sel"><option>每月一次</option><option>每季一次</option></select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 可用性 -->
+              <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:16px">
+                <div class="flex aic gap-10 mb-12">
+                  <div style="width:36px;height:36px;border-radius:8px;background:var(--success-bg);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:16px">⌕</div>
+                  <div>
+                    <div class="fw-6">可用性 Usability</div>
+                    <div class="fs-xs muted">格式兼容、浏览器预览、OCR 识别</div>
+                  </div>
+                  <span class="switch on" style="margin-left:auto"></span>
+                </div>
+                <div class="form-grid col-2">
+                  <div>
+                    <label class="form-label fs-xs">允许格式</label>
+                    <select class="sel"><option>PDF/DOC/XLS/IMG</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">浏览器预览</label>
+                    <select class="sel"><option>启用</option><option>禁用</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">OCR 识别</label>
+                    <select class="sel"><option>启用</option><option>禁用</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">压缩格式支持</label>
+                    <select class="sel"><option>启用</option><option>禁用</option></select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 安全性 -->
+              <div style="border:1px solid var(--border);border-radius:var(--r-lg);padding:16px">
+                <div class="flex aic gap-10 mb-12">
+                  <div style="width:36px;height:36px;border-radius:8px;background:var(--warning-bg);color:var(--warning);display:flex;align-items:center;justify-content:center;font-size:16px">⚙</div>
+                  <div>
+                    <div class="fw-6">安全性 Security</div>
+                    <div class="fs-xs muted">密级、加密、访问控制</div>
+                  </div>
+                  <span class="switch on" style="margin-left:auto"></span>
+                </div>
+                <div class="form-grid col-2">
+                  <div>
+                    <label class="form-label fs-xs">加密算法</label>
+                    <select class="sel"><option>AES-256 + SM4</option><option>仅 AES-256</option><option>仅 SM4</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">密钥管理</label>
+                    <select class="sel"><option>KMS 托管</option><option>本地</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">访问控制</label>
+                    <select class="sel"><option>RBAC + 字段级</option><option>仅 RBAC</option></select>
+                  </div>
+                  <div>
+                    <label class="form-label fs-xs">操作留痕</label>
+                    <select class="sel"><option>必填</option><option>可选</option></select>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="divider"></div>
+            <div class="flex aic jcb">
+              <div class="fs-xs muted">ⓘ 配置修改后,下次检测任务将按新规则执行 · 当前未运行任务: 1</div>
+              <div class="flex gap-8">
+                <button onclick="gbToast('操作已受理(演示环境)');" class="btn">↻ 恢复默认</button>
+                <button onclick="gbToast('保存成功');" class="btn btn-primary">💾 保存并立即生效</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== D-2-R 检测结果详情(§3.12) ========== -->
+      <section class="page" id="page-D-2-R">
+        <!-- 档案头部 -->
+        <div class="card">
+          <div class="card-bd">
+            <div class="flex aic gap-12">
+              <div class="avatar pu" style="width:48px;height:48px;font-size:18px">FJ</div>
+              <div class="flex-1">
+                <div class="fs-lg fw-6">曲江·紫汀苑小区承接查验报告</div>
+                <div class="flex gap-12 mt-8 fs-xs muted">
+                  <span>档案号:<span class="mono primary">FJ-2026-005</span></span>
+                  <span class="divider-v"></span>
+                  <span>来源业务:物业承接查验</span>
+                  <span class="divider-v"></span>
+                  <span>归档人:赵磊</span>
+                  <span class="divider-v"></span>
+                  <span>归档时间:2026-10-13 11:30</span>
+                </div>
+              </div>
+              <div class="flex gap-8">
+                <span class="tag tag-purple">保管期限:永久</span>
+                <span class="tag tag-orange">密级:内部</span>
+                <span class="tag tag-green">归档大小:12.4 MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 综合结论 -->
+        <div class="verdict fail">
+          <div class="verdict-ico">✕</div>
+          <div class="verdict-main">
+            <div class="verdict-title">综合结论:FAILED · 检测未通过</div>
+            <div class="verdict-desc">检测任务 <span class="mono">DT-202610-004</span> · 4 维度检测中 1 项未通过(完整性 FAIL),需发起异常处置</div>
+            <div class="verdict-meta">检测用时 4 分 51 秒 · 检测人:系统 · 检测时间:2026-10-13 11:32 ~ 15:24</div>
+          </div>
+          <div class="flex flex-col gap-6">
+            <button class="btn btn-danger btn-sm" onclick="switchPage('D-2-D')">⚠ 发起异常处置</button>
+            <button onclick="gbToast('检测任务已启动');" class="btn btn-sm">↻ 重新检测</button>
+            <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn btn-sm">⤓ 导出报告</button>
+          </div>
+        </div>
+
+        <!-- 4 维度检测卡 -->
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+
+          <!-- 真实性 -->
+          <div class="dim-card pass">
+            <div class="dim-hd">
+              <div class="dim-ico pass">✓</div>
+              <div>
+                <div class="dim-name">真实性 Authenticity</div>
+                <div class="dim-sub">数字签名、电子签章、CA 证书核验</div>
+              </div>
+              <div class="dim-status pass">✓ PASS</div>
+            </div>
+            <div class="dim-row"><span class="dk">签名算法</span><span class="dv">SM2 (国密)</span></div>
+            <div class="dim-row"><span class="dk">签名值</span><span class="dv" style="font-size:11px">3045022100a7f3...</span></div>
+            <div class="dim-row"><span class="dk">证书颁发者</span><span class="dv">CN=陕西省 CA</span></div>
+            <div class="dim-row"><span class="dk">证书有效期</span><span class="dv">2026-01-01 ~ 2027-12-31</span></div>
+            <div class="dim-row"><span class="dk">证书链校验</span><span class="dv success">✓ 通过</span></div>
+            <div class="dim-row"><span class="dk">证书有效期校验</span><span class="dv success">✓ 有效</span></div>
+            <div class="dim-row"><span class="dk">数字签名核验</span><span class="dv success">✓ 通过</span></div>
+            <div class="dim-row"><span class="dk">电子签章</span><span class="dv success">✓ 已加盖</span></div>
+            <div class="dim-row"><span class="dk">Hash 比对</span><span class="dv success">✓ 一致</span></div>
+            <div class="dim-foot">✓ 通过子项 9 / 总 9 · 检测用时 38 秒</div>
+          </div>
+
+          <!-- 完整性 -->
+          <div class="dim-card fail">
+            <div class="dim-hd">
+              <div class="dim-ico fail">✕</div>
+              <div>
+                <div class="dim-name">完整性 Integrity</div>
+                <div class="dim-sub">分块 Hash 比对(原存档 vs 当前)</div>
+              </div>
+              <div class="dim-status fail">✕ FAIL</div>
+            </div>
+            <div class="dim-row"><span class="dk">分块大小</span><span class="dv">64 KB</span></div>
+            <div class="dim-row"><span class="dk">总分块数</span><span class="dv">194 块</span></div>
+            <div class="dim-row"><span class="dk">Hash 算法</span><span class="dv">SHA-256</span></div>
+            <div class="dim-row"><span class="dk">原存档 Hash</span><span class="dv" style="font-size:11px">a7f3e9b2c4d1...</span></div>
+            <div class="dim-row"><span class="dk">当前 Hash</span><span class="dv" style="font-size:11px">b8e4f0c3d5e2...</span></div>
+            <div class="dim-row"><span class="dk">比对一致块</span><span class="dv">186 / 194</span></div>
+            <div class="dim-row"><span class="dk">变化块</span><span class="dv danger">8 块</span></div>
+            <div class="dim-row"><span class="dk">变化原因</span><span class="dv danger">疑似文档被修改</span></div>
+            <div class="dim-row"><span class="dk">异常等级</span><span class="dv danger">高 (需立即处置)</span></div>
+            <div class="dim-foot">✕ 通过子项 8 / 总 10 · 检测用时 56 秒 · 已自动生成异常工单</div>
+          </div>
+
+          <!-- 可用性 -->
+          <div class="dim-card pass">
+            <div class="dim-hd">
+              <div class="dim-ico pass">⌕</div>
+              <div>
+                <div class="dim-name">可用性 Usability</div>
+                <div class="dim-sub">格式兼容、浏览器预览、OCR 识别</div>
+              </div>
+              <div class="dim-status pass">✓ PASS</div>
+            </div>
+            <div class="dim-row"><span class="dk">文件格式</span><span class="dv">PDF 1.7</span></div>
+            <div class="dim-row"><span class="dk">格式兼容性</span><span class="dv success">✓ 标准 PDF/A-2b</span></div>
+            <div class="dim-row"><span class="dk">浏览器预览</span><span class="dv success">✓ 正常</span></div>
+            <div class="dim-row"><span class="dk">OCR 识别</span><span class="dv success">✓ 95.4%</span></div>
+            <div class="dim-row"><span class="dk">文本提取</span><span class="dv success">✓ 完整</span></div>
+            <div class="dim-row"><span class="dk">图片清晰度</span><span class="dv success">✓ 优秀</span></div>
+            <div class="dim-row"><span class="dk">压缩格式支持</span><span class="dv success">✓ 支持</span></div>
+            <div class="dim-row"><span class="dk">元数据完整</span><span class="dv success">✓ 完整</span></div>
+            <div class="dim-row"><span class="dk">附件可访问</span><span class="dv success">✓ 正常</span></div>
+            <div class="dim-foot">✓ 通过子项 9 / 总 9 · 检测用时 1 分 12 秒</div>
+          </div>
+
+          <!-- 安全性 -->
+          <div class="dim-card pass">
+            <div class="dim-hd">
+              <div class="dim-ico pass">⚙</div>
+              <div>
+                <div class="dim-name">安全性 Security</div>
+                <div class="dim-sub">密级、加密、访问控制</div>
+              </div>
+              <div class="dim-status pass">✓ PASS</div>
+            </div>
+            <div class="dim-row"><span class="dk">密级标识</span><span class="dv">内部 (Internal)</span></div>
+            <div class="dim-row"><span class="dk">存储加密</span><span class="dv">AES-256 + SM4</span></div>
+            <div class="dim-row"><span class="dk">密钥管理</span><span class="dv success">✓ KMS 托管</span></div>
+            <div class="dim-row"><span class="dk">传输加密</span><span class="dv success">✓ TLS 1.3</span></div>
+            <div class="dim-row"><span class="dk">访问控制</span><span class="dv success">✓ RBAC + 字段级</span></div>
+            <div class="dim-row"><span class="dk">脱敏规则</span><span class="dv success">✓ 已应用</span></div>
+            <div class="dim-row"><span class="dk">操作留痕</span><span class="dv success">✓ 已记录</span></div>
+            <div class="dim-row"><span class="dk">审计日志</span><span class="dv success">✓ 可追溯</span></div>
+            <div class="dim-row"><span class="dk">越权检测</span><span class="dv success">✓ 无异常</span></div>
+            <div class="dim-foot">✓ 通过子项 9 / 总 9 · 检测用时 45 秒</div>
+          </div>
+
+        </div>
+
+        <!-- 综合评分 + 历史检测 -->
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:14px">
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>综合评分</div>
+            </div>
+            <div class="card-bd">
+              <div class="form-grid col-2">
+                <div class="kpi" style="background:var(--success-bg);border-color:var(--success-border)">
+                  <div class="kpi-label">✓ 通过维度</div>
+                  <div class="kpi-val success">3 / 4</div>
+                  <div class="kpi-trend">真实性 · 可用性 · 安全性</div>
+                </div>
+                <div class="kpi" style="background:var(--danger-bg);border-color:var(--danger-border)">
+                  <div class="kpi-label">✕ 未通过</div>
+                  <div class="kpi-val danger">1 / 4</div>
+                  <div class="kpi-trend down">完整性</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-label">▦ 子项通过率</div>
+                  <div class="kpi-val">35 / 37</div>
+                  <div class="kpi-trend">94.6%</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-label">⏱ 总检测用时</div>
+                  <div class="kpi-val">4<span class="unit">分 51 秒</span></div>
+                  <div class="kpi-trend">含完整性重试</div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="fw-6 mb-8">检测结论说明</div>
+              <div style="padding:12px;background:var(--danger-bg);border-radius:var(--r);font-size:13px;color:var(--text-2);line-height:1.7">
+                本档案在 <strong style="color:var(--danger)">完整性</strong> 维度检测未通过,具体表现为:
+                <br>• 8 个分块 Hash 与原存档不一致(共 194 块)
+                <br>• 系统判定档案内容在归档后被修改,需立即发起异常处置
+                <br>• <a href="#page-D-2-D" onclick="switchPage('D-2-D');return false;" class="danger fw-6">→ 已自动生成处置工单</a>(编号 <span class="mono">EX-2026-005</span>)
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>历史检测记录 <span class="card-title-extra">共 4 次</span></div>
+            </div>
+            <div class="card-bd">
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot red"></div>
+                  <div class="tl-head">✕ 第 4 次检测 · FAILED<span class="tl-time">10-13 15:24</span></div>
+                  <div class="tl-body">
+                    完整性 FAIL · 8 块变化 · <a class="danger">已生成异常工单 EX-2026-005 →</a>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">✓ 第 3 次检测 · PASSED<span class="tl-time">10-13 12:08</span></div>
+                  <div class="tl-body">
+                    4 维度全通过 · 检测用时 3 分 28 秒 · 操作人:赵磊
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot orange"></div>
+                  <div class="tl-head">⚠ 第 2 次检测 · 完整性存疑<span class="tl-time">09-28 16:30</span></div>
+                  <div class="tl-body">
+                    完整性维度 1 块变化(疑似上传过程抖动) · 已重传 · 操作人:赵磊
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot green"></div>
+                  <div class="tl-head">✓ 第 1 次检测 · PASSED<span class="tl-time">07-15 09:18</span></div>
+                  <div class="tl-body">
+                    归档时自动检测 · 4 维度全通过 · 检测用时 4 分 12 秒
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作 -->
+        <div class="card">
+          <div class="card-bd">
+            <div class="flex aic jcb">
+              <div class="flex aic gap-8">
+                <button onclick="gbToast('返回');" class="btn">↩ 返回列表</button>
+                <button onclick="switchPage('D-2-D');" class="btn">⌕ 预览档案</button>
+                <button onclick="gbToast('操作已受理(演示环境)');" class="btn">📋 复制档案号</button>
+              </div>
+              <div class="flex aic gap-8">
+                <button onclick="gbToast('检测任务已启动');" class="btn">↻ 重新检测</button>
+                <button onclick="gbToast('正在生成导出文件,下载即将开始');" class="btn">⤓ 导出 PDF 报告</button>
+                <button class="btn btn-danger" onclick="switchPage('D-2-D')">⚠ 标记异常</button>
+                <button class="btn btn-primary" onclick="openModal('modal-wf')">📋 工单发起</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== D-2-D 异常处置 ========== -->
+      <section class="page" id="page-D-2-D">
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">⚠ 待处置异常</div>
+            <div class="kpi-val danger">3<span class="unit">件</span></div>
+            <div class="kpi-trend down">↑ 较上周 +1</div>
+            <div class="kpi-icon" style="background:var(--danger-bg);color:var(--danger)">⚠</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⏳ 处置中</div>
+            <div class="kpi-val" style="color:var(--primary)">2<span class="unit">件</span></div>
+            <div class="kpi-trend">平均 1.5 天</div>
+            <div class="kpi-icon" style="background:var(--info-bg);color:var(--primary)">⏳</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">✓ 已处置</div>
+            <div class="kpi-val success">7<span class="unit">件</span></div>
+            <div class="kpi-trend up">本月</div>
+            <div class="kpi-icon" style="background:var(--success-bg);color:var(--success)">✓</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⊟ 工单发起</div>
+            <div class="kpi-val">5<span class="unit">单</span></div>
+            <div class="kpi-trend">关联报修系统</div>
+            <div class="kpi-icon" style="background:var(--warning-bg);color:var(--warning)">⊟</div>
+          </div>
+        </div>
+
+        <!-- 异常档案列表 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title">
+              <span class="card-title-bar"></span>异常档案列表 <span class="card-title-extra">3 条待处置</span>
+            </div>
+            <div class="card-extra">
+              <select class="sel" style="width:auto">
+                <option>全部状态</option><option>待处置</option><option>处置中</option><option>已处置</option>
+              </select>
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-sm">⌕ 异常类型</button>
+              <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary btn-sm">⚠ 标记新异常</button>
+            </div>
+          </div>
+          <div class="card-bd pt">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>异常编号</th>
+                  <th>档案号 / 名称</th>
+                  <th>异常类型</th>
+                  <th>异常维度</th>
+                  <th>异常等级</th>
+                  <th>发现时间</th>
+                  <th>处置状态</th>
+                  <th>处置人</th>
+                  <th class="center" style="width:180px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="sel">
+                  <td>1</td>
+                  <td><span class="mono danger fw-6">EX-2026-005</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-005</span> 紫汀苑承接查验</div>
+                    <div class="fs-xs muted">8 块分块 Hash 异常</div>
+                  </td>
+                  <td><span class="tag tag-red">完整性篡改</span></td>
+                  <td>完整性</td>
+                  <td><span class="tag tag-red">● 高</span></td>
+                  <td class="muted">2026-10-13 15:24</td>
+                  <td><span class="tag tag-orange">⏳ 处置中</span></td>
+                  <td>陈默</td>
+                  <td class="center">
+                    <button onclick="gbToast('进入编辑模式');" class="btn btn-text btn-sm">⎘ 处置</button>
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 检测报告</button>
+                    <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-text btn-sm">⊟ 工单</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><span class="mono danger fw-6">EX-2026-010</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-010</span> 原嘉信物业退出备案</div>
+                    <div class="fs-xs muted">签名验证失败 · 证书已吊销</div>
+                  </td>
+                  <td><span class="tag tag-red">真实性失效</span></td>
+                  <td>真实性</td>
+                  <td><span class="tag tag-red">● 高</span></td>
+                  <td class="muted">2026-10-08 16:14</td>
+                  <td><span class="tag tag-orange">⏳ 处置中</span></td>
+                  <td>王刚</td>
+                  <td class="center">
+                    <button onclick="gbToast('进入编辑模式');" class="btn btn-text btn-sm">⎘ 处置</button>
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 检测报告</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><span class="mono danger fw-6">EX-2026-006</span></td>
+                  <td>
+                    <div class="fw-6"><span class="mono primary">FJ-2026-009</span> 应急物业服务登记</div>
+                    <div class="fs-xs muted">OCR 识别置信度低(78%)</div>
+                  </td>
+                  <td><span class="tag tag-orange">可用性偏低</span></td>
+                  <td>可用性</td>
+                  <td><span class="tag tag-orange">● 中</span></td>
+                  <td class="muted">2026-10-09 13:42</td>
+                  <td><span class="tag tag-red">✗ 待处置</span></td>
+                  <td>—</td>
+                  <td class="center">
+                    <button onclick="gbToast('进入编辑模式');" class="btn btn-text btn-sm">⎘ 处置</button>
+                    <button class="btn btn-text btn-sm" onclick="switchPage('D-2-R')">⊟ 检测报告</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 处置表单 + 历史 -->
+        <div class="form-grid" style="grid-template-columns:1.2fr 1fr;gap:14px">
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>处置表单 <span class="card-title-extra">EX-2026-005 · 完整性篡改</span></div>
+              <div class="card-extra"><span class="tag tag-red">● 高 异常</span></div>
+            </div>
+            <div class="card-bd">
+              <div class="form-grid col-2">
+                <div class="form-row" style="margin:0">
+                  <label class="form-label req">处置类型</label>
+                  <select class="sel">
+                    <option>标记异常 + 发起工单 + 通知管理员(推荐)</option>
+                    <option>仅标记异常</option>
+                    <option>仅发起工单</option>
+                    <option>仅通知管理员</option>
+                  </select>
+                </div>
+                <div class="form-row" style="margin:0">
+                  <label class="form-label req">处置人</label>
+                  <input class="input" value="陈默" readonly style="background:#FAFBFC">
+                </div>
+                <div class="form-row" style="margin:0">
+                  <label class="form-label req">异常等级</label>
+                  <select class="sel"><option>高 (立即处置)</option><option>中 (24h 内)</option><option>低 (本周内)</option></select>
+                </div>
+                <div class="form-row" style="margin:0">
+                  <label class="form-label">处置时限</label>
+                  <input class="input" value="2026-10-17 18:00" readonly style="background:#FAFBFC">
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="fw-6 mb-8">⚠ 处置动作</div>
+              <div class="flex flex-col gap-10">
+                <label class="check" style="margin:0">
+                  <input type="checkbox" checked>
+                  <span class="fw-6">① 标记异常</span>· 档案打"完整性异常"标记,状态置为 INCOMPLETE,业务办理暂停
+                </label>
+                <label class="check" style="margin:0">
+                  <input type="checkbox" checked>
+                  <span class="fw-6">② 发起工单</span>· 自动生成报修工单(编号 <span class="mono">WO-2026-1015-005</span>),
+                  <a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">关联到报修系统 →</a>
+                </label>
+                <label class="check" style="margin:0">
+                  <input type="checkbox" checked>
+                  <span class="fw-6">③ 通知管理员</span>· 短信 + 站内消息通知归档人赵磊 + 部门主管陈雪
+                </label>
+                <label class="check" style="margin:0">
+                  <input type="checkbox">
+                  <span class="fw-6">④ 锁定档案</span>· 暂停该档案的所有读取/导出操作,等待复核
+                </label>
+                <label class="check" style="margin:0">
+                  <input type="checkbox">
+                  <span class="fw-6">⑤ 上报上级</span>· 升级到市级主管部门(由 <a href="../01-物业监管-备案/web_a1_filing_prototype.html" class="primary">物业监管</a> 模块处置)
+                </label>
+              </div>
+
+              <div class="divider"></div>
+              <div class="form-row">
+                <label class="form-label req">异常说明</label>
+                <textarea class="ta" style="min-height:80px">档案 FJ-2026-005《曲江·紫汀苑小区承接查验报告》在完整性维度检测中,194 个分块中有 8 块 Hash 与原存档不一致,疑似档案内容在归档后被修改。需发起工单重新核验档案原件,并通知归档人赵磊配合处置。</textarea>
+              </div>
+              <div class="form-row">
+                <label class="form-label">附件(可上传)</label>
+                <div class="dropzone" style="padding:18px 10px">
+                  <div class="fs-sm muted">点击或拖拽上传处置凭证(扫描件、照片、PDF)</div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="flex aic jce gap-8">
+                <button onclick="gbToast('已取消,未做任何变更');" class="btn">取消</button>
+                <button onclick="gbToast('保存成功');" class="btn">💾 暂存</button>
+                <button class="btn btn-danger btn-lg" onclick="alert('已提交处置,工单编号 WO-2026-1015-005 已生成');switchPage('D-2-R')">✓ 提交处置</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin:0">
+            <div class="card-hd">
+              <div class="card-title"><span class="card-title-bar"></span>处置历史</div>
+            </div>
+            <div class="card-bd">
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot red"></div>
+                  <div class="tl-head">⚠ 自动标记异常<span class="tl-time">10-13 15:24</span></div>
+                  <div class="tl-body">完整性 FAIL · 8 块变化 · 工单已生成</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⌮ 通知归档人<span class="tl-time">10-13 15:25</span></div>
+                  <div class="tl-body">短信 + 站内消息 → 赵磊(已读)</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⌮ 通知部门主管<span class="tl-time">10-13 15:25</span></div>
+                  <div class="tl-body">短信 + 站内消息 → 陈雪(已读)</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⊟ 工单已派发<span class="tl-time">10-13 15:26</span></div>
+                  <div class="tl-body">WO-2026-1015-005 · 分派至 工程主管 王刚 · <a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">查看工单 →</a></div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot orange"></div>
+                  <div class="tl-head">⏳ 处置中<span class="tl-time">10-13 16:00</span></div>
+                  <div class="tl-body">工程主管王刚受理 · 正在核验原件</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot gray"></div>
+                  <div class="tl-head">📞 联系归档人<span class="tl-time">10-14 09:30</span></div>
+                  <div class="tl-body">电话沟通 · 赵磊承认归档后未再修改</div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot"></div>
+                  <div class="tl-head">⊕ 补充上传原件<span class="tl-time">10-15 11:00</span></div>
+                  <div class="tl-body">赵磊提供原件扫描件 · 等待重新检测</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 关联工单列表 -->
+        <div class="card">
+          <div class="card-hd">
+            <div class="card-title"><span class="card-title-bar"></span>关联工单 <span class="card-title-extra">3 单</span></div>
+            <div class="card-extra">
+              <a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary fs-xs">→ 报修工单系统</a>
+              <button onclick="gbToast('打开新增表单');" class="btn btn-primary btn-sm">⊕ 发起新工单</button>
+            </div>
+          </div>
+          <div class="card-bd pt">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>工单号</th>
+                  <th>关联档案</th>
+                  <th>工单类型</th>
+                  <th>异常等级</th>
+                  <th>当前处理人</th>
+                  <th>处理状态</th>
+                  <th>派单时间</th>
+                  <th class="center" style="width:120px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><span class="mono primary fw-6">WO-2026-1015-005</span></td>
+                  <td><span class="mono">FJ-2026-005</span> 紫汀苑承接查验</td>
+                  <td><span class="tag tag-red">档案核验</span></td>
+                  <td><span class="tag tag-red">● 高</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar">王</div>王刚</div></td>
+                  <td><span class="tag tag-orange">⏳ 处理中</span></td>
+                  <td class="muted">2026-10-13 15:26</td>
+                  <td class="center"><a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">查看 →</a></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><span class="mono primary fw-6">WO-2026-1009-010</span></td>
+                  <td><span class="mono">FJ-2026-010</span> 嘉信物业退出备案</td>
+                  <td><span class="tag tag-orange">证书复核</span></td>
+                  <td><span class="tag tag-red">● 高</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar or">王</div>王刚</div></td>
+                  <td><span class="tag tag-orange">⏳ 处理中</span></td>
+                  <td class="muted">2026-10-08 16:15</td>
+                  <td class="center"><a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">查看 →</a></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><span class="mono primary fw-6">WO-2026-1010-006</span></td>
+                  <td><span class="mono">FJ-2026-009</span> 应急物业登记</td>
+                  <td><span class="tag tag-blue">OCR 复核</span></td>
+                  <td><span class="tag tag-orange">● 中</span></td>
+                  <td><div class="flex aic gap-6"><div class="avatar">陈</div>陈雪</div></td>
+                  <td><span class="tag tag-red">✗ 待受理</span></td>
+                  <td class="muted">2026-10-09 13:43</td>
+                  <td class="center"><a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">查看 →</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ============ 弹窗:启动手动检测 ============ -->
+<div class="modal-mask" id="modal-start">
+  <div class="modal">
+    <div class="modal-hd">
+      ▶ 启动手动检测
+      <div class="modal-close" onclick="closeModal('modal-start')">×</div>
+    </div>
+    <div class="modal-bd">
+      <div class="form-row">
+        <label class="form-label req">选择档案</label>
+        <select class="sel">
+          <option>FJ-2026-001 / 陕西嘉信物业·初始备案</option>
+          <option>FJ-2026-002 / 阳光花园业委会换届备案</option>
+          <option>FJ-2026-006 / 御景湾业主投诉处置</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label req">检测维度</label>
+        <div class="flex gap-12">
+          <label class="check"><input type="checkbox" checked>真实性</label>
+          <label class="check"><input type="checkbox" checked>完整性</label>
+          <label class="check"><input type="checkbox" checked>可用性</label>
+          <label class="check"><input type="checkbox" checked>安全性</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">检测优先级</label>
+        <select class="sel"><option>普通</option><option>高(插队)</option><option>低(后台)</option></select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">检测说明</label>
+        <textarea class="ta" placeholder="如:季度抽检 / 异常复查"></textarea>
+      </div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeModal('modal-start')">取消</button>
+      <button onclick="gbToast('操作已受理(演示环境)');" class="btn btn-primary">▶ 立即启动</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗:工单发起 ============ -->
+<div class="modal-mask" id="modal-wf">
+  <div class="modal">
+    <div class="modal-hd">
+      📋 工单发起
+      <div class="modal-close" onclick="closeModal('modal-wf')">×</div>
+    </div>
+    <div class="modal-bd">
+      <div class="form-row">
+        <label class="form-label req">工单类型</label>
+        <select class="sel">
+          <option>档案核验</option>
+          <option>证书复核</option>
+          <option>OCR 复核</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label req">紧急程度</label>
+        <div class="flex gap-12">
+          <label class="radio"><input type="radio" name="urg">普通</label>
+          <label class="radio"><input type="radio" name="urg" checked>紧急</label>
+          <label class="radio"><input type="radio" name="urg">非常紧急</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label req">关联档案</label>
+        <input class="input" value="FJ-2026-005" readonly style="background:#FAFBFC">
+      </div>
+      <div class="form-row">
+        <label class="form-label">分派给</label>
+        <select class="sel"><option>工程主管 王刚</option><option>档案管理员 陈雪</option></select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">备注</label>
+        <textarea class="ta" placeholder="..."></textarea>
+      </div>
+      <div class="fs-xs muted">ⓘ 工单将同步推送至 <a href="../06-业主决策/web_c_decision_prototype.html#page-C-2-L" class="primary">报修工单系统</a> 和档案归档系统</div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn" onclick="closeModal('modal-wf')">取消</button>
+      <button class="btn btn-primary" onclick="alert('工单已生成:WO-2026-1016-005');closeModal('modal-wf')">✓ 提交</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 抽屉:高级过滤 ============ -->
+<div class="drawer-mask" id="dlg-filter" onclick="closeDrawer('dlg-filter')"></div>
+<div class="drawer" id="dlg-filter-drw">
+  <div class="drawer-hd">
+    ⌕ 高级过滤
+    <div class="modal-close" onclick="closeDrawer('dlg-filter')">×</div>
+  </div>
+  <div class="drawer-bd">
+    <div class="form-row">
+      <label class="form-label">档案号(支持模糊)</label>
+      <input class="input mono" placeholder="FJ-2026-001 ~ 999">
+    </div>
+    <div class="form-row">
+      <label class="form-label">来源业务(多选)</label>
+      <div class="flex gap-12" style="flex-wrap:wrap">
+        <label class="check"><input type="checkbox" checked>物业企业备案</label>
+        <label class="check"><input type="checkbox" checked>业委会换届备案</label>
+        <label class="check"><input type="checkbox" checked>维修资金使用</label>
+        <label class="check"><input type="checkbox">物业承接查验</label>
+        <label class="check"><input type="checkbox">应急物业登记</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">归档人(多选)</label>
+      <select class="sel"><option>全部</option><option>张明</option><option>李娜</option><option>王刚</option></select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">归档时间</label>
+      <div class="flex aic gap-6">
+        <input class="input" placeholder="开始日期" style="flex:1">
+        <span class="muted">至</span>
+        <input class="input" placeholder="结束日期" style="flex:1">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">密级(多选)</label>
+      <div class="flex gap-12">
+        <label class="check"><input type="checkbox">公开</label>
+        <label class="check"><input type="checkbox" checked>内部</label>
+        <label class="check"><input type="checkbox">秘密</label>
+        <label class="check"><input type="checkbox">机密</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">四性状态(多选)</label>
+      <div class="flex gap-12">
+        <label class="check"><input type="checkbox" checked>PASSED</label>
+        <label class="check"><input type="checkbox" checked>FAILED</label>
+        <label class="check"><input type="checkbox">CHECKING</label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">文件大小</label>
+      <div class="flex aic gap-6">
+        <input class="input mono" placeholder="≥ MB" style="flex:1">
+        <span class="muted">~</span>
+        <input class="input mono" placeholder="≤ MB" style="flex:1">
+      </div>
+    </div>
+  </div>
+  <div class="drawer-ft">
+    <button class="btn" onclick="closeDrawer('dlg-filter')">取消</button>
+    <button onclick="gbToast('筛选条件已重置');" class="btn">↻ 重置</button>
+    <button class="btn btn-primary" onclick="closeDrawer('dlg-filter')">✓ 应用过滤</button>
+  </div>
+</div>
+
+<!-- ============ JS ============ -->
+<script>
+
+
+/* R14 侧栏折叠交互 */
+function toggleGrp(el){
+  el.classList.toggle('collapsed');
+  var body = el.nextElementSibling;
+  if(body && body.classList.contains('grp-body')){ body.classList.toggle('grp-hidden'); }
+}
+(function(){
+  function initGrp(){
+    document.querySelectorAll('.grp-body').forEach(function(b){
+      var hasCur = b.querySelector('.cur');
+      if(!hasCur){
+        b.classList.add('grp-hidden');
+        var h = b.previousElementSibling;
+        if(h && h.classList.contains('sider-grp-toggle')) h.classList.add('collapsed');
+      }
+    });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', initGrp); } else { initGrp(); }
+})();
+/* R12 通用按钮交互反馈 */
+function gbToast(msg){var el=document.getElementById('gbToast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},1800);}
+/* ====== 页面切换 ====== */
+function switchPage(id){
+  // 隐藏所有页面
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('cur'));
+  // 显示目标页面
+  const target = document.getElementById('page-'+id);
+  if(target) target.classList.add('cur');
+  // 更新 tab 高亮
+  document.querySelectorAll('#tabbar a').forEach(a=>{
+    a.classList.toggle('cur', a.dataset.tab===id);
+  });
+  // 更新左导高亮
+  document.querySelectorAll('.sider .s-item').forEach(a=>{
+    a.classList.toggle('cur', a.getAttribute('href')==='#page-'+id);
+  });
+  // 更新面包屑 + 标题
+  const titles = {
+    'D-1-L': {crumb:'档案列表', title:'档案归档管理 · 列表', desc:'覆盖业务办理即归档 · 真实档案 · 四性状态 · 归档历史时间线(P2-3)'},
+    'D-1-F': {crumb:'上传/参数配置', title:'档案归档管理 · 上传', desc:'31 字段元数据自动提取 · 归档参数配置 · 批量上传'},
+    'D-1-EX':{crumb:'列表导出/归档报告', title:'档案归档 · 报告导出', desc:'7 份归档报告 · 水印导出 · 操作日志全留存'},
+    'D-2-T': {crumb:'检测任务管理', title:'档案四性检测 · 任务管理', desc:'4 维度参数配置 · 手动启动 · 实时进度'},
+    'D-2-R': {crumb:'检测结果详情', title:'档案四性检测 · 结果详情', desc:'真实性 / 完整性 / 可用性 / 安全性 4 维度结果 · 子项指标 · 综合结论'},
+    'D-2-D': {crumb:'异常处置', title:'档案四性检测 · 异常处置', desc:'异常档案 · 处置表单 · 处置历史 · 关联工单'}
+  };
+  const t = titles[id] || titles['D-1-L'];
+  document.getElementById('crumb-3').textContent = t.crumb;
+  document.getElementById('page-title-text').textContent = t.title;
+  document.getElementById('page-desc-text').textContent = t.desc;
+  // 更新 hash
+  history.replaceState(null, '', '#page-'+id);
+  // 滚到顶部
+  document.querySelector('.page-bd').scrollTop = 0;
+}
+
+/* ====== 内嵌 tab 切换(D-1-L) ====== */
+function switchInnerTab(id, el){
+  // 找到同一个卡片下的所有 inner-tabs / inner-pane
+  const card = el.closest('.card');
+  card.querySelectorAll('.inner-tabs a').forEach(a=>a.classList.remove('cur'));
+  card.querySelectorAll('.inner-pane').forEach(p=>p.classList.remove('cur'));
+  el.classList.add('cur');
+  const pane = document.getElementById(id);
+  if(pane) pane.classList.add('cur');
+}
+
+/* ====== 侧栏折叠 ====== */
+function toggleSider(){
+  document.getElementById('sider').classList.toggle('collapsed');
+}
+
+/* ====== 弹窗 ====== */
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+/* ====== 抽屉 ====== */
+function openDrawer(id){
+  document.getElementById('dlg-filter').classList.add('show');
+  document.getElementById('dlg-filter-drw').classList.add('show');
+}
+function closeDrawer(id){
+  document.getElementById('dlg-filter').classList.remove('show');
+  document.getElementById('dlg-filter-drw').classList.remove('show');
+}
+
+/* ====== 拖拽区视觉反馈 ====== */
+const dz = document.getElementById('dropzone');
+if(dz){
+  ['dragenter','dragover'].forEach(evt=>{
+    dz.addEventListener(evt, e=>{e.preventDefault();dz.classList.add('drag');});
+  });
+  ['dragleave','drop'].forEach(evt=>{
+    dz.addEventListener(evt, e=>{e.preventDefault();dz.classList.remove('drag');});
+  });
+  dz.addEventListener('drop', e=>{
+    alert('已选择 '+e.dataTransfer.files.length+' 个文件(模拟)');
+  });
+}
+
+/* ====== 启动时:从 hash 自动定位 ====== */
+window.addEventListener('DOMContentLoaded', function(){
+  const hash = location.hash.replace('#','').replace('page-','');
+  if(hash && document.getElementById('page-'+hash)){
+    switchPage(hash);
+  } else {
+    switchPage('D-1-L');
+  }
+});
+
+/* ====== 演示:点击档案行自动跳到结果详情(D-1-L) ====== */
+console.log('R4 web_d 档案归档 · 6 个 page · 默认 D-1-L · 跨文件跳转 7 处');
+</script>
+
+<div class="gb-toast" id="gbToast"></div>
+</body>
+</html>
