@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 · 陕西数字住建 · 物业服务管理子系统</title>
+<style>
+/* ============================================================
+   陕西数字住建 · 物业服务管理子系统 · 独立登录页 login.html
+   ─────────────────────────────────────────────────────────
+   R7 系统默认入口(打开系统先见登录页)
+   视觉基线:与 07-档案归档/web_d_archive_prototype.html(标杆)同源
+   - 深蓝渐变:#003a8c → #165DFF → #3D7FFF(标杆 topbar 同款渐变)
+   - brand 徽标:"陕"(浅蓝→白 渐变方块,圆角,标杆 brand-mark 同源)
+   - 白色卡片:12px 圆角(--r-lg)+ 分层阴影
+   - Arco Design 风格 CSS 变量(R4 基线,与 web_d 完全一致)
+   交互(全部内嵌 JS,双击可开,无外部依赖):
+   - 角色选择 7 pill(省级/市级/县区/街道社区/物业企业/业委会·物管会/移动端用户)
+   - 账号 + 密码(可见切换)+ 短信验证码(60s 倒计时)+ 记住登录
+   - 登录 → toast「登录成功,正在进入工作台」→ 00-主页/web_main.html
+   - 忘记密码 → 09-系统管理/web_z_system_prototype.html#page-Z-PWD
+   - 扫码登录(秦务员 APP / 微信小程序,占位演示)+ FAQ 帮助弹窗
+   ============================================================ */
+:root{
+  --primary:#165DFF; --primary-hover:#4080FF; --primary-active:#003CB3;
+  --primary-1:#E8F1FF; --primary-2:#BEDAFF; --primary-6:#003CB3;
+  --success:#00B42A; --success-bg:#E8FFEA; --success-border:#ABF2BC;
+  --warning:#FF7D00; --warning-bg:#FFF3E0; --warning-border:#FFD199;
+  --danger:#F53F3F; --danger-bg:#FFECE8; --danger-border:#FDBDB5;
+  --info:#165DFF; --info-bg:#E8F1FF;
+  --text-1:#1D2129; --text-2:#4E5969; --text-3:#86909C; --text-4:#C9CDD4;
+  --border:#E5E6EB; --border-2:#F2F3F5; --fill:#F7F8FA; --fill-2:#F2F3F5;
+  --bg:#FFFFFF; --bg-page:#F7F8FA; --bg-elevated:#FFFFFF;
+  --bg-spotlight:rgba(0,0,0,.45);
+  --red-cn:#E9353A; --purple:#722ED1; --cyan:#0FC6C2;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:16px; --fs-lg:20px; --fs-xl:24px; --fs-xxl:32px;
+  --r-sm:4px; --r:8px; --r-lg:12px; --r-xl:16px;
+  --p-xs:8px; --p-sm:12px; --p-md:16px; --p-lg:24px; --p-xl:32px;
+  --sh-sm:0 2px 8px rgba(0,0,0,.06); --sh-md:0 4px 16px rgba(0,0,0,.10); --sh-lg:0 8px 24px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:var(--font);font-size:var(--fs-base);color:var(--text-1);-webkit-font-smoothing:antialiased;line-height:1.5;height:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:var(--fs-sm)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 全屏深蓝渐变背景(与标杆顶栏渐变同源,135° 展开铺满视口) ============ */
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#002b6f 0%,#003a8c 32%,#165DFF 72%,#3D7FFF 100%);
+  background-attachment:fixed;
+  display:flex;align-items:center;justify-content:center;
+  padding:32px 16px;
+  position:relative;
+  overflow-x:hidden;
+}
+/* 背景装饰层:两个大半透明圆 + 点阵网格 + 斜向流光(纯 CSS,呼应标杆 topbar / welcome-banner 圆装饰) */
+.bg-deco{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.bg-deco .deco-c1{position:absolute;right:-180px;top:-180px;width:560px;height:560px;border-radius:50%;background:rgba(255,255,255,.05);animation:floaty 9s ease-in-out infinite}
+.bg-deco .deco-c2{position:absolute;left:-140px;bottom:-160px;width:460px;height:460px;border-radius:50%;background:rgba(105,177,255,.10);animation:floaty 11s ease-in-out infinite reverse}
+.bg-deco .deco-c3{position:absolute;right:18%;bottom:-90px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04)}
+.bg-deco .deco-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:34px 34px;opacity:.5}
+.bg-deco .deco-beam{
+  position:absolute;top:-30%;left:-20%;width:60%;height:160%;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.045) 50%,transparent 70%);
+  transform:rotate(8deg);animation:beamMove 16s linear infinite;
+}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes beamMove{from{left:-40%}to{left:120%}}
+
+/* ============ 登录舞台(垂直居中列布局,卡片入场动画) ============ */
+.login-stage{position:relative;z-index:1;width:100%;max-width:1000px;margin:0 auto;animation:riseIn .5s ease both}
+@keyframes riseIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ 登录主卡:白卡 12px 圆角(标杆 --r-lg)+ 大阴影,左右双栏 ============ */
+.login-card{
+  display:grid;grid-template-columns:400px 1fr;
+  background:#fff;border-radius:var(--r-lg);
+  box-shadow:0 24px 64px rgba(0,20,80,.35),0 4px 16px rgba(0,20,80,.18);
+  overflow:hidden;
+}
+
+/* ============ 左侧品牌区(深蓝渐变,与标杆 topbar 渐变一致) ============ */
+.lg-brand{
+  background:linear-gradient(160deg,#003a8c 0%,#165DFF 62%,#3D7FFF 100%);
+  color:#fff;padding:42px 36px 32px;
+  display:flex;flex-direction:column;position:relative;overflow:hidden;
+}
+.lg-brand::before{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.07)}
+.lg-brand::after{content:"";position:absolute;left:-70px;bottom:-80px;width:220px;height:220px;border-radius:50%;background:rgba(105,177,255,.12)}
+/* 大"陕"徽标:与标杆 brand-mark 同源(浅蓝→白渐变底、圆角方块、深蓝"陕"字),放大版 */
+.lg-logo{
+  width:64px;height:64px;border-radius:16px;
+  background:linear-gradient(135deg,#69b1ff,#ffffff);
+  color:#165DFF;display:flex;align-items:center;justify-content:center;
+  font-size:34px;font-weight:700;letter-spacing:0;
+  box-shadow:0 8px 24px rgba(0,30,90,.35),inset 0 -2px 6px rgba(0,58,140,.12);
+  position:relative;z-index:1;margin-bottom:20px;
+}
+.lg-brand-title{font-size:26px;font-weight:600;letter-spacing:1px;position:relative;z-index:1}
+.lg-brand-sub{font-size:15px;font-weight:500;opacity:.92;margin-top:6px;letter-spacing:2px;position:relative;z-index:1}
+.lg-brand-divider{width:44px;height:3px;background:rgba(255,255,255,.85);border-radius:2px;margin:18px 0;position:relative;z-index:1}
+.lg-brand-intro{font-size:13px;line-height:1.9;opacity:.88;position:relative;z-index:1;max-width:300px}
+/* 系统特性清单(充实品牌区,视觉与标杆 tag/badge 体系同源) */
+.lg-feats{margin-top:20px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px}
+.lg-feat{display:flex;align-items:flex-start;gap:10px;font-size:13px;opacity:.92}
+.lg-feat .ft-ico{
+  width:26px;height:26px;border-radius:8px;flex-shrink:0;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  backdrop-filter:blur(4px);
+}
+.lg-feat .ft-txt b{display:block;font-size:13px;font-weight:600}
+.lg-feat .ft-txt span{display:block;font-size:11px;opacity:.72;margin-top:1px}
+/* 平台公告条(点开公告弹窗) */
+.lg-notices{margin-top:18px;position:relative;z-index:1;cursor:pointer;transition:opacity .2s}
+.lg-notices:hover{opacity:.85}
+.lg-notices-hd{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:8px}
+.lg-notices-hd .nt-badge{font-size:10px;background:var(--red-cn);color:#fff;border-radius:8px;padding:1px 6px;letter-spacing:0}
+.lg-notice{display:flex;align-items:center;gap:8px;font-size:12px;opacity:.88;padding:5px 0;border-bottom:1px dashed rgba(255,255,255,.18)}
+.lg-notice:last-child{border-bottom:none}
+.lg-notice .nt-dot{width:5px;height:5px;border-radius:50%;background:#FFD199;flex-shrink:0}
+.lg-notice .nt-date{margin-left:auto;font-size:10px;opacity:.6;font-family:var(--mono);flex-shrink:0}
+/* 服务支持块 */
+.lg-support{margin-top:14px;position:relative;z-index:1;display:flex;flex-direction:column;gap:6px}
+.lg-support .sp-row{display:flex;align-items:center;gap:8px;font-size:11.5px;opacity:.78}
+.lg-support .sp-k{width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+/* 品牌区底部数据条(与工作台 KPI 数据同源) */
+.lg-stats{
+  margin-top:auto;padding-top:20px;position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  border-top:1px solid rgba(255,255,255,.18);
+}
+.lg-stat .st-v{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.lg-stat .st-v .u{font-size:11px;font-weight:400;opacity:.75;margin-left:2px}
+.lg-stat .st-k{font-size:11px;opacity:.72;margin-top:2px}
+/* 品牌区底部落款 */
+.lg-brand-foot{font-size:11px;opacity:.6;margin-top:14px;position:relative;z-index:1;letter-spacing:1px}
+
+/* ============ 右侧表单区(白底,与标杆白卡同源) ============ */
+.lg-form{padding:36px 44px 28px;background:#fff;display:flex;flex-direction:column;min-width:0}
+.lg-form-hd{margin-bottom:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.lg-form-title{font-size:22px;font-weight:600;color:var(--text-1)}
+.lg-form-sub{font-size:13px;color:var(--text-3);margin-top:4px}
+.lg-form-sub b{color:var(--primary);font-weight:600}
+/* 使用帮助链接(打开 FAQ 弹窗) */
+.help-link{
+  display:inline-flex;align-items:center;gap:5px;flex-shrink:0;
+  font-size:12px;color:var(--text-3);border:1px solid var(--border);
+  border-radius:14px;padding:4px 12px;cursor:pointer;transition:all .2s;background:#fff;
+}
+.help-link:hover{color:var(--primary);border-color:var(--primary-2);background:var(--primary-1)}
+
+/* ============ 登录方式 Tab(账号登录 / 扫码登录) ============ */
+.login-tabs{display:flex;gap:0;border-bottom:1px solid var(--border-2);margin-bottom:20px}
+.login-tabs .lt{
+  padding:10px 4px;margin-right:28px;font-size:14px;font-weight:500;color:var(--text-2);
+  border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;user-select:none;
+  display:flex;align-items:center;gap:6px;
+}
+.login-tabs .lt:hover{color:var(--primary)}
+.login-tabs .lt.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.login-tabs .lt .lt-tag{font-size:10px;background:var(--primary-1);color:var(--primary);border-radius:8px;padding:0 6px;font-weight:600}
+.tab-pane{display:none}
+.tab-pane.on{display:block;animation:fadeIn .25s ease}
+
+/* ============ 角色选择 pill 单选(7 个) ============ */
+.fld-label{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:8px}
+.fld-label .lb-tip{font-size:11px;color:var(--text-3);font-weight:400}
+.role-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.role-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  border:1px solid var(--border);background:#fff;
+  font-size:13px;color:var(--text-2);cursor:pointer;
+  transition:all .18s;user-select:none;white-space:nowrap;
+}
+.role-pill:hover{border-color:var(--primary-2);color:var(--primary);background:var(--primary-1)}
+.role-pill .rp-dot{width:6px;height:6px;border-radius:50%;background:var(--text-4);transition:background .18s}
+.role-pill.on{
+  border-color:var(--primary);background:var(--primary-1);color:var(--primary);
+  font-weight:600;box-shadow:0 0 0 3px rgba(22,93,255,.10);
+}
+.role-pill.on .rp-dot{background:var(--primary)}
+/* 当前角色说明条(切角色时更新,增强真实系统交互感) */
+.role-tip{
+  display:flex;align-items:flex-start;gap:8px;
+  background:var(--fill);border:1px solid var(--border-2);border-radius:var(--r);
+  padding:8px 12px;font-size:12px;color:var(--text-2);line-height:1.6;
+  margin-bottom:16px;
+}
+.role-tip .rt-ico{color:var(--primary);flex-shrink:0;font-size:13px;line-height:1.5}
+
+/* ============ 表单输入(标杆 input-affix 结构同源) ============ */
+.fld{margin-bottom:16px}
+.fld-ctrl{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--r);background:#fff;transition:all .2s;overflow:hidden}
+.fld-ctrl:hover{border-color:var(--primary-2)}
+.fld-ctrl:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-1)}
+.fld-ctrl.err{border-color:var(--danger)}
+.fld-ctrl.err:focus-within{box-shadow:0 0 0 3px var(--danger-bg)}
+.fld-ctrl .pre,.fld-ctrl .suf{
+  padding:0 12px;color:var(--text-3);font-size:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;height:40px;
+}
+.fld-ctrl input{
+  flex:1;height:40px;padding:0 4px;border:none;outline:none;background:transparent;
+  font-size:14px;color:var(--text-1);min-width:0;
+}
+.fld-ctrl input::placeholder{color:var(--text-4)}
+.fld-ctrl .eye{
+  border:none;background:transparent;color:var(--text-3);font-size:15px;
+  width:36px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  border-radius:var(--r-sm);transition:color .15s;
+}
+.fld-ctrl .eye:hover{color:var(--primary)}
+/* 验证码行:输入 + 发送按钮 */
+.code-row{display:flex;gap:10px;align-items:stretch}
+.code-row .fld-ctrl{flex:1}
+.code-send{
+  height:42px;padding:0 18px;flex-shrink:0;
+  border:1px solid var(--primary-2);background:var(--primary-1);color:var(--primary);
+  border-radius:var(--r);font-size:13px;font-weight:600;white-space:nowrap;
+  transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:4px;
+}
+.code-send:hover:not(:disabled){background:var(--primary);color:#fff;border-color:var(--primary)}
+.code-send:disabled{cursor:not-allowed;opacity:.65;background:var(--fill-2);color:var(--text-3);border-color:var(--border)}
+.code-send .cd{font-variant-numeric:tabular-nums;min-width:18px;text-align:center;display:inline-block}
+
+/* ============ 记住登录 + 忘记密码 行 ============ */
+.form-row-aux{display:flex;align-items:center;justify-content:space-between;margin:4px 0 20px}
+.remember{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none}
+.remember input{accent-color:var(--primary);width:15px;height:15px;cursor:pointer}
+.forgot-link{font-size:13px;color:var(--primary);cursor:pointer;transition:color .15s}
+.forgot-link:hover{color:var(--primary-active);text-decoration:underline}
+
+/* ============ 登录主按钮(标杆 btn-primary 同源加大版) ============ */
+.login-btn{
+  width:100%;height:46px;border:none;border-radius:var(--r);
+  background:linear-gradient(90deg,#003a8c,#165DFF 55%,#3D7FFF);
+  color:#fff;font-size:16px;font-weight:600;letter-spacing:8px;text-indent:8px;
+  box-shadow:0 6px 18px rgba(22,93,255,.35);
+  transition:all .22s;position:relative;overflow:hidden;
+}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(22,93,255,.45);filter:brightness(1.06)}
+.login-btn:active{transform:translateY(0);filter:brightness(.97)}
+.login-btn:disabled{cursor:wait;opacity:.75;transform:none}
+/* 按钮流光(登录中动效) */
+.login-btn .shine{position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg)}
+.login-btn.loading .shine{animation:shineMove 1s linear infinite}
+@keyframes shineMove{from{left:-80%}to{left:130%}}
+
+/* ============ 安全提示条(等保三级 · 国密 SM2/SM4) ============ */
+.sec-strip{
+  margin-top:16px;display:flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--success-bg),#f4fffb);
+  border:1px solid var(--success-border);border-radius:var(--r);
+  padding:10px 14px;font-size:12px;color:var(--text-2);
+}
+.sec-strip .sc-ico{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  background:var(--success);color:#fff;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.sec-strip .sc-txt b{color:var(--success);font-weight:600}
+.sec-strip .sc-tags{margin-left:auto;display:flex;gap:6px;flex-shrink:0}
+.sec-strip .sc-tag{
+  font-size:10px;padding:1px 8px;border-radius:10px;
+  background:#fff;border:1px solid var(--success-border);color:var(--success);
+  font-weight:600;white-space:nowrap;
+}
+/* 安全须知小字(3 条) */
+.sec-tips{margin-top:10px;padding:0 4px}
+.sec-tips .tip{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--text-3);line-height:1.7}
+.sec-tips .tip .tp-dot{color:var(--primary);flex-shrink:0}
+/* 其他登录方式 */
+.alt-login{margin-top:18px}
+.al-divider{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-4);margin-bottom:12px}
+.al-divider::before,.al-divider::after{content:"";flex:1;height:1px;background:var(--border-2)}
+.al-opts{display:flex;gap:10px}
+.al-opt{
+  flex:1;display:flex;align-items:center;gap:10px;
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:10px 12px;cursor:pointer;transition:all .2s;background:#fff;
+}
+.al-opt:hover{border-color:var(--primary-2);background:var(--primary-1);transform:translateY(-1px)}
+.al-opt .ao-ico{
+  width:34px;height:34px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+}
+.al-opt .ao-txt b{display:block;font-size:12.5px;font-weight:600;color:var(--text-1)}
+.al-opt .ao-txt span{display:block;font-size:10.5px;color:var(--text-3);margin-top:1px}
+
+/* ============ 扫码登录面板 ============ */
+.qr-pane{display:flex;gap:26px;align-items:stretch;padding:8px 0 4px}
+.qr-box{
+  width:200px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+  border:1px solid var(--border-2);border-radius:var(--r-lg);padding:18px 14px;background:var(--fill);
+}
+.qr-frame{
+  width:132px;height:132px;border-radius:var(--r);background:#fff;position:relative;
+  border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;
+}
+/* 纯 CSS 装饰二维码(原型占位:点阵 + 三个定位角) */
+.qr-frame .qr-matrix{
+  position:absolute;inset:10px;
+  background-image:
+    radial-gradient(#1D2129 2.4px,transparent 2.6px),
+    radial-gradient(#1D2129 1.8px,transparent 2px);
+  background-size:14px 14px,9px 9px;
+  background-position:0 0,7px 7px;
+  opacity:.88;
+}
+.qr-frame .qr-eye{position:absolute;width:26px;height:26px;border:4px solid #1D2129;border-radius:4px;background:#fff}
+.qr-frame .qr-eye::after{content:"";position:absolute;inset:5px;background:#1D2129;border-radius:2px}
+.qr-frame .qr-eye.e1{left:8px;top:8px}
+.qr-frame .qr-eye.e2{right:8px;top:8px}
+.qr-frame .qr-eye.e3{left:8px;bottom:8px}
+.qr-frame .qr-scan{
+  position:absolute;left:0;right:0;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,#165DFF,transparent);
+  box-shadow:0 0 10px rgba(22,93,255,.7);animation:scanMove 2.4s ease-in-out infinite;
+}
+@keyframes scanMove{0%,100%{top:12%}50%{top:86%}}
+.qr-refresh{margin-top:12px;font-size:12px;color:var(--primary);cursor:pointer;display:flex;align-items:center;gap:4px}
+.qr-refresh:hover{color:var(--primary-active)}
+.qr-meta{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.qr-meta-title{font-size:16px;font-weight:600;color:var(--text-1);margin-bottom:10px}
+.qr-meta-title .qm-badge{font-size:10px;color:var(--purple);background:#F9F0FF;border:1px solid #D3ADF7;border-radius:8px;padding:1px 8px;margin-left:6px;font-weight:600;vertical-align:2px}
+.qr-step{display:flex;align-items:flex-start;gap:10px;padding:7px 0;font-size:13px;color:var(--text-2)}
+.qr-step .qs-num{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  background:var(--primary-1);color:var(--primary);font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.qr-note{
+  margin-top:12px;background:var(--warning-bg);border:1px solid var(--warning-border);
+  border-radius:var(--r);padding:8px 12px;font-size:11px;color:var(--text-2);line-height:1.7;
+}
+.qr-note b{color:var(--warning)}
+/* 移动端三个入口(扫码面板下方,玻璃拟态胶囊,呼应标杆 welcome-action) */
+.qr-entries{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.qr-entry{
+  flex:1;min-width:120px;display:flex;align-items:center;gap:8px;
+  border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;
+  font-size:12px;color:var(--text-2);transition:all .2s;white-space:nowrap;
+}
+.qr-entry:hover{border-color:var(--primary-2);background:var(--primary-1);color:var(--primary)}
+.qr-entry .qe-ico{font-size:15px}
+
+/* ============ 底部:三行辅助链接 + 版权(卡片下方,深蓝背景上直接排布) ============ */
+.login-foot{margin-top:18px;text-align:center;position:relative;z-index:1}
+.foot-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+/* 行标签 */
+.foot-lbl{
+  font-size:11px;color:rgba(255,255,255,.55);letter-spacing:2px;
+  display:inline-flex;align-items:center;gap:6px;flex-shrink:0;
+}
+.foot-lbl::after{content:"";width:18px;height:1px;background:rgba(255,255,255,.25)}
+/* 辅助入口胶囊(玻璃拟态,呼应标杆 welcome-action) */
+.foot-link{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:18px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+  color:rgba(255,255,255,.92);font-size:12.5px;
+  backdrop-filter:blur(8px);transition:all .2s;white-space:nowrap;
+}
+.foot-link:hover{background:rgba(255,255,255,.26);color:#fff;transform:translateY(-2px)}
+.foot-link .fl-ico{font-size:13px;opacity:.9}
+.foot-link .fl-tag{font-size:10px;padding:0 6px;border-radius:8px;background:rgba(255,255,255,.18);letter-spacing:0}
+/* 版权行 */
+.foot-copy{
+  font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:1px;
+  padding-top:10px;border-top:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+}
+.foot-copy .dot{opacity:.5}
+
+/* ============ 弹窗(FAQ 使用帮助 / 平台公告,标杆 modal 同源) ============ */
+.modal-mask{position:fixed;inset:0;background:var(--bg-spotlight);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-mask.show{display:flex;animation:fadeIn .2s}
+.modal{background:#fff;border-radius:var(--r-xl);width:560px;max-width:94vw;max-height:86vh;overflow:hidden;box-shadow:var(--sh-lg);display:flex;flex-direction:column}
+.modal-hd{padding:16px 20px;border-bottom:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:16px}
+.modal-hd .mh-sub{font-size:12px;color:var(--text-3);font-weight:400;margin-top:4px}
+.modal-close{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-3);font-size:18px;flex-shrink:0}
+.modal-close:hover{background:var(--fill-2);color:var(--text-1)}
+.modal-bd{padding:6px 20px 18px;overflow-y:auto;flex:1}
+/* FAQ 条目 */
+.faq-item{border-bottom:1px dashed var(--border-2);padding:14px 2px}
+.faq-item:last-child{border-bottom:none}
+.faq-q{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:600;color:var(--text-1);cursor:pointer;user-select:none}
+.faq-q .fq-mark{
+  width:22px;height:22px;border-radius:6px;flex-shrink:0;
+  background:var(--primary-1);color:var(--primary);font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-top:0;
+}
+.faq-q .fq-arrow{margin-left:auto;color:var(--text-4);font-size:12px;transition:transform .2s;flex-shrink:0;margin-top:4px}
+.faq-item.open .fq-arrow{transform:rotate(90deg)}
+.faq-a{display:none;margin:10px 0 0 32px;font-size:13px;color:var(--text-2);line-height:1.8}
+.faq-item.open .faq-a{display:block}
+.faq-a b{color:var(--primary)}
+.faq-a .fa-link{color:var(--primary);cursor:pointer}
+.faq-a .fa-link:hover{text-decoration:underline}
+/* 公告条目 */
+.notice-item{display:flex;gap:12px;padding:13px 2px;border-bottom:1px dashed var(--border-2)}
+.notice-item:last-child{border-bottom:none}
+.notice-item .ni-tag{flex-shrink:0;margin-top:2px}
+.notice-item .ni-body{min-width:0}
+.notice-item .ni-title{font-size:13.5px;font-weight:600;color:var(--text-1)}
+.notice-item .ni-txt{font-size:12.5px;color:var(--text-2);margin-top:4px;line-height:1.7}
+.notice-item .ni-date{font-size:11px;color:var(--text-3);margin-top:6px;font-family:var(--mono)}
+
+/* ============ Toast(与标杆 showToast 同源样式) ============ */
+#toast{
+  position:fixed;top:36px;left:50%;transform:translateX(-50%) translateY(-16px);
+  background:rgba(29,33,41,.94);color:#fff;
+  padding:12px 26px;border-radius:10px;font-size:13px;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:9999;
+  display:flex;align-items:center;gap:8px;
+  opacity:0;transition:all .25s;pointer-events:none;
+  max-width:86vw;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast .t-ico{color:#4080FF;font-size:14px}
+#toast.ok .t-ico{color:#23c343}
+#toast.err .t-ico{color:#F53F3F}
+
+/* ============ 响应式 ============ */
+@media (max-width:960px){
+  .login-card{grid-template-columns:1fr;max-width:560px;margin:0 auto}
+  .lg-brand{padding:30px 30px 24px}
+  .lg-feats{display:none}
+  .lg-stats{margin-top:18px}
+  .lg-form{padding:30px 28px 24px}
+  .qr-pane{flex-direction:column}
+  .qr-box{width:100%}
+}
+@media (max-width:560px){
+  body{padding:18px 10px}
+  .login-card{border-radius:var(--r)}
+  .lg-brand-title{font-size:21px}
+  .lg-form{padding:26px 20px 22px}
+  .role-pill{padding:5px 11px;font-size:12px}
+  .code-send{padding:0 12px}
+  .sec-strip .sc-tags{display:none}
+  .login-tabs .lt{margin-right:18px;font-size:13px}
+  .qr-entries{flex-direction:column}
+}
+/* ============ 打印样式(打印登录页仅保留安全提示) ============ */
+@media print{
+  body{background:#fff;padding:0}
+  .bg-deco,.login-foot,#toast{display:none}
+  .login-card{box-shadow:none;border:1px solid var(--border)}
+  .lg-brand{background:#003a8c !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 背景装饰层(纯 CSS,不拦截交互) ============ -->
+<div class="bg-deco" aria-hidden="true">
+  <div class="deco-grid"></div>
+  <div class="deco-beam"></div>
+  <div class="deco-c1"></div>
+  <div class="deco-c2"></div>
+  <div class="deco-c3"></div>
+</div>
+
+<!-- ============ 登录舞台 ============ -->
+<div class="login-stage">
+
+  <!-- ============ 登录主卡:左品牌区 + 右表单区 ============ -->
+  <div class="login-card">
+
+    <!-- ---------- 左侧品牌区(深蓝渐变,与标杆顶栏同源) ---------- -->
+    <div class="lg-brand">
+      <div class="lg-logo">陕</div>
+      <div class="lg-brand-title">陕西数字住建</div>
+      <div class="lg-brand-sub">物业服务管理子系统</div>
+      <div class="lg-brand-divider"></div>
+      <div class="lg-brand-intro">
+        面向全省住建主管部门、物业企业、业委会与业主的一体化物业服务平台,覆盖备案监管、维修资金、党建联建、业主决策与档案归档全业务链。
+      </div>
+
+      <!-- 系统特性清单 -->
+      <div class="lg-feats">
+        <div class="lg-feat">
+          <span class="ft-ico">⌂</span>
+          <div class="ft-txt"><b>全生命周期物业监管</b><span>备案 · 资金 · 评价 · 查验 · 进出</span></div>
+        </div>
+        <div class="lg-feat">
+          <span class="ft-ico">✦</span>
+          <div class="ft-txt"><b>红色物业 · 党建联建</b><span>党组织应建尽建 · 覆盖率实时可视</span></div>
+        </div>
+        <div class="lg-feat">
+          <span class="ft-ico">⌧</span>
+          <div class="ft-txt"><b>业主决策全程留痕</b><span>移动表决 · 短信委托 · 电子签章</span></div>
+        </div>
+        <div class="lg-feat">
+          <span class="ft-ico">▤</span>
+          <div class="ft-txt"><b>档案四性检测归档</b><span>真实 · 完整 · 可用 · 安全</span></div>
+        </div>
+        <div class="lg-feat">
+          <span class="ft-ico">▦</span>
+          <div class="ft-txt"><b>省级住建专题大屏</b><span>10 地市 + 107 县区一屏总览</span></div>
+        </div>
+      </div>
+
+      <!-- 平台公告(点击打开公告弹窗) -->
+      <div class="lg-notices" onclick="openModal('modal-notice')">
+        <div class="lg-notices-hd">📢 平台公告 <span class="nt-badge">5 条未读</span></div>
+        <div class="lg-notice"><span class="nt-dot"></span>关于开展 2026 年度物业企业信用评价工作的通知<span class="nt-date">10-15</span></div>
+        <div class="lg-notice"><span class="nt-dot"></span>物业服务事项备案新规 11 月 1 日起施行<span class="nt-date">10-12</span></div>
+      </div>
+
+      <!-- 服务支持 -->
+      <div class="lg-support">
+        <div class="sp-row"><span class="sp-k">☎</span><span>服务热线 029-8888-0000(工作日 09:00-18:00)</span></div>
+        <div class="sp-row"><span class="sp-k">⏱</span><span>7×24 值班:137-0000-0000(紧急故障)</span></div>
+        <div class="sp-row"><span class="sp-k">✉</span><span>支持邮箱 wygl@shaanxi-housing.gov.cn</span></div>
+      </div>
+
+      <!-- 平台运行数据(与工作台 KPI 同源) -->
+      <div class="lg-stats">
+        <div class="lg-stat">
+          <div class="st-v">1,284<span class="u">家</span></div>
+          <div class="st-k">物业服务企业</div>
+        </div>
+        <div class="lg-stat">
+          <div class="st-v">3,762<span class="u">个</span></div>
+          <div class="st-k">在管项目</div>
+        </div>
+        <div class="lg-stat">
+          <div class="st-v">86,420<span class="u">件</span></div>
+          <div class="st-k">业务档案</div>
+        </div>
+      </div>
+
+      <div class="lg-brand-foot">SHAANXI DIGITAL HOUSING &amp; CONSTRUCTION</div>
+    </div>
+
+    <!-- ---------- 右侧表单区 ---------- -->
+    <div class="lg-form">
+      <div class="lg-form-hd">
+        <div>
+          <div class="lg-form-title">欢迎登录</div>
+          <div class="lg-form-sub">选择角色并完成双因素验证(密码 + 短信验证码)进入 <b>综合工作台</b></div>
+        </div>
+        <a class="help-link" href="javascript:void(0)" onclick="openModal('modal-faq')">ⓘ 使用帮助</a>
+      </div>
+
+      <!-- 登录方式 Tab:账号登录 / 扫码登录 -->
+      <div class="login-tabs">
+        <div class="lt on" data-pane="pane-account" onclick="switchLoginTab(this)">🔑 账号登录</div>
+        <div class="lt" data-pane="pane-qrcode" onclick="switchLoginTab(this)">⌘ 扫码登录 <span class="lt-tag">推荐</span></div>
+      </div>
+
+      <!-- ============ 面板一:账号登录 ============ -->
+      <div class="tab-pane on" id="pane-account">
+
+        <!-- 角色选择(7 个 pill 单选) -->
+        <div class="fld">
+          <div class="fld-label">
+            <span>登录角色</span>
+            <span class="lb-tip">角色决定工作台数据可见范围</span>
+          </div>
+          <div class="role-pills" id="rolePills">
+            <span class="role-pill on" data-role="省级主管" data-desc="省住建厅视角 · 全省 10 地市 + 107 县区物业数据总览与监管审批。">省级主管</span>
+            <span class="role-pill" data-role="市级主管" data-desc="市住建局视角 · 本市物业事项备案、维修资金与信用评价监管。">市级主管</span>
+            <span class="role-pill" data-role="县区主管" data-desc="县区住建部门视角 · 辖区项目精细化管理、投诉处置与现场核查。">县区主管</span>
+            <span class="role-pill" data-role="街道社区" data-desc="街道办 / 社区视角 · 基层物业矛盾调解、业委会组建指导。">街道社区</span>
+            <span class="role-pill" data-role="物业企业" data-desc="物业企业视角 · 企业备案、项目工单、查验对接与党建台账。">物业企业</span>
+            <span class="role-pill" data-role="业委会·物管会" data-desc="业委会 / 物管会视角 · 业主大会发起、投票组织与公共收益公开。">业委会·物管会</span>
+            <span class="role-pill" data-role="移动端用户" data-desc="业主视角 · 公告查看、移动表决、报修投诉(秦务员 APP 入口)。">移动端用户</span>
+          </div>
+          <div class="role-tip" id="roleTip">
+            <span class="rt-ico">ⓘ</span>
+            <span id="roleTipText">省住建厅视角 · 全省 10 地市 + 107 县区物业数据总览与监管审批。</span>
+          </div>
+        </div>
+
+        <!-- 账号输入 -->
+        <div class="fld">
+          <div class="fld-label"><span>账号</span></div>
+          <div class="fld-ctrl" id="accCtrl">
+            <span class="pre">👤</span>
+            <input id="account" type="text" placeholder="手机号 / 用户名" autocomplete="username" maxlength="32">
+          </div>
+        </div>
+
+        <!-- 密码输入(可见切换) -->
+        <div class="fld">
+          <div class="fld-label"><span>密码</span></div>
+          <div class="fld-ctrl" id="pwdCtrl">
+            <span class="pre">🔒</span>
+            <input id="password" type="password" placeholder="请输入登录密码" autocomplete="current-password" maxlength="32">
+            <button type="button" class="eye" id="eyeBtn" title="显示 / 隐藏密码" onclick="togglePwd()">👁</button>
+          </div>
+        </div>
+
+        <!-- 短信验证码 + 60s 倒计时 -->
+        <div class="fld">
+          <div class="fld-label">
+            <span>短信验证码</span>
+            <span class="lb-tip">双因素认证 · 6 位数字</span>
+          </div>
+          <div class="code-row">
+            <div class="fld-ctrl" id="codeCtrl">
+              <span class="pre">✉</span>
+              <input id="smsCode" type="text" placeholder="请输入短信验证码" maxlength="6" inputmode="numeric" style="letter-spacing:4px;">
+            </div>
+            <button type="button" class="code-send" id="sendBtn" onclick="sendCode()">短信获取 <span class="cd" id="cdText"></span></button>
+          </div>
+        </div>
+
+        <!-- 记住登录 + 忘记密码 -->
+        <div class="form-row-aux">
+          <label class="remember">
+            <input type="checkbox" id="remember" checked> 记住登录(公共电脑请勿勾选)
+          </label>
+          <a class="forgot-link" href="09-系统管理/web_z_system_prototype.html#page-Z-PWD">忘记密码?</a>
+        </div>
+
+        <!-- 登录主按钮 -->
+        <button type="button" class="login-btn" id="loginBtn" onclick="doLogin()">
+          <span class="shine"></span>
+          <span style="position:relative;z-index:1">登&nbsp;&nbsp;录</span>
+        </button>
+
+        <!-- 安全提示条 -->
+        <div class="sec-strip">
+          <div class="sc-ico">🛡</div>
+          <div class="sc-txt">
+            本系统通过 <b>网络安全等级保护三级</b> 测评 · 全链路采用 <b>国密 SM2 / SM4</b> 算法加密传输
+          </div>
+          <div class="sc-tags">
+            <span class="sc-tag">等保三级</span>
+            <span class="sc-tag">SM2/SM4</span>
+          </div>
+        </div>
+
+        <!-- 安全须知 -->
+        <div class="sec-tips">
+          <div class="tip"><span class="tp-dot">·</span>密码需 8 位以上,含大小写字母与数字;连续输错 5 次将锁定账号 30 分钟。</div>
+          <div class="tip"><span class="tp-dot">·</span>短信验证码 10 分钟内有效,同一手机号每日最多发送 10 条。</div>
+          <div class="tip"><span class="tp-dot">·</span>系统不定期强制修改密码(周期 90 天),历史密码不可重复使用。</div>
+        </div>
+
+        <!-- 其他登录方式 -->
+        <div class="alt-login">
+          <div class="al-divider"><span>其他登录方式</span></div>
+          <div class="al-opts">
+            <div class="al-opt" onclick="showToast('正在跳转陕西省政务统一身份认证平台(演示)')">
+              <span class="ao-ico" style="background:#E8F1FF;color:#165DFF;">🏛</span>
+              <div class="ao-txt"><b>政务统一身份</b><span>陕西省政务服务网账号</span></div>
+            </div>
+            <div class="al-opt" onclick="showToast('正在拉起企业微信授权(演示)')">
+              <span class="ao-ico" style="background:#E8FFEA;color:#00B42A;">💬</span>
+              <div class="ao-txt"><b>企业微信</b><span>物业企业员工快捷登录</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 面板二:扫码登录 ============ -->
+      <div class="tab-pane" id="pane-qrcode">
+        <div class="qr-pane">
+          <div class="qr-box">
+            <div class="qr-frame" title="扫码登录二维码(原型占位)">
+              <div class="qr-matrix"></div>
+              <div class="qr-eye e1"></div>
+              <div class="qr-eye e2"></div>
+              <div class="qr-eye e3"></div>
+              <div class="qr-scan"></div>
+            </div>
+            <div class="qr-refresh" onclick="refreshQr()">↻ 刷新二维码</div>
+          </div>
+          <div class="qr-meta">
+            <div class="qr-meta-title">使用「秦务员」扫码登录 <span class="qm-badge">业主推荐</span></div>
+            <div class="qr-step"><span class="qs-num">1</span><span>打开秦务员 APP / 微信小程序,进入「物业服务」专区</span></div>
+            <div class="qr-step"><span class="qs-num">2</span><span>点击右上角「+」→「扫一扫」,扫描左侧二维码</span></div>
+            <div class="qr-step"><span class="qs-num">3</span><span>手机端确认授权后,自动进入对应角色工作台</span></div>
+            <div class="qr-note">
+              <b>提示:</b>扫码授权仅对本机有效,二维码 2 分钟自动刷新;物业企业与主管部门账号请使用 <b>账号 + UKey</b> 方式登录桌面端工作台。
+            </div>
+            <!-- 移动端三入口(与底部行 2 同源路径) -->
+            <div class="qr-entries">
+              <a class="qr-entry" href="08-移动端/mobile_owner_prototype.html"><span class="qe-ico">⌂</span> 业主端 · 秦务员</a>
+              <a class="qr-entry" href="08-移动端/mobile_corp_prototype.html"><span class="qe-ico">⚙</span> 物业企业端</a>
+              <a class="qr-entry" href="08-移动端/mobile_gov_prototype.html"><span class="qe-ico">✓</span> 主管部门端</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 底部:三行辅助链接 + 版权 ============ -->
+  <div class="login-foot">
+    <!-- 行 1:桌面端工作台入口 -->
+    <div class="foot-row">
+      <span class="foot-lbl">桌面端</span>
+      <a class="foot-link" href="00-主页/web_main.html">
+        <span class="fl-ico">▤</span> 综合工作台(Web)<span class="fl-tag">web_main</span>
+      </a>
+    </div>
+    <!-- 行 2:移动端三入口 -->
+    <div class="foot-row">
+      <span class="foot-lbl">移动端</span>
+      <a class="foot-link" href="08-移动端/mobile_owner_prototype.html">
+        <span class="fl-ico">⌂</span> 业主端 · 秦务员<span class="fl-tag">owner</span>
+      </a>
+      <a class="foot-link" href="08-移动端/mobile_corp_prototype.html">
+        <span class="fl-ico">⚙</span> 物业企业端<span class="fl-tag">corp</span>
+      </a>
+      <a class="foot-link" href="08-移动端/mobile_gov_prototype.html">
+        <span class="fl-ico">✓</span> 主管部门端<span class="fl-tag">gov</span>
+      </a>
+    </div>
+    <!-- 行 3:版权行 -->
+    <div class="foot-copy">
+      陕西省住房和城乡建设厅
+      <span class="dot">·</span>
+      中移系统集成有限公司
+      <span class="dot">·</span>
+      建议使用 Chrome / Edge 100+ 浏览器,分辨率 1440×900 及以上
+    </div>
+    <div class="foot-copy" style="padding-top:6px;border-top:none;margin-top:-6px;">
+      <span>陕ICP备 2026000888 号</span>
+      <span class="dot">·</span>
+      <span>服务热线 029-8888-0000</span>
+      <span class="dot">·</span>
+      <span>当前版本 R7-2026.10.19</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗:FAQ 使用帮助 ============ -->
+<div class="modal-mask" id="modal-faq" onclick="if(event.target===this)closeModal('modal-faq')">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>使用帮助 · 常见问题
+        <div class="mh-sub">登录 / 账号 / 安全 / 浏览器兼容性 · 未解决请联系管理员 029-8888-0000</div>
+      </div>
+      <div class="modal-close" onclick="closeModal('modal-faq')">×</div>
+    </div>
+    <div class="modal-bd">
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q1</span>忘记密码怎么办?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          点击登录表单右下角的「忘记密码?」,进入 <b>系统管理 → 修改密码 / 安全</b> 页面,通过绑定手机号短信验证后重置;也可联系本单位管理员在「系统管理 → 账号管理」中重置。
+          <br><span class="fa-link" onclick="location.href='09-系统管理/web_z_system_prototype.html#page-Z-PWD'">前往修改密码 →</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q2</span>收不到短信验证码?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          ① 确认手机号与账号绑定一致且信号正常;② 检查短信拦截 / 骚扰拦截设置;③ 同一手机号每日限发 10 条,超出后次日 0 点恢复;④ 仍收不到可使用「扫码登录」或联系管理员检查「系统管理 → 短信频次配置」。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q3</span>账号被锁定了如何处理?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          密码连续输错 <b>5 次</b> 系统将锁定账号 30 分钟(安全策略),到点自动解锁;如需立即解锁,请联系管理员在「系统管理 → 登录日志」中核查并手动解锁。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q4</span>物业企业 / 主管部门如何使用 UKey 登录?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          涉及备案审批、资金拨付等高权限操作的角色需插入 <b>数字证书 UKey</b>:在账号密码验证通过后,系统会提示插入 UKey 进行二次签名。证书申领与驱动安装见「系统管理 → 数字证书 / UKey」。
+          <br><span class="fa-link" onclick="location.href='09-系统管理/web_z_system_prototype.html#page-Z-CERT'">前往数字证书管理 →</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q5</span>支持哪些浏览器?移动端如何访问?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          桌面端推荐 <b>Chrome / Edge 100+</b>(分辨率 1440×900 及以上),兼容 360 极速模式;移动端业主请通过「秦务员」APP 或微信小程序进入,物业企业与主管部门可使用下方对应移动端入口。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q6</span>登录后可以切换角色视角吗?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          可以。进入工作台后,点击顶栏右侧「切换角色视角」,数据与待办将按新角色权限自动重算;省级 / 市级 / 县区级主管之间切换不改变账号,仅改变数据可见范围。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q7</span>提示"异地登录 / 非常用设备登录"怎么办?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          系统检测到登录 IP 或设备指纹与常用环境不一致时会触发保护:首次需完成短信验证码二次确认;若确认非本人操作,请立即修改密码并在「系统管理 → 登录日志」中核查异常记录,必要时联系管理员冻结账号。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q8</span>可以多端 / 多浏览器同时登录吗?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          同一账号支持 <b>桌面端 + 移动端各 1 个会话</b> 同时在线(共 2 个);同端重复登录会踢出较早会话并推送站内消息提醒。涉及 UKey 签名的审批操作同一时刻仅允许单会话,防止双签冲突。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q9</span>我的数据安全吗?系统如何保护隐私?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          本系统通过 <b>等保三级</b> 测评:传输层采用国密 SM2/SM4 加密;业主手机号、身份证号等敏感字段在展示层默认脱敏;全部操作(登录、查询、导出、借阅)均写入操作审计日志并支持区块链存证;档案库启用四性检测(真实 / 完整 / 可用 / 安全)。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q10</span>业主如何在移动端注册并绑定房屋?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          业主下载「秦务员」APP 并实名注册后,进入「物业服务」专区 → 「我的房屋」→「绑定房屋」,选择小区 / 楼栋 / 单元 / 户室并上传产权证明,物业企业确认后即完成绑定,方可参与投票表决、报修与投诉。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q11</span>打开综合大屏提示"无访问权限"?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          综合大屏(省级住建专题)默认仅对 <b>省级主管</b> 及授权角色开放。市 / 县区级主管可访问本级专题视图;如业务确需,请由单位管理员在「系统管理 → 个人设置 → 角色权限」中申请开通,并经上级主管部门审批。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q12</span>登录页可以记住哪些信息?公共电脑安全吗?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          勾选「记住登录」后,本机浏览器仅记住 <b>账号名</b>(不保存密码),下次登录仍需输入密码与短信验证码;验证码每 8 小时免重复发送一次。公共电脑请勿勾选,并建议使用浏览器无痕模式,用毕务必点击「退出登录」。
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span class="fq-mark">Q13</span>业主大会短信委托与登录账号是什么关系?
+          <span class="fq-arrow">›</span>
+        </div>
+        <div class="faq-a">
+          业主大会发起后,系统向已绑定房屋的业主推送 <b>短信委托链接</b>:业主点击链接即可在移动端完成身份核验并提交表决意见,无需单独注册登录;表决结果实时汇总至「业主决策 → 物业投票」监控大屏,全程留痕可回溯。
+        </div>
+      </div>
+
+      <!-- 仍需帮助 -->
+      <div style="margin-top:14px;background:var(--fill);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <span style="width:36px;height:36px;border-radius:10px;background:var(--primary-1);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">☎</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:600;color:var(--text-1);">以上未解决您的问题?</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px;line-height:1.7;">
+            联系本单位系统管理员,或拨打平台服务热线 <b style="color:var(--primary);font-family:var(--mono);">029-8888-0000</b>(工作日 09:00-18:00)· 紧急故障 7×24 值班 <b style="color:var(--primary);font-family:var(--mono);">137-0000-0000</b>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ 弹窗:平台公告 ============ -->
+<div class="modal-mask" id="modal-notice" onclick="if(event.target===this)closeModal('modal-notice')">
+  <div class="modal" style="width:600px;">
+    <div class="modal-hd">
+      <div>平台公告
+        <div class="mh-sub">陕西省住房和城乡建设厅 · 物业服务管理子系统</div>
+      </div>
+      <div class="modal-close" onclick="closeModal('modal-notice')">×</div>
+    </div>
+    <div class="modal-bd">
+
+      <div class="notice-item">
+        <span class="ni-tag"><span class="fq-mark" style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:#FFECE8;color:#F53F3F;font-size:11px;font-weight:700;align-items:center;justify-content:center;">重要</span></span>
+        <div class="ni-body">
+          <div class="ni-title">关于开展 2026 年度物业企业信用评价工作的通知</div>
+          <div class="ni-txt">
+            各市(区)住建局、各物业服务企业:2026 年度信用评价自 10 月 20 日启动,评价期数据以「物业监管 → 信用评级」模块口径为准;企业端自查入口将于 10 月 22 日开放。
+          </div>
+          <div class="ni-date">发布时间:2026-10-15 09:30</div>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <span class="ni-tag"><span class="fq-mark" style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:#E8F1FF;color:#165DFF;font-size:11px;font-weight:700;align-items:center;justify-content:center;">通知</span></span>
+        <div class="ni-body">
+          <div class="ni-title">物业服务事项备案新规 11 月 1 日起施行</div>
+          <div class="ni-txt">
+            依据最新管理办法,物业服务事项备案(含企业 / 区域 / 业委会备案)表单字段与材料清单同步更新,新申请一律按新规受理;10 月 31 日前的在途件按原规则办结。
+          </div>
+          <div class="ni-date">发布时间:2026-10-12 16:20</div>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <span class="ni-tag"><span class="fq-mark" style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:#E8FFEA;color:#00B42A;font-size:11px;font-weight:700;align-items:center;justify-content:center;">升级</span></span>
+        <div class="ni-body">
+          <div class="ni-title">系统 R7 版本升级公告(登录交互重构)</div>
+          <div class="ni-txt">
+            本版本新增独立登录页(角色选择 + 短信双因素)、顶栏六项全局导航(新增「系统管理」板块);原「数据监测分析」入口归入「物业监管」板块。原账号密码不受影响。
+          </div>
+          <div class="ni-date">发布时间:2026-10-10 10:00</div>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <span class="ni-tag"><span class="fq-mark" style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:#FFF3E0;color:#FF7D00;font-size:11px;font-weight:700;align-items:center;justify-content:center;">维护</span></span>
+        <div class="ni-body">
+          <div class="ni-title">计划性维护公告(每月最后一个周日 00:00-06:00)</div>
+          <div class="ni-txt">
+            例行维护期间系统暂停访问,正在填写的表单请提前保存;短信验证码服务同步暂停。维护窗口外的紧急故障将另行通知。
+          </div>
+          <div class="ni-date">发布时间:2026-10-08 14:00</div>
+        </div>
+      </div>
+
+      <div class="notice-item">
+        <span class="ni-tag"><span class="fq-mark" style="display:inline-flex;width:22px;height:22px;border-radius:6px;background:#F2F3F5;color:#4E5969;font-size:11px;font-weight:700;align-items:center;justify-content:center;">提醒</span></span>
+        <div class="ni-body">
+          <div class="ni-title">关于防范仿冒登录页面的安全提醒</div>
+          <div class="ni-txt">
+            近期发现仿冒本系统的钓鱼页面。官方登录页网址以住建厅门户域名为准,登录页右下角应显示「等保三级 · 国密 SM2/SM4」安全标识;请勿在任何非官方页面输入账号密码或短信验证码。
+          </div>
+          <div class="ni-date">发布时间:2026-09-28 09:00</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toast(与标杆 showToast 同源) ============ -->
+<div id="toast"><span class="t-ico">ⓘ</span><span id="toastMsg"></span></div>
+
+<script>
+/* ============================================================
+   login.html 交互脚本(内嵌,双击可开,无外部依赖)
+   - 登录方式 Tab(账号 / 扫码)
+   - 角色 pill 单选 + 角色说明联动
+   - 密码可见切换
+   - 短信验证码 60s 倒计时
+   - 登录校验 → toast「登录成功,正在进入工作台」→ 跳 web_main
+   - 记住登录(演示:localStorage 记忆账号)
+   - FAQ 折叠 / 公告弹窗 / 二维码刷新
+   ============================================================ */
+
+/* ---------- Toast(样式与 web_d / web_main 标杆一致) ---------- */
+var toastTimer = null;
+function showToast(msg, type){
+  var t = document.getElementById('toast');
+  var m = document.getElementById('toastMsg');
+  m.textContent = msg;
+  t.className = (type || '');
+  // 强制重排以重启动画
+  void t.offsetWidth;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+
+/* ---------- 弹窗(标杆 modal 同源) ---------- */
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+/* Esc 关闭全部弹窗 */
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-mask.show').forEach(function(m){ m.classList.remove('show'); });
+  }
+});
+
+/* ---------- 登录方式 Tab(账号登录 / 扫码登录) ---------- */
+function switchLoginTab(el){
+  var tabs = document.querySelectorAll('.login-tabs .lt');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  el.classList.add('on');
+  var panes = document.querySelectorAll('.tab-pane');
+  for (var j = 0; j < panes.length; j++) panes[j].classList.remove('on');
+  var target = document.getElementById(el.getAttribute('data-pane'));
+  if (target) target.classList.add('on');
+}
+
+/* ---------- FAQ 折叠 ---------- */
+function toggleFaq(qEl){
+  qEl.parentNode.classList.toggle('open');
+}
+
+/* ---------- 二维码刷新(原型演示) ---------- */
+function refreshQr(){
+  showToast('二维码已刷新,2 分钟内有效');
+}
+
+/* ---------- 角色选择(7 pill 单选) ---------- */
+function selectRole(el){
+  var pills = document.querySelectorAll('#rolePills .role-pill');
+  for (var i = 0; i < pills.length; i++) pills[i].classList.remove('on');
+  el.classList.add('on');
+  document.getElementById('roleTipText').textContent = el.getAttribute('data-desc');
+}
+(function(){
+  var pills = document.querySelectorAll('#rolePills .role-pill');
+  for (var i = 0; i < pills.length; i++) {
+    (function(p){
+      p.addEventListener('click', function(){ selectRole(p); });
+    })(pills[i]);
+  }
+})();
+function getRole(){
+  var on = document.querySelector('#rolePills .role-pill.on');
+  return on ? on.getAttribute('data-role') : '省级主管';
+}
+
+/* ---------- 密码可见切换 ---------- */
+var pwdVisible = false;
+function togglePwd(){
+  var input = document.getElementById('password');
+  var btn = document.getElementById('eyeBtn');
+  pwdVisible = !pwdVisible;
+  input.type = pwdVisible ? 'text' : 'password';
+  btn.style.opacity = pwdVisible ? '1' : '.65';
+  input.focus();
+}
+
+/* ---------- 短信验证码 60s 倒计时 ---------- */
+var countdown = 0, cdTimer = null;
+function sendCode(){
+  var acc = document.getElementById('account').value.trim();
+  if (!acc) {
+    markErr('accCtrl', true);
+    showToast('请先输入手机号 / 用户名,再获取验证码', 'err');
+    document.getElementById('account').focus();
+    return;
+  }
+  if (countdown > 0) return;
+  showToast('验证码已发送至 ' + maskAcc(acc) + ' 的绑定手机(演示模式:任意 6 位数字可登录)');
+  countdown = 60;
+  renderCd();
+  cdTimer = setInterval(function(){
+    countdown--;
+    if (countdown <= 0) {
+      countdown = 0;
+      clearInterval(cdTimer);
+    }
+    renderCd();
+  }, 1000);
+}
+function renderCd(){
+  var btn = document.getElementById('sendBtn');
+  var cd = document.getElementById('cdText');
+  if (countdown > 0) {
+    btn.disabled = true;
+    cd.textContent = '(' + countdown + 's)';
+  } else {
+    btn.disabled = false;
+    cd.textContent = '';
+  }
+}
+/* 账号脱敏(真实系统交互感) */
+function maskAcc(acc){
+  if (/^\d{11}$/.test(acc)) return acc.slice(0,3) + '****' + acc.slice(7);
+  if (acc.length > 4) return acc.slice(0, 2) + '**' + acc.slice(-2);
+  return acc;
+}
+
+/* ---------- 输入框错误标记 ---------- */
+function markErr(id, on){
+  var box = document.getElementById(id);
+  if (box) box.classList.toggle('err', !!on);
+}
+/* 输入即清除错误态 */
+(function(){
+  var map = { account:'accCtrl', password:'pwdCtrl', smsCode:'codeCtrl' };
+  Object.keys(map).forEach(function(k){
+    var el = document.getElementById(k);
+    if (el) el.addEventListener('input', function(){ markErr(map[k], false); });
+  });
+})();
+
+/* ---------- 登录主流程 ---------- */
+var loggingIn = false;
+function doLogin(){
+  if (loggingIn) return;
+  var acc = document.getElementById('account').value.trim();
+  var pwd = document.getElementById('password').value;
+  var code = document.getElementById('smsCode').value.trim();
+  var role = getRole();
+
+  var ok = true;
+  if (!acc) { markErr('accCtrl', true); ok = false; }
+  if (!pwd) { markErr('pwdCtrl', true); ok = false; }
+  if (!/^\d{6}$/.test(code)) { markErr('codeCtrl', true); ok = false; }
+
+  if (!ok) {
+    showToast('请完整填写账号、密码与 6 位短信验证码', 'err');
+    return;
+  }
+
+  /* 记住登录(演示:localStorage 记忆账号) */
+  var remember = document.getElementById('remember').checked;
+  try {
+    if (remember) localStorage.setItem('sx_dcjz_login_acc', acc);
+    else localStorage.removeItem('sx_dcjz_login_acc');
+  } catch (e) { /* 隐私模式下忽略 */ }
+
+  loggingIn = true;
+  var btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  /* 核心交互:toast「登录成功,正在进入工作台」→ 进入 web_main 工作台 */
+  showToast('登录成功,正在进入工作台(' + role + '视角)', 'ok');
+  setTimeout(function(){
+    location.href = '00-主页/web_main.html';
+  }, 900);
+}
+
+/* ---------- 回车提交 ---------- */
+(function(){
+  ['account', 'password', 'smsCode'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') doLogin();
+    });
+  });
+})();
+
+/* ---------- 启动初始化:回填记住的账号 ---------- */
+(function(){
+  try {
+    var saved = localStorage.getItem('sx_dcjz_login_acc');
+    if (saved) {
+      document.getElementById('account').value = saved;
+      document.getElementById('remember').checked = true;
+    }
+  } catch (e) { /* 忽略 */ }
+  renderCd();
+})();
+
+/* ---------- 控制台自检(与标杆文件风格一致) ---------- */
+console.log('%c 数字住建 · 物业服务管理子系统 ' , 'background:#165DFF;color:#fff;padding:4px 10px;border-radius:4px;font-weight:600;');
+console.log('%c R7 login.html 独立登录页 · 系统默认入口 · 视觉与 web_d 标杆同源 ' , 'color:#165DFF;font-weight:600;');
+console.log('登录流程:角色选择(7)→ 账密 + 短信双因素 → 00-主页/web_main.html 工作台');
+console.log('辅助入口:桌面端 web_main / 移动端 owner · corp · gov;忘记密码 → 09-系统管理#page-Z-PWD');
+console.log('交互明细:扫码登录 Tab · FAQ 帮助弹窗(6 条)· 平台公告弹窗(3 条)· 等保三级 · 国密 SM2/SM4');
+</script>
+
+</body>
+</html>
